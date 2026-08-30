@@ -15,6 +15,7 @@ assert.ok(Array.isArray(data.aggregates.byMatch), "match aggregate exists");
 assert.ok(data.aggregates.byMatch.some((row) => row.label.includes("Seattle Sounders")), "real games are visible");
 assert.ok(!serialized.includes("betId"), "no bet-id field is published");
 assert.ok(!serialized.includes("01M"), "no YEET-style identifiers are published");
+assert.ok(data.meta.privacy.includes("No bet IDs"), "privacy note matches the current public-safe scope");
 assert.ok(html.includes("data-view=\"brief\""), "brief tab exists");
 assert.ok(html.includes("data-view=\"segments\""), "segments tab exists");
 assert.ok(html.includes("data-view=\"leagues\""), "league tab exists");
@@ -32,9 +33,19 @@ assert.ok(app.includes("leagueGroups"), "league dropdown supports league/cup gro
 assert.ok(data.dimensions.dates[0] > data.dimensions.dates.at(-1), "dates are sorted newest first");
 assert.ok(data.dimensions.leagueGroups.leagues.length > 0, "domestic leagues are grouped");
 assert.ok(data.dimensions.leagueGroups.cups.length > 0, "cup and international competitions are grouped");
+assert.ok(data.dimensions.directions.includes("Under"), "directions are exposed for pattern analysis");
+assert.ok(data.dimensions.lines.includes("2.5"), "market lines are exposed for pattern analysis");
+assert.ok(data.dimensions.competitionTypes.includes("cups"), "competition types are exposed for pattern analysis");
+assert.ok(data.cells.every((row) => "direction" in row && "line" in row), "public cells include normalized direction and line");
+assert.ok(Array.isArray(data.aggregates.byCombination), "combination aggregate exists");
+assert.ok(data.aggregates.byCombination.some((row) => row.label.includes("Total Goals") && row.label.includes("Under 2.5")), "fine market combinations are visible");
+assert.ok(data.aggregates.byCombination.some((row) => row.label.includes("High") || row.label.includes("Medium") || row.label.includes("Low")), "conviction is part of combinations");
 assert.ok(app.includes("renderLeagues"), "league view renderer exists");
 assert.ok(app.includes("renderMatches"), "match view renderer exists");
 assert.ok(app.includes("renderInsights"), "decision insight renderer exists");
 assert.ok(app.includes("renderBrief"), "brief view renderer exists");
+assert.ok(app.includes("renderCombinations"), "combination renderer exists");
+assert.ok(app.includes("formatCombination"), "combination labels are made readable");
+assert.ok(html.includes("id=\"comboRows\""), "combination table exists");
 
 console.log("dashboard checks passed");

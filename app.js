@@ -47,6 +47,9 @@ const text = {
     marketHint: "nach aktuellem Filter",
     matrix: "Was funktioniert, was kostet?",
     matrixHint: "nur Segmente mit mindestens 5 Wetten",
+    comboView: "Kombinationen",
+    comboHint: "Liga, Markt, Linie, Conviction und Quote zusammen betrachtet",
+    combination: "Kombination",
     best: "Stärkste Segmente",
     risk: "Schwächste Segmente",
     segment: "Segment",
@@ -101,6 +104,9 @@ const text = {
     marketHint: "by active filter",
     matrix: "What works, what costs?",
     matrixHint: "segments with at least 5 bets",
+    comboView: "Combinations",
+    comboHint: "league, market, line, conviction, and odds viewed together",
+    combination: "Combination",
     best: "Strongest segments",
     risk: "Weakest segments",
     segment: "Segment",
@@ -143,6 +149,9 @@ function esc(value) {
 function labelText(label) {
   if (state.lang === "en") return label;
   return {
+    leagues: "Liga",
+    cups: "Pokal/International",
+    other: "Sonstige",
     Special: "Sonderfall",
     Readable: "Auswertbar",
     Watch: "Beobachten",
@@ -153,6 +162,13 @@ function labelText(label) {
     Voided: "Storniert",
     "Cashed Out": "Cashout",
   }[label] || label;
+}
+
+function formatCombination(label) {
+  return String(label ?? "")
+    .split(" | ")
+    .map((part) => labelText(part))
+    .join(" / ");
 }
 
 function empty(label) {
@@ -325,6 +341,17 @@ function quoteRows(rows) {
   </tr>`).join("");
 }
 
+function comboRows(rows) {
+  $("comboRows").innerHTML = rows.map((row) => `<tr>
+    <td>${esc(formatCombination(row.label))}</td>
+    <td>${row.closed}</td>
+    <td class="${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</td>
+    <td>${pct(row.roi)}</td>
+    <td>${pct(row.hitRate)}</td>
+    <td>${esc(labelText(row.sample))}</td>
+  </tr>`).join("");
+}
+
 function statCard(row) {
   const cls = row.net >= 0 ? "pos" : "neg";
   return `<article class="mini-card">
@@ -361,6 +388,12 @@ function renderSegments(rows) {
   const segments = aggregate(rows, "fineSegment").filter((row) => row.closed >= 5);
   tableRows("bestRows", segments.filter((row) => row.net > 0).sort((a, b) => b.net - a.net).slice(0, 6));
   tableRows("riskRows", segments.filter((row) => row.net < 0).sort((a, b) => a.net - b.net).slice(0, 6));
+  renderCombinations(rows);
+}
+
+function renderCombinations(rows) {
+  const combos = aggregate(rows, "combination").filter((row) => row.closed >= 3);
+  comboRows(combos.sort((a, b) => Math.abs(b.net) - Math.abs(a.net)).slice(0, 14));
 }
 
 function renderOdds(rows) {

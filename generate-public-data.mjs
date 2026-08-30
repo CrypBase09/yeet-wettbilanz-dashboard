@@ -158,9 +158,20 @@ function aggregate(bets, keyFn) {
   return [...map.values()].map(finish).sort((a, b) => b.closed - a.closed || b.net - a.net);
 }
 
+function combinationLabel(bet) {
+  return [
+    bet.competitionType,
+    bet.league,
+    bet.fineSegment,
+    bet.conviction,
+    bet.quoteBand,
+  ].join(" | ");
+}
+
 function publicCells(bets) {
   const map = new Map();
   for (const bet of bets) {
+    const combination = combinationLabel(bet);
     const keyParts = [
       bet.date,
       bet.status,
@@ -169,8 +180,11 @@ function publicCells(bets) {
       bet.competitionType,
       bet.marketGroup,
       bet.fineSegment,
+      bet.direction,
+      bet.line,
       bet.conviction,
       bet.quoteBand,
+      combination,
       String(bet.isFocus),
     ];
     const key = keyParts.join("|");
@@ -182,8 +196,11 @@ function publicCells(bets) {
       competitionType: bet.competitionType,
       marketGroup: bet.marketGroup,
       fineSegment: bet.fineSegment,
+      direction: bet.direction,
+      line: bet.line,
       conviction: bet.conviction,
       quoteBand: bet.quoteBand,
+      combination,
       isFocus: bet.isFocus,
       ...empty(key),
     };
@@ -243,12 +260,15 @@ const payload = {
     startDate,
     generatedAt: new Date().toISOString(),
     currency: "USD",
-    privacy: "Public-safe aggregate data only. No games, leagues, or identifiers included.",
+    privacy: "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design.",
   },
   summary,
   dimensions: {
     dates: [...new Set(bets.map((bet) => bet.date))].sort((a, b) => b.localeCompare(a)),
     marketGroups: [...new Set(bets.map((bet) => bet.marketGroup))].sort(),
+    directions: [...new Set(bets.map((bet) => bet.direction))].sort(),
+    lines: [...new Set(bets.map((bet) => bet.line))].sort((a, b) => Number(a) - Number(b) || a.localeCompare(b)),
+    competitionTypes: [...new Set(bets.map((bet) => bet.competitionType))].sort(),
     leagues: sortLeagues(leagues),
     leagueGroups: leagueGroups(leagues),
     convictions: [...new Set(bets.map((bet) => bet.conviction))].sort(),
@@ -261,6 +281,7 @@ const payload = {
     byLeague: aggregate(bets, (bet) => bet.league),
     byMatch: aggregate(bets, (bet) => bet.game),
     byFineSegment: aggregate(bets, (bet) => bet.fineSegment),
+    byCombination: aggregate(bets, combinationLabel),
     byConviction: aggregate(bets, (bet) => bet.conviction),
     byQuoteBand: aggregate(bets, (bet) => bet.quoteBand),
     byStatus: aggregate(bets, (bet) => bet.status),

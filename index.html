@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260830-mainstrategy">
+    <link rel="stylesheet" href="styles.css?v=20260830-combos">
   </head>
   <body>
     <header class="topbar">
@@ -106,6 +106,13 @@
               </div>
             </div>
           </article>
+          <article class="panel combo-panel">
+            <div class="panel-head">
+              <h2 data-i18n="comboView"></h2>
+              <span data-i18n="comboHint"></span>
+            </div>
+            <table><thead><tr><th data-i18n="combination"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="sample"></th></tr></thead><tbody id="comboRows"></tbody></table>
+          </article>
         </section>
 
         <section class="view" id="leaguesView">
@@ -140,6 +147,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260830-mainstrategy"></script>
+    <script src="app.js?v=20260830-combos"></script>
   </body>
 </html>
