@@ -1,0 +1,40 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+
+const data = JSON.parse(fs.readFileSync("data/summary.json", "utf8"));
+const source = JSON.parse(fs.readFileSync("../work/yeet-mybets/parsed_bets.json", "utf8"));
+const html = fs.readFileSync("index.html", "utf8");
+const app = fs.readFileSync("app.js", "utf8");
+const serialized = JSON.stringify(data);
+const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
+
+assert.equal(data.summary.bets, expectedSinceStart, "summary keeps all tracked bets since start date");
+assert.ok(Array.isArray(data.aggregates.byLeague), "league aggregate exists");
+assert.ok(data.aggregates.byLeague.some((row) => row.label === "MLS"), "real leagues are visible");
+assert.ok(Array.isArray(data.aggregates.byMatch), "match aggregate exists");
+assert.ok(data.aggregates.byMatch.some((row) => row.label.includes("Seattle Sounders")), "real games are visible");
+assert.ok(!serialized.includes("betId"), "no bet-id field is published");
+assert.ok(!serialized.includes("01M"), "no YEET-style identifiers are published");
+assert.ok(html.includes("data-view=\"brief\""), "brief tab exists");
+assert.ok(html.includes("data-view=\"segments\""), "segments tab exists");
+assert.ok(html.includes("data-view=\"leagues\""), "league tab exists");
+assert.ok(html.includes("data-view=\"matches\""), "match tab exists");
+assert.ok(html.includes("data-view=\"odds\""), "odds tab exists");
+assert.ok(html.includes("id=\"insights\""), "decision insight strip exists");
+assert.ok(html.includes("id=\"briefView\""), "brief view exists");
+assert.ok(html.includes("id=\"focusOnly\" type=\"checkbox\" checked"), "main strategy checkbox is checked by default");
+assert.ok(html.includes("styles.css?v="), "stylesheet has cache busting");
+assert.ok(html.includes("app.js?v="), "app script has cache busting");
+assert.ok(app.includes("focusOnly: true"), "main strategy is the default state");
+assert.ok(app.includes("state.filters.focusOnly && !row.isFocus"), "checked main strategy filters out special stakes");
+assert.ok(app.includes("state.filters.focusOnly = $(\"focusOnly\").checked"), "state syncs from the actual checkbox at startup");
+assert.ok(app.includes("leagueGroups"), "league dropdown supports league/cup groups");
+assert.ok(data.dimensions.dates[0] > data.dimensions.dates.at(-1), "dates are sorted newest first");
+assert.ok(data.dimensions.leagueGroups.leagues.length > 0, "domestic leagues are grouped");
+assert.ok(data.dimensions.leagueGroups.cups.length > 0, "cup and international competitions are grouped");
+assert.ok(app.includes("renderLeagues"), "league view renderer exists");
+assert.ok(app.includes("renderMatches"), "match view renderer exists");
+assert.ok(app.includes("renderInsights"), "decision insight renderer exists");
+assert.ok(app.includes("renderBrief"), "brief view renderer exists");
+
+console.log("dashboard checks passed");

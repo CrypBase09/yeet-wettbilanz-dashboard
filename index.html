@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>YEET Dashboard</title>
+    <link rel="stylesheet" href="styles.css?v=20260830-mainstrategy">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">Strategy Cockpit</p>
+        <h1 data-i18n="title">YEET Wettbilanz</h1>
+      </div>
+      <div class="top-actions">
+        <div class="segmented" aria-label="Language switcher">
+          <button class="active" type="button" data-lang="de">DE</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <span id="stamp" class="stamp">...</span>
+      </div>
+    </header>
+
+    <main class="shell">
+      <aside class="sidebar">
+        <nav class="view-tabs" aria-label="Dashboard views">
+          <button class="active" type="button" data-view="brief" data-i18n="briefTab">Kurzblick</button>
+          <button type="button" data-view="segments" data-i18n="segmentsTab">Segmente</button>
+          <button type="button" data-view="leagues" data-i18n="leaguesTab">Ligen</button>
+          <button type="button" data-view="matches" data-i18n="matchesTab">Spiele</button>
+          <button type="button" data-view="odds" data-i18n="oddsTab">Quoten</button>
+        </nav>
+
+        <section class="filters">
+          <label><span data-i18n="date"></span><select id="dateFilter"></select></label>
+          <label><span data-i18n="league"></span><select id="leagueFilter"></select></label>
+          <label><span data-i18n="market"></span><select id="marketFilter"></select></label>
+          <label><span data-i18n="conviction"></span><select id="convictionFilter"></select></label>
+          <label><span data-i18n="quoteBand"></span><select id="quoteFilter"></select></label>
+          <label><span data-i18n="status"></span><select id="statusFilter"></select></label>
+          <label class="check"><input id="focusOnly" type="checkbox" checked><span data-i18n="focusOnly"></span></label>
+        </section>
+      </aside>
+
+      <section class="content">
+        <section class="kpis">
+          <article><span data-i18n="bets"></span><strong id="bets">0</strong><small id="closed"></small></article>
+          <article><span data-i18n="net"></span><strong id="net">$0.00</strong><small id="stake"></small></article>
+          <article><span data-i18n="roi"></span><strong id="roi">0.0%</strong><small id="payout"></small></article>
+          <article><span data-i18n="hit"></span><strong id="hit">0.0%</strong><small id="record"></small></article>
+        </section>
+
+        <section id="insights" class="insights" aria-label="Decision insights">
+          <article><span data-i18n="topSignal"></span><strong id="topSignal">-</strong><small id="topSignalMeta"></small></article>
+          <article><span data-i18n="riskSignal"></span><strong id="riskSignal">-</strong><small id="riskSignalMeta"></small></article>
+          <article><span data-i18n="sampleSignal"></span><strong id="sampleSignal">-</strong><small id="sampleSignalMeta"></small></article>
+        </section>
+
+        <section class="view active" id="briefView">
+          <div class="brief-grid">
+            <article class="panel hero-panel">
+              <div class="panel-head">
+                <h2 data-i18n="briefView"></h2>
+                <span data-i18n="briefHint"></span>
+              </div>
+              <div id="briefCards" class="decision-cards"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="convictionView"></h2>
+                <span data-i18n="convictionHint"></span>
+              </div>
+              <div id="convictionBars" class="bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="marketView"></h2>
+                <span data-i18n="marketHint"></span>
+              </div>
+              <div id="marketBars" class="bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="curve"></h2>
+                <span data-i18n="curveHint"></span>
+              </div>
+              <div id="curveChart" class="curve"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="segmentsView">
+          <article class="panel">
+            <div class="panel-head">
+              <h2 data-i18n="matrix"></h2>
+              <span data-i18n="matrixHint"></span>
+            </div>
+            <div class="table-pair">
+              <div>
+                <h3 data-i18n="best"></h3>
+                <table><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="sample"></th></tr></thead><tbody id="bestRows"></tbody></table>
+              </div>
+              <div>
+                <h3 data-i18n="risk"></h3>
+                <table><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="sample"></th></tr></thead><tbody id="riskRows"></tbody></table>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="leaguesView">
+          <article class="panel">
+            <div class="panel-head">
+              <h2 data-i18n="leagueView"></h2>
+              <span data-i18n="leagueHint"></span>
+            </div>
+            <div id="leagueCards" class="cards"></div>
+          </article>
+        </section>
+
+        <section class="view" id="matchesView">
+          <article class="panel">
+            <div class="panel-head">
+              <h2 data-i18n="matchView"></h2>
+              <span data-i18n="matchHint"></span>
+            </div>
+            <div id="matchCards" class="cards match-cards"></div>
+          </article>
+        </section>
+
+        <section class="view" id="oddsView">
+          <article class="panel">
+            <div class="panel-head">
+              <h2 data-i18n="quoteView"></h2>
+              <span data-i18n="quoteHint"></span>
+            </div>
+            <table><thead><tr><th data-i18n="quoteBand"></th><th data-i18n="closedShort"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="net"></th><th data-i18n="roi"></th></tr></thead><tbody id="quoteRows"></tbody></table>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js?v=20260830-mainstrategy"></script>
+  </body>
+</html>
