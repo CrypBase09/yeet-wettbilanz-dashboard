@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260830-combos">
+    <link rel="stylesheet" href="styles.css?v=20260831-conviction">
   </head>
   <body>
     <header class="topbar">
@@ -92,26 +92,44 @@
         <section class="view" id="segmentsView">
           <article class="panel">
             <div class="panel-head">
-              <h2 data-i18n="matrix"></h2>
-              <span data-i18n="matrixHint"></span>
+              <h2 data-i18n="convictionDrilldown"></h2>
+              <span data-i18n="convictionDrilldownHint"></span>
             </div>
-            <div class="table-pair">
-              <div>
-                <h3 data-i18n="best"></h3>
-                <table><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="sample"></th></tr></thead><tbody id="bestRows"></tbody></table>
-              </div>
-              <div>
-                <h3 data-i18n="risk"></h3>
-                <table><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="sample"></th></tr></thead><tbody id="riskRows"></tbody></table>
-              </div>
+            <div id="convictionSwitch" class="conviction-switch" aria-label="Conviction drilldown">
+              <button class="active" type="button" data-conviction="High">High</button>
+              <button type="button" data-conviction="Medium">Medium</button>
+              <button type="button" data-conviction="Low">Low</button>
             </div>
+            <div id="convictionSummaryCards" class="cards conviction-cards"></div>
           </article>
-          <article class="panel combo-panel">
+          <div class="segment-panel-stack">
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="marketLineView"></h2>
+                <span data-i18n="marketLineHint"></span>
+              </div>
+              <div class="table-scroll">
+                <table class="analysis-table"><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="convictionMarketRows"></tbody></table>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="leagueMarketView"></h2>
+                <span data-i18n="leagueMarketHint"></span>
+              </div>
+              <div class="table-scroll">
+                <table class="analysis-table"><thead><tr><th data-i18n="leagueMarket"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="convictionLeagueRows"></tbody></table>
+              </div>
+            </article>
+          </div>
+          <article class="panel">
             <div class="panel-head">
-              <h2 data-i18n="comboView"></h2>
-              <span data-i18n="comboHint"></span>
+              <h2 data-i18n="specialView"></h2>
+              <span data-i18n="specialHint"></span>
             </div>
-            <table><thead><tr><th data-i18n="combination"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="sample"></th></tr></thead><tbody id="comboRows"></tbody></table>
+            <div class="table-scroll">
+              <table class="analysis-table"><thead><tr><th data-i18n="segment"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="specialRows"></tbody></table>
+            </div>
           </article>
         </section>
 
@@ -147,6 +165,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260830-combos"></script>
+    <script src="app.js?v=20260831-conviction"></script>
   </body>
 </html>

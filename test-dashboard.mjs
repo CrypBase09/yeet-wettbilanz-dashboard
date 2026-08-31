@@ -27,7 +27,7 @@ assert.ok(html.includes("id=\"focusOnly\" type=\"checkbox\" checked"), "main str
 assert.ok(html.includes("styles.css?v="), "stylesheet has cache busting");
 assert.ok(html.includes("app.js?v="), "app script has cache busting");
 assert.ok(app.includes("focusOnly: true"), "main strategy is the default state");
-assert.ok(app.includes("state.filters.focusOnly && !row.isFocus"), "checked main strategy filters out special stakes");
+assert.ok(app.includes("state.filters.focusOnly && !ignoreFocus && !row.isFocus"), "checked main strategy filters out special stakes");
 assert.ok(app.includes("state.filters.focusOnly = $(\"focusOnly\").checked"), "state syncs from the actual checkbox at startup");
 assert.ok(app.includes("leagueGroups"), "league dropdown supports league/cup groups");
 assert.ok(data.dimensions.dates[0] > data.dimensions.dates.at(-1), "dates are sorted newest first");
@@ -46,6 +46,13 @@ assert.ok(app.includes("renderInsights"), "decision insight renderer exists");
 assert.ok(app.includes("renderBrief"), "brief view renderer exists");
 assert.ok(app.includes("renderCombinations"), "combination renderer exists");
 assert.ok(app.includes("formatCombination"), "combination labels are made readable");
-assert.ok(html.includes("id=\"comboRows\""), "combination table exists");
+assert.ok(html.includes("id=\"convictionSwitch\""), "conviction-first switch exists");
+assert.ok(html.includes("id=\"convictionMarketRows\""), "conviction market table exists");
+assert.ok(html.includes("id=\"convictionLeagueRows\""), "conviction league-market table exists");
+assert.ok(html.includes("id=\"specialRows\""), "special stake table exists");
+assert.ok(app.includes("segmentConviction: \"High\""), "high conviction is the default segment drilldown");
+assert.ok(app.includes("renderConvictionSegments"), "conviction-first segment renderer exists");
+assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
+assert.ok(html.includes("data-conviction=\"High\""), "high conviction drilldown button exists");
 
 console.log("dashboard checks passed");

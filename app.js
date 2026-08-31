@@ -1,6 +1,7 @@
 const state = {
   lang: "de",
   view: "brief",
+  segmentConviction: "High",
   data: null,
   filters: {
     date: "all",
@@ -47,6 +48,16 @@ const text = {
     marketHint: "nach aktuellem Filter",
     matrix: "Was funktioniert, was kostet?",
     matrixHint: "nur Segmente mit mindestens 5 Wetten",
+    convictionDrilldown: "Conviction-Analyse",
+    convictionDrilldownHint: "erst Einsatzlogik, dann Markt/Linie und Liga",
+    marketLineView: "Markt / Richtung / Linie",
+    marketLineHint: "Performance innerhalb der ausgewählten Conviction",
+    leagueMarketView: "Liga x Markt / Linie",
+    leagueMarketHint: "wo die gleichen Muster im Wettbewerb tragen",
+    leagueMarket: "Liga / Segment",
+    specialView: "Sonderfälle",
+    specialHint: "andere Einsatzgrößen separat, nicht Hauptfokus",
+    signal: "Signal",
     comboView: "Kombinationen",
     comboHint: "Liga, Markt, Linie, Conviction und Quote zusammen betrachtet",
     combination: "Kombination",
@@ -104,6 +115,16 @@ const text = {
     marketHint: "by active filter",
     matrix: "What works, what costs?",
     matrixHint: "segments with at least 5 bets",
+    convictionDrilldown: "Conviction analysis",
+    convictionDrilldownHint: "stake logic first, then market/line and league",
+    marketLineView: "Market / direction / line",
+    marketLineHint: "performance inside the selected conviction",
+    leagueMarketView: "League x market / line",
+    leagueMarketHint: "where the same patterns hold by competition",
+    leagueMarket: "League / segment",
+    specialView: "Special cases",
+    specialHint: "other stake sizes separated from the main focus",
+    signal: "Signal",
     comboView: "Combinations",
     comboHint: "league, market, line, conviction, and odds viewed together",
     combination: "Combination",
@@ -153,6 +174,9 @@ function labelText(label) {
     cups: "Pokal/International",
     other: "Sonstige",
     Special: "Sonderfall",
+    Interesting: "Interessant",
+    Neutral: "Neutral",
+    Caution: "Vorsicht",
     Readable: "Auswertbar",
     Watch: "Beobachten",
     Trend: "Trend",
@@ -171,16 +195,25 @@ function formatCombination(label) {
     .join(" / ");
 }
 
+function leagueMarketKey(row) {
+  return `${row.league || "Other"} | ${row.fineSegment || row.marketGroup || "Other"}`;
+}
+
 function empty(label) {
   return { label, bets: 0, closed: 0, won: 0, lost: 0, stake: 0, payout: 0, net: 0, oddsSum: 0 };
 }
 
 function finish(row) {
+  const avgOdds = row.closed ? row.oddsSum / row.closed : 0;
+  const hitRate = row.closed ? row.won / row.closed : 0;
+  const breakEven = avgOdds ? 1 / avgOdds : 0;
   return {
     ...row,
     roi: row.stake ? row.net / row.stake : 0,
-    hitRate: row.closed ? row.won / row.closed : 0,
-    avgOdds: row.closed ? row.oddsSum / row.closed : 0,
+    hitRate,
+    avgOdds,
+    breakEven,
+    edgeVsBreakEven: hitRate - breakEven,
     sample: row.closed >= 100 ? "Robust" : row.closed >= 50 ? "Readable" : row.closed >= 20 ? "Trend" : "Watch",
   };
 }
@@ -197,22 +230,34 @@ function merge(target, source) {
 }
 
 function filteredRows() {
+  return filterRows();
+}
+
+function filterRows(options = {}) {
+  const ignoreFocus = options.ignoreFocus || false;
+  const ignoreConviction = options.ignoreConviction || false;
+  const onlySpecial = options.onlySpecial || false;
   return state.data.cells.filter((row) => {
     if (state.filters.date !== "all" && row.date !== state.filters.date) return false;
     if (state.filters.league !== "all" && row.league !== state.filters.league) return false;
     if (state.filters.market !== "all" && row.marketGroup !== state.filters.market) return false;
-    if (state.filters.conviction !== "all" && row.conviction !== state.filters.conviction) return false;
+    if (!ignoreConviction && state.filters.conviction !== "all" && row.conviction !== state.filters.conviction) return false;
     if (state.filters.quote !== "all" && row.quoteBand !== state.filters.quote) return false;
     if (state.filters.status !== "all" && row.status !== state.filters.status) return false;
-    if (state.filters.focusOnly && !row.isFocus) return false;
+    if (onlySpecial && row.isFocus) return false;
+    if (state.filters.focusOnly && !ignoreFocus && !row.isFocus) return false;
     return true;
   });
 }
 
 function aggregate(rows, key) {
+  return aggregateBy(rows, (source) => source[key] || "Other");
+}
+
+function aggregateBy(rows, keyFn) {
   const map = new Map();
   rows.forEach((source) => {
-    const label = source[key] || "Other";
+    const label = keyFn(source) || "Other";
     const row = map.get(label) ?? empty(label);
     merge(row, source);
     map.set(label, row);
@@ -352,6 +397,30 @@ function comboRows(rows) {
   </tr>`).join("");
 }
 
+function signalFor(row) {
+  if (row.closed < 10) return "Watch";
+  if (row.net > 0 && row.roi >= 0.08 && row.edgeVsBreakEven >= 0.03) return "Interesting";
+  if (row.net < 0 && row.roi <= -0.08 && row.edgeVsBreakEven <= -0.03) return "Caution";
+  return "Neutral";
+}
+
+function analysisRows(id, rows, options = {}) {
+  const limit = options.limit || rows.length;
+  $(id).innerHTML = rows.slice(0, limit).map((row) => {
+    const signal = signalFor(row);
+    return `<tr>
+      <td>${esc(options.format ? options.format(row.label) : labelText(row.label))}</td>
+      <td>${row.closed}</td>
+      <td class="${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</td>
+      <td>${pct(row.roi)}</td>
+      <td>${pct(row.hitRate)}</td>
+      <td>${row.avgOdds.toFixed(2)}</td>
+      <td>${esc(labelText(row.sample))}</td>
+      <td><span class="signal ${esc(signal.toLowerCase())}">${esc(labelText(signal))}</span></td>
+    </tr>`;
+  }).join("");
+}
+
 function statCard(row) {
   const cls = row.net >= 0 ? "pos" : "neg";
   return `<article class="mini-card">
@@ -385,10 +454,53 @@ function renderBrief(rows) {
 }
 
 function renderSegments(rows) {
-  const segments = aggregate(rows, "fineSegment").filter((row) => row.closed >= 5);
-  tableRows("bestRows", segments.filter((row) => row.net > 0).sort((a, b) => b.net - a.net).slice(0, 6));
-  tableRows("riskRows", segments.filter((row) => row.net < 0).sort((a, b) => a.net - b.net).slice(0, 6));
-  renderCombinations(rows);
+  renderConvictionSegments(rows);
+}
+
+function renderConvictionSegments(rows) {
+  const convictionOrder = ["High", "Medium", "Low"];
+  document.querySelectorAll("[data-conviction]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.conviction === state.segmentConviction);
+  });
+  const summaries = aggregate(rows.filter((row) => convictionOrder.includes(row.conviction)), "conviction");
+  const byLabel = new Map(summaries.map((row) => [row.label, row]));
+  $("convictionSummaryCards").innerHTML = convictionOrder.map((label) => {
+    const row = byLabel.get(label) || finish(empty(label));
+    const active = state.segmentConviction === label ? " active" : "";
+    const signal = signalFor(row);
+    return `<article class="mini-card conviction-card${active}" data-conviction="${esc(label)}">
+      <div class="mini-card-head">
+        <strong>${esc(labelText(label))}</strong>
+        <span class="pill ${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</span>
+      </div>
+      <div class="mini-stats">
+        <span>${row.closed} ${tr("closedShort")}</span>
+        <span>${pct(row.roi)} ROI</span>
+        <span>${pct(row.hitRate)} ${tr("hit")}</span>
+        <span>${row.avgOdds.toFixed(2)} ${tr("avgOdds")}</span>
+      </div>
+      <div class="sample">${esc(labelText(row.sample))} · ${esc(labelText(signal))}</div>
+    </article>`;
+  }).join("");
+
+  const selected = rows.filter((row) => row.conviction === state.segmentConviction);
+  const marketLines = aggregate(selected, "fineSegment")
+    .filter((row) => row.closed >= 3)
+    .sort((a, b) => b.closed - a.closed || Math.abs(b.net) - Math.abs(a.net));
+  analysisRows("convictionMarketRows", marketLines);
+
+  const leagueMarkets = aggregateBy(selected, leagueMarketKey)
+    .filter((row) => row.closed >= 2)
+    .sort((a, b) => Math.abs(b.net) - Math.abs(a.net) || b.closed - a.closed);
+  analysisRows("convictionLeagueRows", leagueMarkets, {
+    limit: 18,
+    format: (label) => label.split(" | ").map((part, index) => index === 0 ? part : labelText(part)).join(" / "),
+  });
+
+  const specials = aggregate(filterRows({ ignoreFocus: true, ignoreConviction: true, onlySpecial: true }), "fineSegment")
+    .filter((row) => row.closed >= 1)
+    .sort((a, b) => Math.abs(b.net) - Math.abs(a.net));
+  analysisRows("specialRows", specials, { limit: 10 });
 }
 
 function renderCombinations(rows) {
@@ -443,6 +555,12 @@ function bind() {
   });
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => setView(button.dataset.view));
+  });
+  document.querySelectorAll("#convictionSwitch [data-conviction]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.segmentConviction = button.dataset.conviction;
+      render();
+    });
   });
   [["dateFilter", "date"], ["leagueFilter", "league"], ["marketFilter", "market"], ["convictionFilter", "conviction"], ["quoteFilter", "quote"], ["statusFilter", "status"]].forEach(([id, key]) => {
     $(id).addEventListener("change", (event) => {

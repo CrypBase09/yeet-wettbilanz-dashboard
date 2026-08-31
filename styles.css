@@ -307,6 +307,90 @@ select {
   text-transform: uppercase;
 }
 
+.conviction-switch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.conviction-switch button {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  background: #101720;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.conviction-switch button.active {
+  border-color: var(--blue);
+  color: var(--text);
+  background: #17304a;
+}
+
+.conviction-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.conviction-card {
+  min-height: 126px;
+  cursor: default;
+}
+
+.conviction-card.active {
+  border-color: var(--blue);
+  background: #111e2c;
+}
+
+.segment-panel-stack {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.25fr);
+  gap: 14px;
+  margin: 14px 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.analysis-table {
+  min-width: 760px;
+}
+
+.analysis-table td:first-child,
+.analysis-table th:first-child {
+  min-width: 230px;
+}
+
+.signal {
+  display: inline-block;
+  min-width: 86px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 900;
+  background: #182230;
+  color: var(--muted);
+}
+
+.signal.interesting {
+  color: var(--green);
+  background: #0d2a21;
+}
+
+.signal.caution {
+  color: var(--red);
+  background: #31141b;
+}
+
+.signal.watch {
+  color: var(--amber);
+  background: #2b2110;
+}
+
 .table-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -345,6 +429,7 @@ td:not(:first-child), th:not(:first-child) { text-align: right; }
   .brief-grid { grid-template-columns: 1fr 1fr; }
   .hero-panel { grid-row: auto; grid-column: 1 / -1; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .segment-panel-stack { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {
@@ -359,7 +444,7 @@ td:not(:first-child), th:not(:first-child) { text-align: right; }
   h1 { font-size: 30px; }
   .sidebar, .content { padding: 14px; }
   .view-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .filters, .kpis, .insights, .brief-grid, .cards, .table-pair { grid-template-columns: 1fr; }
+  .filters, .kpis, .insights, .brief-grid, .cards, .table-pair, .conviction-switch, .conviction-cards { grid-template-columns: 1fr; }
   .check { grid-column: auto; }
   .panel-head { align-items: flex-start; flex-direction: column; }
   table { font-size: 12px; }
