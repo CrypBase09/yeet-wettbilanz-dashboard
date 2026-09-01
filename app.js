@@ -477,8 +477,9 @@ function signalFor(row) {
 function actionFor(row) {
   const signal = signalFor(row);
   if (signal === "Interesting" && row.closed >= 20 && row.roi >= 0.15 && row.edgeVsBreakEven >= 0.06) return "increaseStake";
-  if (signal === "Interesting") return "playNormal";
-  return "reduceStake";
+  if (row.net >= 0) return "playNormal";
+  if (signal === "Caution" || row.roi <= -0.03 || row.edgeVsBreakEven <= -0.02) return "reduceStake";
+  return "playNormal";
 }
 
 function normalStakeFor(conviction) {

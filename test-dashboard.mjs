@@ -39,6 +39,8 @@ assert.ok(app.includes("renderPlanner"), "stake planner renderer exists");
 assert.ok(app.includes("setView(\"planner\")"), "dashboard opens on the practical stake planner");
 assert.ok(app.includes("increaseStake"), "stake planner supports increased stake as a top action");
 assert.ok(app.includes("Erhöhter Einsatz"), "German planner has increased stake wording");
+assert.ok(app.includes("if (row.net >= 0) return \"playNormal\""), "profitable planner segments stay at least normal stake");
+assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a meaningful negative ROI threshold");
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
 assert.ok(!app.includes("Klein testen"), "German planner no longer shows small-test wording");
 assert.ok(!app.includes("standardOnly"), "stake planner no longer uses the old neutral action");
