@@ -89,7 +89,8 @@ function quoteBand(odds) {
   if (q < 1.8) return "1.50-1.79";
   if (q < 2.2) return "1.80-2.19";
   if (q < 3) return "2.20-2.99";
-  return "3.00+";
+  if (q < 4) return "3.00-3.99";
+  return "4.00+";
 }
 
 function payout(bet) {
@@ -171,6 +172,18 @@ function combinationLabel(bet) {
     bet.stakeMode,
     bet.quoteBand,
   ].join(" | ");
+}
+
+function fineSegmentQuoteBandLabel(bet) {
+  return `${bet.fineSegment} | ${bet.quoteBand}`;
+}
+
+function convictionFineSegmentQuoteBandLabel(bet) {
+  return `${bet.conviction} | ${bet.fineSegment} | ${bet.quoteBand}`;
+}
+
+function leagueFineSegmentQuoteBandLabel(bet) {
+  return `${bet.league} | ${bet.fineSegment} | ${bet.quoteBand}`;
 }
 
 function publicCells(bets) {
@@ -299,6 +312,9 @@ const payload = {
     byLeague: aggregate(bets, (bet) => bet.league),
     byMatch: aggregate(bets, (bet) => bet.game),
     byFineSegment: aggregate(bets, (bet) => bet.fineSegment),
+    byFineSegmentQuoteBand: aggregate(bets, fineSegmentQuoteBandLabel),
+    byConvictionFineSegmentQuoteBand: aggregate(bets, convictionFineSegmentQuoteBandLabel),
+    byLeagueFineSegmentQuoteBand: aggregate(bets, leagueFineSegmentQuoteBandLabel),
     byCombination: aggregate(bets, combinationLabel),
     byConviction: aggregate(bets, (bet) => bet.conviction),
     byStakeMode: aggregate(bets, (bet) => bet.stakeMode),

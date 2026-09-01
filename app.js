@@ -74,7 +74,16 @@ const text = {
     leagueGroupCups: "Pokal / International",
     leagueGroupOther: "Sonstige",
     quoteView: "Quotenbänder",
-    quoteHint: "Performance nach Odds-Zone",
+    quoteHint: "Performance nach Odds-Zone; 3.00+ ist in 3.00-3.99 und 4.00+ getrennt",
+    quoteMarketView: "Markt x Quotenband",
+    quoteMarketHint: "zeigt, ob ein Markt nur in bestimmten Odds-Zonen kippt",
+    quoteConvictionView: "Conviction x Markt x Quotenband",
+    quoteConvictionHint: "ordnet Quotenmuster der Einsatzlogik zu",
+    quoteLeagueView: "Liga x Markt x Quotenband",
+    quoteLeagueHint: "nur kompakte Auffaelligkeiten mit mindestens 3 abgeschlossenen Wetten",
+    marketQuote: "Markt / Quote",
+    convictionMarketQuote: "Conviction / Markt / Quote",
+    leagueMarketQuote: "Liga / Markt / Quote",
     avgOdds: "Quote",
     leagueView: "Liga-Analyse",
     leagueHint: "Wettbewerbe mit Netto, ROI und Sample-Stärke",
@@ -144,7 +153,16 @@ const text = {
     leagueGroupCups: "Cups / international",
     leagueGroupOther: "Other",
     quoteView: "Odds bands",
-    quoteHint: "Performance by odds zone",
+    quoteHint: "Performance by odds zone; 3.00+ is split into 3.00-3.99 and 4.00+",
+    quoteMarketView: "Market x odds band",
+    quoteMarketHint: "shows whether a market only breaks in specific odds zones",
+    quoteConvictionView: "Conviction x market x odds band",
+    quoteConvictionHint: "connects odds patterns to stake logic",
+    quoteLeagueView: "League x market x odds band",
+    quoteLeagueHint: "compact signals with at least 3 closed bets",
+    marketQuote: "Market / odds",
+    convictionMarketQuote: "Conviction / market / odds",
+    leagueMarketQuote: "League / market / odds",
     avgOdds: "Odds",
     leagueView: "League analysis",
     leagueHint: "Competitions with net, ROI, and sample strength",
@@ -206,6 +224,18 @@ function formatCombination(label) {
 
 function leagueMarketKey(row) {
   return `${row.league || "Other"} | ${row.stakeMode || "Normal"} | ${row.fineSegment || row.marketGroup || "Other"}`;
+}
+
+function quoteMarketKey(row) {
+  return `${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
+}
+
+function quoteConvictionKey(row) {
+  return `${row.conviction || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
+}
+
+function quoteLeagueKey(row) {
+  return `${row.league || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
 }
 
 function empty(label) {
@@ -522,6 +552,19 @@ function renderCombinations(rows) {
 
 function renderOdds(rows) {
   quoteRows(aggregate(rows, "quoteBand").sort((a, b) => a.label.localeCompare(b.label)));
+  const byImpact = (a, b) => Math.abs(b.net) - Math.abs(a.net) || b.closed - a.closed;
+  analysisRows("quoteMarketRows", aggregateBy(rows, quoteMarketKey).filter((row) => row.closed >= 3).sort(byImpact), {
+    limit: 18,
+    format: formatCombination,
+  });
+  analysisRows("quoteConvictionRows", aggregateBy(rows, quoteConvictionKey).filter((row) => row.closed >= 3).sort(byImpact), {
+    limit: 18,
+    format: formatCombination,
+  });
+  analysisRows("quoteLeagueRows", aggregateBy(rows, quoteLeagueKey).filter((row) => row.closed >= 3).sort(byImpact), {
+    limit: 22,
+    format: formatCombination,
+  });
 }
 
 function renderLeagues(rows) {

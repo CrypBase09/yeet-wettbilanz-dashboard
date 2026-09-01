@@ -38,9 +38,14 @@ assert.ok(data.dimensions.directions.includes("Under"), "directions are exposed 
 assert.ok(data.dimensions.lines.includes("2.5"), "market lines are exposed for pattern analysis");
 assert.ok(data.dimensions.competitionTypes.includes("cups"), "competition types are exposed for pattern analysis");
 assert.ok(data.dimensions.stakeModes.includes("Normal"), "stake modes are exposed for reduced-stake analysis");
+assert.ok(data.dimensions.quoteBands.includes("3.00-3.99"), "3.00 odds band is split for sharper analysis");
+assert.ok(data.dimensions.quoteBands.includes("4.00+"), "4.00+ odds band is split out from 3.00+");
 assert.ok(data.cells.every((row) => "direction" in row && "line" in row), "public cells include normalized direction and line");
 assert.ok(data.cells.every((row) => "stakeMode" in row && "normalStake" in row && "stakeFactor" in row), "public cells keep strategic stake interpretation");
 assert.ok(Array.isArray(data.aggregates.byCombination), "combination aggregate exists");
+assert.ok(Array.isArray(data.aggregates.byFineSegmentQuoteBand), "market x odds-band aggregate exists");
+assert.ok(Array.isArray(data.aggregates.byConvictionFineSegmentQuoteBand), "conviction x market x odds-band aggregate exists");
+assert.ok(Array.isArray(data.aggregates.byLeagueFineSegmentQuoteBand), "league x market x odds-band aggregate exists");
 assert.ok(data.aggregates.byCombination.some((row) => row.label.includes("Total Goals") && row.label.includes("Under 2.5")), "fine market combinations are visible");
 assert.ok(data.aggregates.byCombination.some((row) => row.label.includes("High") || row.label.includes("Medium") || row.label.includes("Low")), "conviction is part of combinations");
 assert.ok(data.aggregates.byCombination.some((row) => row.label.includes("Normal")), "stake mode is part of combinations");
@@ -56,6 +61,9 @@ assert.ok(html.includes("id=\"convictionStakeModeRows\""), "conviction stake-mod
 assert.ok(html.includes("id=\"convictionMarketRows\""), "conviction market table exists");
 assert.ok(html.includes("id=\"convictionLeagueRows\""), "conviction league-market table exists");
 assert.ok(html.includes("id=\"specialRows\""), "special stake table exists");
+assert.ok(html.includes("id=\"quoteMarketRows\""), "market x odds-band table exists");
+assert.ok(html.includes("id=\"quoteConvictionRows\""), "conviction x market x odds-band table exists");
+assert.ok(html.includes("id=\"quoteLeagueRows\""), "league x market x odds-band table exists");
 assert.ok(app.includes("segmentConviction: \"High\""), "high conviction is the default segment drilldown");
 assert.ok(app.includes("renderConvictionSegments"), "conviction-first segment renderer exists");
 assert.ok(app.includes("stakeMode: \"all\""), "stake mode filter is part of dashboard state");
@@ -63,6 +71,9 @@ assert.ok(generator.includes("stakeProfile"), "dashboard data generation has a n
 assert.ok(app.includes("convictionStakeModeRows"), "stake mode table is rendered");
 assert.ok(generator.includes("Math.abs(s - 1.25) <= STAKE_TOLERANCE"), "half-sized high conviction remains high conviction");
 assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
+assert.ok(app.includes("quoteMarketKey"), "market x odds-band segmentation is calculated");
+assert.ok(app.includes("quoteConvictionKey"), "conviction x market x odds-band segmentation is calculated");
+assert.ok(app.includes("quoteLeagueKey"), "league x market x odds-band segmentation is calculated");
 assert.ok(html.includes("data-conviction=\"High\""), "high conviction drilldown button exists");
 
 console.log("dashboard checks passed");

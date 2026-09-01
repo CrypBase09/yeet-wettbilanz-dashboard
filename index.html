@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260901-stake-mode">
+    <link rel="stylesheet" href="styles.css?v=20260901-quote-matrix">
   </head>
   <body>
     <header class="topbar">
@@ -171,10 +171,39 @@
             </div>
             <table><thead><tr><th data-i18n="quoteBand"></th><th data-i18n="closedShort"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="net"></th><th data-i18n="roi"></th></tr></thead><tbody id="quoteRows"></tbody></table>
           </article>
+          <div class="segment-panel-stack">
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="quoteMarketView"></h2>
+                <span data-i18n="quoteMarketHint"></span>
+              </div>
+              <div class="table-scroll">
+                <table class="analysis-table"><thead><tr><th data-i18n="marketQuote"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="quoteMarketRows"></tbody></table>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <h2 data-i18n="quoteConvictionView"></h2>
+                <span data-i18n="quoteConvictionHint"></span>
+              </div>
+              <div class="table-scroll">
+                <table class="analysis-table"><thead><tr><th data-i18n="convictionMarketQuote"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="quoteConvictionRows"></tbody></table>
+              </div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <h2 data-i18n="quoteLeagueView"></h2>
+              <span data-i18n="quoteLeagueHint"></span>
+            </div>
+            <div class="table-scroll">
+              <table class="analysis-table"><thead><tr><th data-i18n="leagueMarketQuote"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="quoteLeagueRows"></tbody></table>
+            </div>
+          </article>
         </section>
       </section>
     </main>
 
-    <script src="app.js?v=20260901-stake-mode"></script>
+    <script src="app.js?v=20260901-quote-matrix"></script>
   </body>
 </html>
