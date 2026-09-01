@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260901-quote-matrix">
+    <link rel="stylesheet" href="styles.css?v=20260901-stake-planner">
   </head>
   <body>
     <header class="topbar">
@@ -24,7 +24,8 @@
     <main class="shell">
       <aside class="sidebar">
         <nav class="view-tabs" aria-label="Dashboard views">
-          <button class="active" type="button" data-view="brief" data-i18n="briefTab">Kurzblick</button>
+          <button class="active" type="button" data-view="planner" data-i18n="plannerTab">Einsatzplan</button>
+          <button type="button" data-view="brief" data-i18n="briefTab">Kurzblick</button>
           <button type="button" data-view="segments" data-i18n="segmentsTab">Segmente</button>
           <button type="button" data-view="leagues" data-i18n="leaguesTab">Ligen</button>
           <button type="button" data-view="matches" data-i18n="matchesTab">Spiele</button>
@@ -57,7 +58,23 @@
           <article><span data-i18n="sampleSignal"></span><strong id="sampleSignal">-</strong><small id="sampleSignalMeta"></small></article>
         </section>
 
-        <section class="view active" id="briefView">
+        <section class="view active" id="plannerView">
+          <article class="panel planner-panel">
+            <div class="panel-head">
+              <div>
+                <h2 data-i18n="plannerView"></h2>
+                <span id="plannerContext"></span>
+              </div>
+              <span data-i18n="plannerHint"></span>
+            </div>
+            <div id="recommendationSummary" class="recommendation-summary"></div>
+            <div class="table-scroll">
+              <table class="analysis-table recommendation-table"><thead><tr><th data-i18n="action"></th><th data-i18n="conviction"></th><th data-i18n="segment"></th><th data-i18n="quoteBand"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="sample"></th><th data-i18n="recommendedStake"></th></tr></thead><tbody id="recommendationRows"></tbody></table>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="briefView">
           <div class="brief-grid">
             <article class="panel hero-panel">
               <div class="panel-head">
@@ -204,6 +221,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260901-quote-matrix"></script>
+    <script src="app.js?v=20260901-stake-planner"></script>
   </body>
 </html>

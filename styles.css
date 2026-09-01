@@ -391,6 +391,74 @@ select {
   background: #2b2110;
 }
 
+.planner-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.recommendation-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.recommendation-summary article {
+  min-height: 92px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #101720;
+}
+
+.recommendation-summary span,
+.recommendation-summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.recommendation-summary strong {
+  display: block;
+  margin: 7px 0 5px;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.recommendation-table {
+  min-width: 1080px;
+}
+
+.recommendation-table td:first-child,
+.recommendation-table th:first-child {
+  min-width: 156px;
+}
+
+.recommendation-table td:nth-child(3),
+.recommendation-table th:nth-child(3) {
+  min-width: 230px;
+}
+
+.action-playNormal {
+  color: var(--green);
+  background: #0d2a21;
+}
+
+.action-reduceStake {
+  color: var(--red);
+  background: #31141b;
+}
+
+.action-collectData {
+  color: var(--amber);
+  background: #2b2110;
+}
+
+.action-standardOnly {
+  color: var(--blue);
+  background: #102238;
+}
+
 .table-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -423,7 +491,7 @@ td:not(:first-child), th:not(:first-child) { text-align: right; }
 @media (max-width: 1180px) {
   .shell { grid-template-columns: 1fr; }
   .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
-  .view-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .view-tabs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .check { grid-column: span 3; }
   .brief-grid { grid-template-columns: 1fr 1fr; }
@@ -444,7 +512,7 @@ td:not(:first-child), th:not(:first-child) { text-align: right; }
   h1 { font-size: 30px; }
   .sidebar, .content { padding: 14px; }
   .view-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .filters, .kpis, .insights, .brief-grid, .cards, .table-pair, .conviction-switch, .conviction-cards { grid-template-columns: 1fr; }
+  .filters, .kpis, .insights, .brief-grid, .cards, .table-pair, .conviction-switch, .conviction-cards, .recommendation-summary { grid-template-columns: 1fr; }
   .check { grid-column: auto; }
   .panel-head { align-items: flex-start; flex-direction: column; }
   table { font-size: 12px; }

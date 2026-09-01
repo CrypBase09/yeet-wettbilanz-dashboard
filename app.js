@@ -1,6 +1,6 @@
 const state = {
   lang: "de",
-  view: "brief",
+  view: "planner",
   segmentConviction: "High",
   data: null,
   filters: {
@@ -20,6 +20,7 @@ const text = {
     eyebrow: "Strategy Dashboard",
     title: "YEET Wettbilanz",
     subtitle: "Performance, Ligen und Spielmuster in einer kompakten Vorschau.",
+    plannerTab: "Einsatzplan",
     briefTab: "Kurzblick",
     segmentsTab: "Segmente",
     leaguesTab: "Ligen",
@@ -94,11 +95,25 @@ const text = {
     stake: "Einsatz",
     payout: "Auszahlung",
     updated: "Stand",
+    plannerView: "Einsatzplan nach Liga",
+    plannerHint: "Liga im Filter wählen und passende Märkte, Conviction und Quotenband prüfen",
+    plannerAllLeagues: "Alle Ligen ausgewertet",
+    plannerLeague: "Ausgewählte Liga",
+    action: "Aktion",
+    recommendedStake: "Einsatz",
+    playNormal: "Normal spielen",
+    reduceStake: "Halbieren / meiden",
+    collectData: "Klein testen",
+    standardOnly: "Standard nur mit starkem externen Pick",
+    preferCount: "Bevorzugt",
+    cautionCount: "Warnung",
+    watchCount: "Beobachten",
   },
   en: {
     eyebrow: "Strategy dashboard",
     title: "YEET Betting Ledger",
     subtitle: "Performance, leagues, and match patterns in a compact preview.",
+    plannerTab: "Stake plan",
     briefTab: "Brief",
     segmentsTab: "Segments",
     leaguesTab: "Leagues",
@@ -173,6 +188,19 @@ const text = {
     stake: "Stake",
     payout: "Payout",
     updated: "Updated",
+    plannerView: "Stake plan by league",
+    plannerHint: "Select a league filter to review markets, conviction, and odds bands",
+    plannerAllLeagues: "All leagues evaluated",
+    plannerLeague: "Selected league",
+    action: "Action",
+    recommendedStake: "Stake",
+    playNormal: "Play normal",
+    reduceStake: "Halve / avoid",
+    collectData: "Small test",
+    standardOnly: "Standard only with strong external pick",
+    preferCount: "Preferred",
+    cautionCount: "Warnings",
+    watchCount: "Watch",
   },
 };
 
@@ -236,6 +264,10 @@ function quoteConvictionKey(row) {
 
 function quoteLeagueKey(row) {
   return `${row.league || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
+}
+
+function recommendationKey(row) {
+  return `${row.conviction || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
 }
 
 function empty(label) {
@@ -444,6 +476,24 @@ function signalFor(row) {
   return "Neutral";
 }
 
+function actionFor(row) {
+  const signal = signalFor(row);
+  if (signal === "Interesting") return "playNormal";
+  if (signal === "Caution") return "reduceStake";
+  if (signal === "Watch") return "collectData";
+  return "standardOnly";
+}
+
+function normalStakeFor(conviction) {
+  return { High: 2.5, Medium: 1.5, Low: 1 }[conviction] || 0;
+}
+
+function recommendedStake(row) {
+  const normal = normalStakeFor(String(row.label).split(" | ")[0]);
+  if (!normal) return "";
+  return money(actionFor(row) === "playNormal" || actionFor(row) === "standardOnly" ? normal : normal / 2);
+}
+
 function analysisRows(id, rows, options = {}) {
   const limit = options.limit || rows.length;
   $(id).innerHTML = rows.slice(0, limit).map((row) => {
@@ -457,6 +507,44 @@ function analysisRows(id, rows, options = {}) {
       <td>${row.avgOdds.toFixed(2)}</td>
       <td>${esc(labelText(row.sample))}</td>
       <td><span class="signal ${esc(signal.toLowerCase())}">${esc(labelText(signal))}</span></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderPlanner(rows) {
+  const relevant = rows.filter((row) => row.isFocus && ["High", "Medium", "Low"].includes(row.conviction));
+  const groups = aggregateBy(relevant, recommendationKey)
+    .filter((row) => row.closed >= 2)
+    .map((row) => ({ ...row, action: actionFor(row) }))
+    .sort((a, b) => {
+      const priority = { playNormal: 0, reduceStake: 1, standardOnly: 2, collectData: 3 };
+      return priority[a.action] - priority[b.action] || Math.abs(b.net) - Math.abs(a.net) || b.closed - a.closed;
+    });
+  const counts = groups.reduce((acc, row) => {
+    acc[row.action] = (acc[row.action] || 0) + 1;
+    return acc;
+  }, {});
+  const leagueLabel = state.filters.league === "all" ? tr("plannerAllLeagues") : `${tr("plannerLeague")}: ${state.filters.league}`;
+  $("plannerContext").textContent = leagueLabel;
+  $("recommendationSummary").innerHTML = [
+    ["playNormal", "preferCount", "pos"],
+    ["reduceStake", "cautionCount", "neg"],
+    ["collectData", "watchCount", "watch"],
+  ].map(([key, label, cls]) => `<article><span>${esc(tr(label))}</span><strong class="${cls}">${counts[key] || 0}</strong><small>${esc(tr(key))}</small></article>`).join("");
+  $("recommendationRows").innerHTML = groups.slice(0, 28).map((row) => {
+    const [conviction, segment, quoteBand] = String(row.label).split(" | ");
+    const action = row.action;
+    return `<tr>
+      <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
+      <td>${esc(labelText(conviction))}</td>
+      <td>${esc(labelText(segment))}</td>
+      <td>${esc(quoteBand)}</td>
+      <td>${row.closed}</td>
+      <td class="${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</td>
+      <td>${pct(row.roi)}</td>
+      <td>${pct(row.hitRate)}</td>
+      <td>${esc(labelText(row.sample))}</td>
+      <td><strong>${esc(recommendedStake(row))}</strong></td>
     </tr>`;
   }).join("");
 }
@@ -581,6 +669,7 @@ function render() {
   const rows = filteredRows();
   renderKpis(summary(rows));
   renderInsights(rows);
+  renderPlanner(rows);
   renderBrief(rows);
   renderSegments(rows);
   renderLeagues(rows);
@@ -646,7 +735,7 @@ async function init() {
   bind();
   state.filters.focusOnly = $("focusOnly").checked;
   render();
-  setView("brief");
+  setView("planner");
 }
 
 init();
