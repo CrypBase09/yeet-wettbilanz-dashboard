@@ -37,6 +37,11 @@ assert.ok(app.includes("recommendationKey"), "recommendations combine conviction
 assert.ok(app.includes("recommendedStake"), "recommendations calculate practical stake sizes");
 assert.ok(app.includes("renderPlanner"), "stake planner renderer exists");
 assert.ok(app.includes("setView(\"planner\")"), "dashboard opens on the practical stake planner");
+assert.ok(app.includes("increaseStake"), "stake planner supports increased stake as a top action");
+assert.ok(app.includes("Erhöhter Einsatz"), "German planner has increased stake wording");
+assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
+assert.ok(!app.includes("Klein testen"), "German planner no longer shows small-test wording");
+assert.ok(!app.includes("standardOnly"), "stake planner no longer uses the old neutral action");
 assert.ok(app.includes("state.filters.focusOnly && !ignoreFocus && !row.isFocus"), "checked main strategy filters out special stakes");
 assert.ok(app.includes("state.filters.focusOnly = $(\"focusOnly\").checked"), "state syncs from the actual checkbox at startup");
 assert.ok(app.includes("leagueGroups"), "league dropdown supports league/cup groups");

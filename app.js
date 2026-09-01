@@ -101,13 +101,12 @@ const text = {
     plannerLeague: "Ausgewählte Liga",
     action: "Aktion",
     recommendedStake: "Einsatz",
+    increaseStake: "Erhöhter Einsatz",
     playNormal: "Normal spielen",
     reduceStake: "Halbieren / meiden",
-    collectData: "Klein testen",
-    standardOnly: "Standard nur mit starkem externen Pick",
+    increaseCount: "Erhöht",
     preferCount: "Bevorzugt",
     cautionCount: "Warnung",
-    watchCount: "Beobachten",
   },
   en: {
     eyebrow: "Strategy dashboard",
@@ -194,13 +193,12 @@ const text = {
     plannerLeague: "Selected league",
     action: "Action",
     recommendedStake: "Stake",
+    increaseStake: "Increased stake",
     playNormal: "Play normal",
     reduceStake: "Halve / avoid",
-    collectData: "Small test",
-    standardOnly: "Standard only with strong external pick",
+    increaseCount: "Increased",
     preferCount: "Preferred",
     cautionCount: "Warnings",
-    watchCount: "Watch",
   },
 };
 
@@ -478,10 +476,9 @@ function signalFor(row) {
 
 function actionFor(row) {
   const signal = signalFor(row);
+  if (signal === "Interesting" && row.closed >= 20 && row.roi >= 0.15 && row.edgeVsBreakEven >= 0.06) return "increaseStake";
   if (signal === "Interesting") return "playNormal";
-  if (signal === "Caution") return "reduceStake";
-  if (signal === "Watch") return "collectData";
-  return "standardOnly";
+  return "reduceStake";
 }
 
 function normalStakeFor(conviction) {
@@ -491,7 +488,10 @@ function normalStakeFor(conviction) {
 function recommendedStake(row) {
   const normal = normalStakeFor(String(row.label).split(" | ")[0]);
   if (!normal) return "";
-  return money(actionFor(row) === "playNormal" || actionFor(row) === "standardOnly" ? normal : normal / 2);
+  const action = actionFor(row);
+  if (action === "increaseStake") return money(normal * 1.5);
+  if (action === "playNormal") return money(normal);
+  return money(normal / 2);
 }
 
 function analysisRows(id, rows, options = {}) {
@@ -517,7 +517,7 @@ function renderPlanner(rows) {
     .filter((row) => row.closed >= 2)
     .map((row) => ({ ...row, action: actionFor(row) }))
     .sort((a, b) => {
-      const priority = { playNormal: 0, reduceStake: 1, standardOnly: 2, collectData: 3 };
+      const priority = { increaseStake: 0, playNormal: 1, reduceStake: 2 };
       return priority[a.action] - priority[b.action] || Math.abs(b.net) - Math.abs(a.net) || b.closed - a.closed;
     });
   const counts = groups.reduce((acc, row) => {
@@ -527,9 +527,9 @@ function renderPlanner(rows) {
   const leagueLabel = state.filters.league === "all" ? tr("plannerAllLeagues") : `${tr("plannerLeague")}: ${state.filters.league}`;
   $("plannerContext").textContent = leagueLabel;
   $("recommendationSummary").innerHTML = [
+    ["increaseStake", "increaseCount", "pos"],
     ["playNormal", "preferCount", "pos"],
     ["reduceStake", "cautionCount", "neg"],
-    ["collectData", "watchCount", "watch"],
   ].map(([key, label, cls]) => `<article><span>${esc(tr(label))}</span><strong class="${cls}">${counts[key] || 0}</strong><small>${esc(tr(key))}</small></article>`).join("");
   $("recommendationRows").innerHTML = groups.slice(0, 28).map((row) => {
     const [conviction, segment, quoteBand] = String(row.label).split(" | ");

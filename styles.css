@@ -439,24 +439,19 @@ select {
   min-width: 230px;
 }
 
-.action-playNormal {
+.action-increaseStake {
   color: var(--green);
-  background: #0d2a21;
+  background: #0a3328;
+}
+
+.action-playNormal {
+  color: var(--blue);
+  background: #102238;
 }
 
 .action-reduceStake {
   color: var(--red);
   background: #31141b;
-}
-
-.action-collectData {
-  color: var(--amber);
-  background: #2b2110;
-}
-
-.action-standardOnly {
-  color: var(--blue);
-  background: #102238;
 }
 
 .table-pair {
