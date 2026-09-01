@@ -5,6 +5,7 @@ const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
 const outputPath = path.join(process.cwd(), "data", "summary.json");
 const startDate = "2026-08-22";
+const STAKE_TOLERANCE = 0.03;
 
 function marketInfo(market) {
   const text = String(market ?? "");
@@ -71,12 +72,15 @@ function leagueGroups(values) {
   };
 }
 
-function conviction(stake) {
+function stakeProfile(stake) {
   const s = Number(stake);
-  if (Math.abs(s - 1.00) <= 0.03) return "Low";
-  if (Math.abs(s - 1.50) <= 0.03) return "Medium";
-  if (Math.abs(s - 2.50) <= 0.03) return "High";
-  return "Special";
+  if (Math.abs(s - 0.50) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Reduced", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.75) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Reduced", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
+  if (Math.abs(s - 1.25) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Reduced", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
+  if (Math.abs(s - 1.00) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Normal", normalStake: 1.00, stakeFactor: 1, reductionReason: "" };
+  if (Math.abs(s - 1.50) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Normal", normalStake: 1.50, stakeFactor: 1, reductionReason: "" };
+  if (Math.abs(s - 2.50) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Normal", normalStake: 2.50, stakeFactor: 1, reductionReason: "" };
+  return { conviction: "Special", stakeMode: "Special", normalStake: s, stakeFactor: null, reductionReason: "Outside stake rule" };
 }
 
 function quoteBand(odds) {
@@ -164,6 +168,7 @@ function combinationLabel(bet) {
     bet.league,
     bet.fineSegment,
     bet.conviction,
+    bet.stakeMode,
     bet.quoteBand,
   ].join(" | ");
 }
@@ -183,6 +188,9 @@ function publicCells(bets) {
       bet.direction,
       bet.line,
       bet.conviction,
+      bet.stakeMode,
+      String(bet.normalStake),
+      String(bet.stakeFactor),
       bet.quoteBand,
       combination,
       String(bet.isFocus),
@@ -199,6 +207,10 @@ function publicCells(bets) {
       direction: bet.direction,
       line: bet.line,
       conviction: bet.conviction,
+      stakeMode: bet.stakeMode,
+      normalStake: bet.normalStake,
+      stakeFactor: bet.stakeFactor,
+      reductionReason: bet.reductionReason,
       quoteBand: bet.quoteBand,
       combination,
       isFocus: bet.isFocus,
@@ -218,6 +230,7 @@ const raw = JSON.parse(await fs.readFile(inputPath, "utf8"));
 const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => {
   const market = marketInfo(bet.market);
   const stake = Number(bet.stake || 0);
+  const profile = stakeProfile(stake);
   const out = payout(bet);
   return {
     date: dateOf(bet.created),
@@ -229,13 +242,17 @@ const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => 
     fineSegment: market.fineSegment,
     direction: market.direction || "None",
     line: market.line || "None",
-    conviction: conviction(stake),
+    conviction: profile.conviction,
+    stakeMode: profile.stakeMode,
+    normalStake: profile.normalStake,
+    stakeFactor: profile.stakeFactor,
+    reductionReason: profile.reductionReason,
     quoteBand: quoteBand(bet.odds),
     odds: Number(bet.odds || 0),
     stake,
     payout: out,
     net: net(bet),
-    isFocus: conviction(stake) !== "Special",
+    isFocus: profile.conviction !== "Special",
   };
 });
 
@@ -272,6 +289,7 @@ const payload = {
     leagues: sortLeagues(leagues),
     leagueGroups: leagueGroups(leagues),
     convictions: [...new Set(bets.map((bet) => bet.conviction))].sort(),
+    stakeModes: [...new Set(bets.map((bet) => bet.stakeMode))].sort(),
     quoteBands: [...new Set(bets.map((bet) => bet.quoteBand))].sort(),
     statuses: [...new Set(bets.map((bet) => bet.status))].sort(),
   },
@@ -283,6 +301,7 @@ const payload = {
     byFineSegment: aggregate(bets, (bet) => bet.fineSegment),
     byCombination: aggregate(bets, combinationLabel),
     byConviction: aggregate(bets, (bet) => bet.conviction),
+    byStakeMode: aggregate(bets, (bet) => bet.stakeMode),
     byQuoteBand: aggregate(bets, (bet) => bet.quoteBand),
     byStatus: aggregate(bets, (bet) => bet.status),
   },

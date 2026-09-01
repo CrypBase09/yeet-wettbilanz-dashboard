@@ -8,6 +8,7 @@ const state = {
     league: "all",
     market: "all",
     conviction: "all",
+    stakeMode: "all",
     quote: "all",
     status: "all",
     focusOnly: true,
@@ -28,6 +29,7 @@ const text = {
     league: "Liga",
     market: "Markt",
     conviction: "Conviction",
+    stakeMode: "Einsatzmodus",
     quoteBand: "Quotenband",
     status: "Status",
     focusOnly: "Nur Hauptstrategie",
@@ -49,7 +51,9 @@ const text = {
     matrix: "Was funktioniert, was kostet?",
     matrixHint: "nur Segmente mit mindestens 5 Wetten",
     convictionDrilldown: "Conviction-Analyse",
-    convictionDrilldownHint: "erst Einsatzlogik, dann Markt/Linie und Liga",
+    convictionDrilldownHint: "erst strategische Conviction, dann Einsatzmodus, Markt/Linie und Liga",
+    stakeModeView: "Normal vs. reduziert",
+    stakeModeHint: "reduzierte Einsaetze bleiben ihrer urspruenglichen Conviction zugeordnet",
     marketLineView: "Markt / Richtung / Linie",
     marketLineHint: "Performance innerhalb der ausgewählten Conviction",
     leagueMarketView: "Liga x Markt / Linie",
@@ -95,6 +99,7 @@ const text = {
     league: "League",
     market: "Market",
     conviction: "Conviction",
+    stakeMode: "Stake mode",
     quoteBand: "Odds band",
     status: "Status",
     focusOnly: "Main strategy only",
@@ -116,7 +121,9 @@ const text = {
     matrix: "What works, what costs?",
     matrixHint: "segments with at least 5 bets",
     convictionDrilldown: "Conviction analysis",
-    convictionDrilldownHint: "stake logic first, then market/line and league",
+    convictionDrilldownHint: "strategic conviction first, then stake mode, market/line, and league",
+    stakeModeView: "Normal vs reduced",
+    stakeModeHint: "reduced stakes remain assigned to their original conviction",
     marketLineView: "Market / direction / line",
     marketLineHint: "performance inside the selected conviction",
     leagueMarketView: "League x market / line",
@@ -174,6 +181,8 @@ function labelText(label) {
     cups: "Pokal/International",
     other: "Sonstige",
     Special: "Sonderfall",
+    Normal: "Normal",
+    Reduced: "Reduziert",
     Interesting: "Interessant",
     Neutral: "Neutral",
     Caution: "Vorsicht",
@@ -196,7 +205,7 @@ function formatCombination(label) {
 }
 
 function leagueMarketKey(row) {
-  return `${row.league || "Other"} | ${row.fineSegment || row.marketGroup || "Other"}`;
+  return `${row.league || "Other"} | ${row.stakeMode || "Normal"} | ${row.fineSegment || row.marketGroup || "Other"}`;
 }
 
 function empty(label) {
@@ -242,6 +251,7 @@ function filterRows(options = {}) {
     if (state.filters.league !== "all" && row.league !== state.filters.league) return false;
     if (state.filters.market !== "all" && row.marketGroup !== state.filters.market) return false;
     if (!ignoreConviction && state.filters.conviction !== "all" && row.conviction !== state.filters.conviction) return false;
+    if (state.filters.stakeMode !== "all" && row.stakeMode !== state.filters.stakeMode) return false;
     if (state.filters.quote !== "all" && row.quoteBand !== state.filters.quote) return false;
     if (state.filters.status !== "all" && row.status !== state.filters.status) return false;
     if (onlySpecial && row.isFocus) return false;
@@ -484,6 +494,8 @@ function renderConvictionSegments(rows) {
   }).join("");
 
   const selected = rows.filter((row) => row.conviction === state.segmentConviction);
+  analysisRows("convictionStakeModeRows", aggregate(selected, "stakeMode"), { limit: 6 });
+
   const marketLines = aggregate(selected, "fineSegment")
     .filter((row) => row.closed >= 3)
     .sort((a, b) => b.closed - a.closed || Math.abs(b.net) - Math.abs(a.net));
@@ -562,7 +574,7 @@ function bind() {
       render();
     });
   });
-  [["dateFilter", "date"], ["leagueFilter", "league"], ["marketFilter", "market"], ["convictionFilter", "conviction"], ["quoteFilter", "quote"], ["statusFilter", "status"]].forEach(([id, key]) => {
+  [["dateFilter", "date"], ["leagueFilter", "league"], ["marketFilter", "market"], ["convictionFilter", "conviction"], ["stakeModeFilter", "stakeMode"], ["quoteFilter", "quote"], ["statusFilter", "status"]].forEach(([id, key]) => {
     $(id).addEventListener("change", (event) => {
       state.filters[key] = event.target.value;
       render();
@@ -579,6 +591,7 @@ function populate() {
   groupedLeagueOptions();
   optionList("marketFilter", state.data.dimensions.marketGroups);
   optionList("convictionFilter", state.data.dimensions.convictions);
+  optionList("stakeModeFilter", state.data.dimensions.stakeModes);
   optionList("quoteFilter", state.data.dimensions.quoteBands);
   optionList("statusFilter", state.data.dimensions.statuses);
 }

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260831-conviction">
+    <link rel="stylesheet" href="styles.css?v=20260901-stake-mode">
   </head>
   <body>
     <header class="topbar">
@@ -36,6 +36,7 @@
           <label><span data-i18n="league"></span><select id="leagueFilter"></select></label>
           <label><span data-i18n="market"></span><select id="marketFilter"></select></label>
           <label><span data-i18n="conviction"></span><select id="convictionFilter"></select></label>
+          <label><span data-i18n="stakeMode"></span><select id="stakeModeFilter"></select></label>
           <label><span data-i18n="quoteBand"></span><select id="quoteFilter"></select></label>
           <label><span data-i18n="status"></span><select id="statusFilter"></select></label>
           <label class="check"><input id="focusOnly" type="checkbox" checked><span data-i18n="focusOnly"></span></label>
@@ -105,6 +106,15 @@
           <div class="segment-panel-stack">
             <article class="panel">
               <div class="panel-head">
+                <h2 data-i18n="stakeModeView"></h2>
+                <span data-i18n="stakeModeHint"></span>
+              </div>
+              <div class="table-scroll">
+                <table class="analysis-table"><thead><tr><th data-i18n="stakeMode"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="avgOdds"></th><th data-i18n="sample"></th><th data-i18n="signal"></th></tr></thead><tbody id="convictionStakeModeRows"></tbody></table>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
                 <h2 data-i18n="marketLineView"></h2>
                 <span data-i18n="marketLineHint"></span>
               </div>
@@ -165,6 +175,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260831-conviction"></script>
+    <script src="app.js?v=20260901-stake-mode"></script>
   </body>
 </html>
