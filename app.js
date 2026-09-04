@@ -238,6 +238,7 @@ function labelText(label) {
     Lost: "Verloren",
     Voided: "Storniert",
     "Cashed Out": "Cashout",
+    Cashbacked: "Cashback",
   }[label] || label;
 }
 

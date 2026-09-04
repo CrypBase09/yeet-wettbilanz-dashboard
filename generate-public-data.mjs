@@ -94,14 +94,14 @@ function quoteBand(odds) {
 }
 
 function payout(bet) {
-  if (bet.status === "Won" || bet.status === "Cashed Out") return Number(bet.estPayout || 0);
+  if (bet.status === "Won" || bet.status === "Cashed Out" || bet.status === "Cashbacked") return Number(bet.cashout ?? bet.estPayout ?? 0);
   if (bet.status === "Voided") return Number(bet.stake || 0);
   return 0;
 }
 
 function net(bet) {
   const stake = Number(bet.stake || 0);
-  if (bet.status === "Won" || bet.status === "Cashed Out") return payout(bet) - stake;
+  if (bet.status === "Won" || bet.status === "Cashed Out" || bet.status === "Cashbacked") return payout(bet) - stake;
   if (bet.status === "Lost") return -stake;
   return 0;
 }
@@ -111,7 +111,7 @@ function dateOf(created) {
 }
 
 function closed(status) {
-  return status === "Won" || status === "Lost" || status === "Cashed Out";
+  return status === "Won" || status === "Lost" || status === "Cashed Out" || status === "Cashbacked";
 }
 
 function empty(label) {
