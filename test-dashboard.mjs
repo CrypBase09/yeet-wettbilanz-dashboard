@@ -11,7 +11,7 @@ const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 1
 
 assert.equal(data.summary.bets, expectedSinceStart, "summary keeps all tracked bets since start date");
 assert.ok(Array.isArray(data.aggregates.byLeague), "league aggregate exists");
-assert.ok(data.aggregates.byLeague.some((row) => row.label === "MLS"), "real leagues are visible");
+assert.ok(data.aggregates.byLeague.some((row) => row.label === "United States - MLS"), "real leagues are visible");
 assert.ok(Array.isArray(data.aggregates.byMatch), "match aggregate exists");
 assert.ok(data.aggregates.byMatch.some((row) => row.label.includes("Seattle Sounders")), "real games are visible");
 assert.ok(!serialized.includes("betId"), "no bet-id field is published");
@@ -26,6 +26,7 @@ assert.ok(html.includes("data-view=\"odds\""), "odds tab exists");
 assert.ok(html.includes("id=\"insights\""), "decision insight strip exists");
 assert.ok(html.includes("id=\"plannerView\""), "stake planner view exists");
 assert.ok(html.includes("id=\"recommendationRows\""), "stake recommendation table exists");
+assert.ok(html.includes("<th data-i18n=\"conviction\"></th><th data-i18n=\"segment\"></th><th data-i18n=\"quoteBand\"></th><th data-i18n=\"action\"></th><th data-i18n=\"recommendedStake\"></th><th data-i18n=\"closedShort\"></th><th data-i18n=\"net\"></th><th data-i18n=\"roi\"></th><th data-i18n=\"hit\"></th><th data-i18n=\"sample\"></th>"), "stake planner columns are ordered for practical use");
 assert.ok(html.includes("id=\"recommendationSummary\""), "stake recommendation summary exists");
 assert.ok(html.includes("id=\"briefView\""), "brief view exists");
 assert.ok(html.includes("id=\"focusOnly\" type=\"checkbox\" checked"), "main strategy checkbox is checked by default");
@@ -36,6 +37,9 @@ assert.ok(app.includes("view: \"planner\""), "stake planner is the default view"
 assert.ok(app.includes("recommendationKey"), "recommendations combine conviction, market, and odds band");
 assert.ok(app.includes("recommendedStake"), "recommendations calculate practical stake sizes");
 assert.ok(app.includes("renderPlanner"), "stake planner renderer exists");
+assert.ok(app.includes("plannerMatrixRows"), "stake planner builds a complete conviction-market-odds matrix");
+assert.ok(app.includes("const convictionOrder = [\"High\", \"Medium\", \"Low\"]"), "stake planner sorts convictions high, medium, low");
+assert.ok(app.includes("quoteBandUniverse"), "stake planner includes realistic odds bands even before every band has samples");
 assert.ok(app.includes("setView(\"planner\")"), "dashboard opens on the practical stake planner");
 assert.ok(app.includes("increaseStake"), "stake planner supports increased stake as a top action");
 assert.ok(app.includes("Erhöhter Einsatz"), "German planner has increased stake wording");
@@ -56,7 +60,14 @@ assert.ok(data.dimensions.competitionTypes.includes("cups"), "competition types 
 assert.ok(data.dimensions.stakeModes.includes("Normal"), "stake modes are exposed for reduced-stake analysis");
 assert.ok(data.dimensions.quoteBands.includes("3.00-3.99"), "3.00 odds band is split for sharper analysis");
 assert.ok(data.dimensions.quoteBands.includes("4.00+"), "4.00+ odds band is split out from 3.00+");
+assert.deepEqual(data.dimensions.quoteBands, ["1.00-1.49", "1.50-1.79", "1.80-2.19", "2.20-2.99", "3.00-3.99", "4.00+"], "standard odds-band universe is always available");
 assert.ok(data.cells.every((row) => "direction" in row && "line" in row), "public cells include normalized direction and line");
+assert.ok(data.cells.every((row) => "rawLeague" in row && "country" in row && "normalizedLeague" in row && "leagueDisplay" in row && "mappingStatus" in row), "public cells include league normalization details");
+assert.ok(data.dimensions.leagues.includes("England - Premier League"), "English Premier League is disambiguated");
+assert.ok(data.dimensions.leagues.includes("Russia - Premier Liga"), "Russian Premier League is disambiguated");
+assert.ok(!data.dimensions.leagues.includes("Premier League"), "ambiguous raw Premier League label is not used as a dashboard league");
+assert.ok(data.dimensions.leagueMappings.some((row) => row.country === "China" && row.normalizedLeague === "Chinese Super League"), "Chinese Super League mapping is available");
+assert.ok(data.dimensions.leagueMappings.some((row) => row.country === "South Korea" && row.normalizedLeague === "K League 1"), "K League 1 mapping is available");
 assert.ok(data.cells.every((row) => "stakeMode" in row && "normalStake" in row && "stakeFactor" in row), "public cells keep strategic stake interpretation");
 assert.ok(Array.isArray(data.aggregates.byCombination), "combination aggregate exists");
 assert.ok(Array.isArray(data.aggregates.byFineSegmentQuoteBand), "market x odds-band aggregate exists");

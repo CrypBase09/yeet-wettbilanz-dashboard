@@ -6,6 +6,159 @@ const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
 const outputPath = path.join(process.cwd(), "data", "summary.json");
 const startDate = "2026-08-22";
 const STAKE_TOLERANCE = 0.03;
+const QUOTE_BANDS = ["1.00-1.49", "1.50-1.79", "1.80-2.19", "2.20-2.99", "3.00-3.99", "4.00+"];
+
+const leagueAliases = new Map([
+  ["2. Bundesliga", { country: "Germany", normalizedLeague: "2. Bundesliga" }],
+  ["Bundesliga", { country: "Germany", normalizedLeague: "Bundesliga" }],
+  ["Championship", { country: "England", normalizedLeague: "Championship" }],
+  ["Premier League", { country: "England", normalizedLeague: "Premier League", ambiguous: true }],
+  ["Eredivisie", { country: "Netherlands", normalizedLeague: "Eredivisie" }],
+  ["LaLiga", { country: "Spain", normalizedLeague: "LaLiga" }],
+  ["LaLiga 2", { country: "Spain", normalizedLeague: "LaLiga 2" }],
+  ["Liga 1", { country: "Peru", normalizedLeague: "Liga 1" }],
+  ["Liga Portugal", { country: "Portugal", normalizedLeague: "Liga Portugal" }],
+  ["Ligue 1", { country: "France", normalizedLeague: "Ligue 1" }],
+  ["Ligue 2", { country: "France", normalizedLeague: "Ligue 2" }],
+  ["MLS", { country: "United States", normalizedLeague: "MLS" }],
+  ["Primera LPF", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
+  ["Liga Profesional", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
+  ["AR Liga Profesional", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
+  ["Pro League", { country: "Belgium", normalizedLeague: "Pro League" }],
+  ["Saudi Pro League", { country: "Saudi Arabia", normalizedLeague: "Saudi Pro League" }],
+  ["Serie A", { country: "Italy", normalizedLeague: "Serie A" }],
+  ["Serie B", { country: "Italy", normalizedLeague: "Serie B" }],
+  ["Super Lig", { country: "Turkey", normalizedLeague: "Super Lig" }],
+  ["Russian Premier", { country: "Russia", normalizedLeague: "Premier Liga" }],
+  ["Russian Premier League", { country: "Russia", normalizedLeague: "Premier Liga" }],
+  ["Chinese Super League", { country: "China", normalizedLeague: "Chinese Super League" }],
+  ["CN Super League", { country: "China", normalizedLeague: "Chinese Super League" }],
+  ["KR K League 1", { country: "South Korea", normalizedLeague: "K League 1" }],
+  ["K League 1", { country: "South Korea", normalizedLeague: "K League 1" }],
+  ["Allsvenskan", { country: "Sweden", normalizedLeague: "Allsvenskan" }],
+  ["SE Allsvenskan", { country: "Sweden", normalizedLeague: "Allsvenskan", ambiguous: true }],
+  ["UEFA Champions League", { country: "International", normalizedLeague: "UEFA Champions League" }],
+  ["UEFA Conference League", { country: "International", normalizedLeague: "UEFA Conference League" }],
+  ["UEFA Europa League", { country: "International", normalizedLeague: "UEFA Europa League" }],
+]);
+
+const teamOverrides = [
+  {
+    country: "Russia",
+    normalizedLeague: "Premier Liga",
+    teams: [
+      "FK Rubin Kazan",
+      "FC Dynamo-Makhachkala",
+      "Dynamo Makhachkala",
+      "FK Krasnodar",
+      "FC Krasnodar",
+      "FK Rostov",
+      "FC Rostov",
+      "FC Fakel Voronezh",
+      "FK Zenit Saint Petersburg",
+      "Zenit Saint Petersburg",
+      "Rodina Moscow",
+      "FC Baltika Kaliningrad",
+    ],
+  },
+  {
+    country: "England",
+    normalizedLeague: "Premier League",
+    teams: [
+      "Arsenal FC",
+      "Manchester United",
+      "Liverpool FC",
+      "Chelsea FC",
+      "Tottenham Hotspur",
+      "Manchester City",
+      "Crystal Palace",
+      "Everton FC",
+      "Aston Villa",
+      "Newcastle United",
+      "West Ham United",
+      "Brighton",
+      "Wolverhampton",
+      "Leeds United",
+      "Coventry City",
+    ],
+  },
+  {
+    country: "China",
+    normalizedLeague: "Chinese Super League",
+    teams: [
+      "Wuhan Three Towns",
+      "Qingdao Youth Island",
+      "Qingdao West Coast",
+      "Shanghai SIPG",
+      "Shanghai Port",
+      "Beijing Guoan",
+      "Dalian Zhixing",
+      "Dalian Yingbo",
+      "Qingdao Jonoon",
+      "Qingdao Hainiu",
+      "Shandong Luneng",
+      "Shandong Taishan",
+      "Sichuan Jiuniu",
+      "Shenzhen Peng City",
+      "Chongqing Tonglianglong",
+      "Shanghai Shenhua",
+      "Henan Jianye",
+      "Henan FC",
+      "Chengdu Better City",
+      "Chengdu Rongcheng",
+      "Yunnan Yukun",
+      "Shenyang Urban",
+      "Liaoning Tieren",
+      "Tianjin Teda",
+      "Tianjin Jinmen Tiger",
+      "Hangzhou Greentown",
+      "Zhejiang",
+    ],
+  },
+  {
+    country: "South Korea",
+    normalizedLeague: "K League 1",
+    teams: [
+      "Bucheon FC 1995",
+      "Daejeon Citizen",
+      "Daejeon Hana Citizen",
+      "Jeju United FC",
+      "Ulsan Hyundai FC",
+      "Ulsan HD",
+      "Jeonbuk Motors",
+      "Jeonbuk Hyundai Motors",
+      "Pohang Steelers",
+      "FC Seoul",
+      "Incheon United",
+      "FC Anyang",
+      "Gangwon FC",
+      "Gimcheon Sangmu",
+      "Gwangju FC",
+    ],
+  },
+  {
+    country: "Argentina",
+    normalizedLeague: "Liga Profesional",
+    teams: [
+      "Aldosivi",
+      "Banfield",
+      "Gimnasia L.P.",
+      "Gimnasia M.",
+      "Tigre",
+      "Boca Juniors",
+      "San Lorenzo",
+      "Talleres Cordoba",
+      "Velez Sarsfield",
+      "Estudiantes L.P.",
+      "Rosario Central",
+      "Newells Old Boys",
+      "Lanus",
+      "Defensa Y Justicia",
+      "Central Cordoba",
+      "Independiente",
+    ],
+  },
+];
 
 function marketInfo(market) {
   const text = String(market ?? "");
@@ -30,6 +183,64 @@ function cleanText(value) {
   return String(value ?? "").trim() || "Unknown";
 }
 
+function compact(value) {
+  return cleanText(value).toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function findTeamOverride(game) {
+  const gameKey = compact(game);
+  return teamOverrides.find((entry) => entry.teams.some((team) => gameKey.includes(compact(team))));
+}
+
+function leagueDisplay(country, normalizedLeague) {
+  return `${country} - ${normalizedLeague}`;
+}
+
+function normalizeLeague(rawLeague, game) {
+  const raw = cleanText(rawLeague);
+  const teamMatch = findTeamOverride(game);
+  const alias = leagueAliases.get(raw);
+  if (teamMatch && (!alias || alias.ambiguous || alias.country !== teamMatch.country)) {
+    return {
+      rawLeague: raw,
+      country: teamMatch.country,
+      normalizedLeague: teamMatch.normalizedLeague,
+      leagueDisplay: leagueDisplay(teamMatch.country, teamMatch.normalizedLeague),
+      mappingStatus: "Team override",
+    };
+  }
+  if (alias) {
+    return {
+      rawLeague: raw,
+      country: alias.country,
+      normalizedLeague: alias.normalizedLeague,
+      leagueDisplay: leagueDisplay(alias.country, alias.normalizedLeague),
+      mappingStatus: alias.ambiguous ? "Alias needs team check" : "Mapped",
+    };
+  }
+  return {
+    rawLeague: raw,
+    country: "Unknown",
+    normalizedLeague: raw,
+    leagueDisplay: `Unknown - ${raw}`,
+    mappingStatus: "Unmapped",
+  };
+}
+
+function configuredLeagueMappings() {
+  const rows = [];
+  for (const [rawLeague, alias] of leagueAliases) {
+    rows.push({
+      rawLeague,
+      country: alias.country,
+      normalizedLeague: alias.normalizedLeague,
+      leagueDisplay: leagueDisplay(alias.country, alias.normalizedLeague),
+      mappingStatus: alias.ambiguous ? "Alias needs team check" : "Mapped",
+    });
+  }
+  return rows;
+}
+
 function competitionType(league) {
   const text = cleanText(league);
   if (/combo/i.test(text)) return "other";
@@ -39,22 +250,29 @@ function competitionType(league) {
 
 function leagueRank(league) {
   const preferred = [
-    "Bundesliga",
-    "2. Bundesliga",
-    "Premier League",
-    "Championship",
-    "LaLiga",
-    "LaLiga 2",
-    "Serie A",
-    "Serie B",
-    "Ligue 1",
-    "Ligue 2",
-    "Eredivisie",
-    "Liga Portugal",
-    "MLS",
-    "Super Lig",
-    "Pro League",
-    "League 1",
+    "Germany - Bundesliga",
+    "Germany - 2. Bundesliga",
+    "England - Premier League",
+    "England - Championship",
+    "Spain - LaLiga",
+    "Spain - LaLiga 2",
+    "Italy - Serie A",
+    "Italy - Serie B",
+    "France - Ligue 1",
+    "France - Ligue 2",
+    "Netherlands - Eredivisie",
+    "Portugal - Liga Portugal",
+    "United States - MLS",
+    "Turkey - Super Lig",
+    "Belgium - Pro League",
+    "Russia - Premier Liga",
+    "Argentina - Liga Profesional",
+    "Brazil - Brasileiro",
+    "China - Chinese Super League",
+    "South Korea - K League 1",
+    "Sweden - Allsvenskan",
+    "Saudi Arabia - Saudi Pro League",
+    "Peru - Liga 1",
   ];
   const index = preferred.indexOf(league);
   return index === -1 ? preferred.length : index;
@@ -193,6 +411,11 @@ function publicCells(bets) {
     const keyParts = [
       bet.date,
       bet.status,
+      bet.rawLeague,
+      bet.country,
+      bet.normalizedLeague,
+      bet.leagueDisplay,
+      bet.mappingStatus,
       bet.league,
       bet.game,
       bet.competitionType,
@@ -212,6 +435,11 @@ function publicCells(bets) {
     const row = map.get(key) ?? {
       date: bet.date,
       status: bet.status,
+      rawLeague: bet.rawLeague,
+      country: bet.country,
+      normalizedLeague: bet.normalizedLeague,
+      leagueDisplay: bet.leagueDisplay,
+      mappingStatus: bet.mappingStatus,
       league: bet.league,
       game: bet.game,
       competitionType: bet.competitionType,
@@ -244,13 +472,19 @@ const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => 
   const market = marketInfo(bet.market);
   const stake = Number(bet.stake || 0);
   const profile = stakeProfile(stake);
+  const mappedLeague = normalizeLeague(bet.league, bet.game);
   const out = payout(bet);
   return {
     date: dateOf(bet.created),
     status: bet.status,
-    league: cleanText(bet.league),
+    rawLeague: mappedLeague.rawLeague,
+    country: mappedLeague.country,
+    normalizedLeague: mappedLeague.normalizedLeague,
+    leagueDisplay: mappedLeague.leagueDisplay,
+    mappingStatus: mappedLeague.mappingStatus,
+    league: mappedLeague.leagueDisplay,
     game: cleanText(bet.game),
-    competitionType: competitionType(bet.league),
+    competitionType: competitionType(mappedLeague.leagueDisplay),
     marketGroup: market.group,
     fineSegment: market.fineSegment,
     direction: market.direction || "None",
@@ -283,6 +517,19 @@ const netCurve = byDate.map((row) => {
 
 const cells = publicCells(bets);
 const leagues = [...new Set(bets.map((bet) => bet.league))];
+const observedLeagueMappings = new Map();
+for (const bet of bets) {
+  observedLeagueMappings.set(`${bet.rawLeague}|${bet.leagueDisplay}`, {
+    rawLeague: bet.rawLeague,
+    country: bet.country,
+    normalizedLeague: bet.normalizedLeague,
+    leagueDisplay: bet.leagueDisplay,
+    mappingStatus: bet.mappingStatus,
+  });
+}
+const leagueMappings = [...configuredLeagueMappings(), ...observedLeagueMappings.values()]
+  .filter((row, index, rows) => rows.findIndex((other) => other.rawLeague === row.rawLeague && other.leagueDisplay === row.leagueDisplay) === index)
+  .sort((a, b) => a.country.localeCompare(b.country) || a.normalizedLeague.localeCompare(b.normalizedLeague) || a.rawLeague.localeCompare(b.rawLeague));
 
 const payload = {
   meta: {
@@ -301,9 +548,10 @@ const payload = {
     competitionTypes: [...new Set(bets.map((bet) => bet.competitionType))].sort(),
     leagues: sortLeagues(leagues),
     leagueGroups: leagueGroups(leagues),
+    leagueMappings,
     convictions: [...new Set(bets.map((bet) => bet.conviction))].sort(),
     stakeModes: [...new Set(bets.map((bet) => bet.stakeMode))].sort(),
-    quoteBands: [...new Set(bets.map((bet) => bet.quoteBand))].sort(),
+    quoteBands: QUOTE_BANDS,
     statuses: [...new Set(bets.map((bet) => bet.status))].sort(),
   },
   aggregates: {

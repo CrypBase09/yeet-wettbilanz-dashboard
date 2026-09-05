@@ -206,7 +206,9 @@ const $ = (id) => document.getElementById(id);
 const tr = (key) => text[state.lang][key] || key;
 const money = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0);
 const pct = (n) => `${((n || 0) * 100).toFixed(1)}%`;
-const order = ["High", "Medium", "Low", "Special"];
+const convictionOrder = ["High", "Medium", "Low"];
+const order = [...convictionOrder, "Special"];
+const quoteBandUniverse = ["1.00-1.49", "1.50-1.79", "1.80-2.19", "2.20-2.99", "3.00-3.99", "4.00+"];
 
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -496,6 +498,33 @@ function recommendedStake(row) {
   return money(normal / 2);
 }
 
+function plannerMatrixRows(rows) {
+  const relevant = rows.filter((row) => row.isFocus && convictionOrder.includes(row.conviction));
+  const aggregateMap = new Map(aggregateBy(relevant, recommendationKey).map((row) => [row.label, row]));
+  const segments = [...new Set(relevant.map((row) => row.fineSegment || row.marketGroup || "Other"))].sort((a, b) => a.localeCompare(b));
+  const bands = state.data.dimensions.quoteBands?.length ? state.data.dimensions.quoteBands : quoteBandUniverse;
+  const matrix = [];
+  for (const conviction of convictionOrder) {
+    for (const segment of segments) {
+      for (const quoteBand of bands) {
+        if (state.filters.conviction !== "all" && state.filters.conviction !== conviction) continue;
+        if (state.filters.market !== "all" && !segment.startsWith(state.filters.market)) continue;
+        if (state.filters.quote !== "all" && state.filters.quote !== quoteBand) continue;
+        const label = `${conviction} | ${segment} | ${quoteBand}`;
+        const row = aggregateMap.get(label) ?? finish({ ...empty(label), matrixEmpty: true });
+        matrix.push({ ...row, action: actionFor(row), conviction, segment, quoteBand });
+      }
+    }
+  }
+  return matrix.sort((a, b) => {
+    const convictionDiff = convictionOrder.indexOf(a.conviction) - convictionOrder.indexOf(b.conviction);
+    if (convictionDiff) return convictionDiff;
+    const segmentDiff = a.segment.localeCompare(b.segment);
+    if (segmentDiff) return segmentDiff;
+    return quoteBandUniverse.indexOf(a.quoteBand) - quoteBandUniverse.indexOf(b.quoteBand);
+  });
+}
+
 function analysisRows(id, rows, options = {}) {
   const limit = options.limit || rows.length;
   $(id).innerHTML = rows.slice(0, limit).map((row) => {
@@ -514,15 +543,9 @@ function analysisRows(id, rows, options = {}) {
 }
 
 function renderPlanner(rows) {
-  const relevant = rows.filter((row) => row.isFocus && ["High", "Medium", "Low"].includes(row.conviction));
-  const groups = aggregateBy(relevant, recommendationKey)
-    .filter((row) => row.closed >= 2)
-    .map((row) => ({ ...row, action: actionFor(row) }))
-    .sort((a, b) => {
-      const priority = { increaseStake: 0, playNormal: 1, reduceStake: 2 };
-      return priority[a.action] - priority[b.action] || Math.abs(b.net) - Math.abs(a.net) || b.closed - a.closed;
-    });
-  const counts = groups.reduce((acc, row) => {
+  const groups = plannerMatrixRows(rows);
+  const sampledGroups = groups.filter((row) => row.closed > 0);
+  const counts = sampledGroups.reduce((acc, row) => {
     acc[row.action] = (acc[row.action] || 0) + 1;
     return acc;
   }, {});
@@ -533,20 +556,20 @@ function renderPlanner(rows) {
     ["playNormal", "preferCount", "pos"],
     ["reduceStake", "cautionCount", "neg"],
   ].map(([key, label, cls]) => `<article><span>${esc(tr(label))}</span><strong class="${cls}">${counts[key] || 0}</strong><small>${esc(tr(key))}</small></article>`).join("");
-  $("recommendationRows").innerHTML = groups.slice(0, 28).map((row) => {
-    const [conviction, segment, quoteBand] = String(row.label).split(" | ");
+  $("recommendationRows").innerHTML = groups.map((row) => {
+    const { conviction, segment, quoteBand } = row;
     const action = row.action;
     return `<tr>
-      <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
       <td>${esc(labelText(conviction))}</td>
       <td>${esc(labelText(segment))}</td>
       <td>${esc(quoteBand)}</td>
+      <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
+      <td><strong>${esc(recommendedStake(row))}</strong></td>
       <td>${row.closed}</td>
       <td class="${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</td>
       <td>${pct(row.roi)}</td>
       <td>${pct(row.hitRate)}</td>
       <td>${esc(labelText(row.sample))}</td>
-      <td><strong>${esc(recommendedStake(row))}</strong></td>
     </tr>`;
   }).join("");
 }
