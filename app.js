@@ -2,6 +2,7 @@ const state = {
   lang: "de",
   view: "planner",
   segmentConviction: "High",
+  plannerMode: "sampled",
   data: null,
   filters: {
     date: "all",
@@ -104,6 +105,11 @@ const text = {
     increaseStake: "Erhöhter Einsatz",
     playNormal: "Normal spielen",
     reduceStake: "Halbieren / meiden",
+    plannerFilterAll: "Alle Kombis",
+    plannerFilterSampled: "Nur mit Daten",
+    plannerFilterPlayable: "Spielbar",
+    plannerFilterWarnings: "Warnungen",
+    emptyPlanner: "Keine eindeutigen Marktsegmente im aktuellen Filter.",
     increaseCount: "Erhöht",
     preferCount: "Bevorzugt",
     cautionCount: "Warnung",
@@ -196,6 +202,11 @@ const text = {
     increaseStake: "Increased stake",
     playNormal: "Play normal",
     reduceStake: "Halve / avoid",
+    plannerFilterAll: "All combos",
+    plannerFilterSampled: "With data",
+    plannerFilterPlayable: "Playable",
+    plannerFilterWarnings: "Warnings",
+    emptyPlanner: "No clear market segments in the current filter.",
     increaseCount: "Increased",
     preferCount: "Preferred",
     cautionCount: "Warnings",
@@ -221,7 +232,9 @@ function esc(value) {
 }
 
 function labelText(label) {
-  if (state.lang === "en") return label;
+  if (state.lang === "en") return {
+    Other: "Unclear market",
+  }[label] || label;
   return {
     leagues: "Liga",
     cups: "Pokal/International",
@@ -241,6 +254,7 @@ function labelText(label) {
     Voided: "Storniert",
     "Cashed Out": "Cashout",
     Cashbacked: "Cashback",
+    Other: "Unklarer Markt",
   }[label] || label;
 }
 
@@ -501,7 +515,9 @@ function recommendedStake(row) {
 function plannerMatrixRows(rows) {
   const relevant = rows.filter((row) => row.isFocus && convictionOrder.includes(row.conviction));
   const aggregateMap = new Map(aggregateBy(relevant, recommendationKey).map((row) => [row.label, row]));
-  const segments = [...new Set(relevant.map((row) => row.fineSegment || row.marketGroup || "Other"))].sort((a, b) => a.localeCompare(b));
+  const segments = [...new Set(relevant.map((row) => row.fineSegment || row.marketGroup || "Other"))]
+    .filter((segment) => segment !== "Other")
+    .sort((a, b) => a.localeCompare(b));
   const bands = state.data.dimensions.quoteBands?.length ? state.data.dimensions.quoteBands : quoteBandUniverse;
   const matrix = [];
   for (const conviction of convictionOrder) {
@@ -525,6 +541,13 @@ function plannerMatrixRows(rows) {
   });
 }
 
+function plannerVisibleRows(rows) {
+  if (state.plannerMode === "all") return rows;
+  if (state.plannerMode === "playable") return rows.filter((row) => row.closed > 0 && row.action !== "reduceStake");
+  if (state.plannerMode === "warnings") return rows.filter((row) => row.closed > 0 && row.action === "reduceStake");
+  return rows.filter((row) => row.closed > 0);
+}
+
 function analysisRows(id, rows, options = {}) {
   const limit = options.limit || rows.length;
   $(id).innerHTML = rows.slice(0, limit).map((row) => {
@@ -543,7 +566,7 @@ function analysisRows(id, rows, options = {}) {
 }
 
 function renderPlanner(rows) {
-  const groups = plannerMatrixRows(rows);
+  const groups = plannerVisibleRows(plannerMatrixRows(rows));
   const sampledGroups = groups.filter((row) => row.closed > 0);
   const counts = sampledGroups.reduce((acc, row) => {
     acc[row.action] = (acc[row.action] || 0) + 1;
@@ -556,6 +579,13 @@ function renderPlanner(rows) {
     ["playNormal", "preferCount", "pos"],
     ["reduceStake", "cautionCount", "neg"],
   ].map(([key, label, cls]) => `<article><span>${esc(tr(label))}</span><strong class="${cls}">${counts[key] || 0}</strong><small>${esc(tr(key))}</small></article>`).join("");
+  document.querySelectorAll("[data-planner-filter]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.plannerFilter === state.plannerMode);
+  });
+  if (!groups.length) {
+    $("recommendationRows").innerHTML = `<tr><td colspan="10" class="empty-cell">${esc(tr("emptyPlanner"))}</td></tr>`;
+    return;
+  }
   $("recommendationRows").innerHTML = groups.map((row) => {
     const { conviction, segment, quoteBand } = row;
     const action = row.action;
@@ -728,6 +758,12 @@ function bind() {
   document.querySelectorAll("#convictionSwitch [data-conviction]").forEach((button) => {
     button.addEventListener("click", () => {
       state.segmentConviction = button.dataset.conviction;
+      render();
+    });
+  });
+  document.querySelectorAll("[data-planner-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.plannerMode = button.dataset.plannerFilter;
       render();
     });
   });

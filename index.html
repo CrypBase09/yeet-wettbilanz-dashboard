@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260905-planner-matrix">
+    <link rel="stylesheet" href="styles.css?v=20260905-smart-planner">
   </head>
   <body>
     <header class="topbar">
@@ -68,6 +68,12 @@
               <span data-i18n="plannerHint"></span>
             </div>
             <div id="recommendationSummary" class="recommendation-summary"></div>
+            <div id="plannerSmartFilters" class="smart-filters" aria-label="Planner filters">
+              <button type="button" data-planner-filter="sampled" class="active" data-i18n="plannerFilterSampled"></button>
+              <button type="button" data-planner-filter="playable" data-i18n="plannerFilterPlayable"></button>
+              <button type="button" data-planner-filter="warnings" data-i18n="plannerFilterWarnings"></button>
+              <button type="button" data-planner-filter="all" data-i18n="plannerFilterAll"></button>
+            </div>
             <div class="table-scroll">
               <table class="analysis-table recommendation-table"><thead><tr><th data-i18n="conviction"></th><th data-i18n="segment"></th><th data-i18n="quoteBand"></th><th data-i18n="action"></th><th data-i18n="recommendedStake"></th><th data-i18n="closedShort"></th><th data-i18n="net"></th><th data-i18n="roi"></th><th data-i18n="hit"></th><th data-i18n="sample"></th></tr></thead><tbody id="recommendationRows"></tbody></table>
             </div>
@@ -221,6 +227,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260905-planner-matrix"></script>
+    <script src="app.js?v=20260905-smart-planner"></script>
   </body>
 </html>
