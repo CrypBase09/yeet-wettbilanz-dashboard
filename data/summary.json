@@ -2,7 +2,7 @@
   "meta": {
     "title": "YEET Wettbilanz Public Dashboard",
     "startDate": "2026-08-22",
-    "generatedAt": "2026-09-05T06:32:53.164Z",
+    "generatedAt": "2026-09-05T16:16:37.511Z",
     "currency": "USD",
     "privacy": "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design."
   },
@@ -77,13 +77,13 @@
       "Belgium - Pro League",
       "Russia - Premier Liga",
       "Argentina - Liga Profesional",
+      "Brazil - Brasileiro Serie A",
       "Saudi Arabia - Saudi Pro League",
       "Peru - Liga 1",
+      "Special - Combo Bet",
       "International - UEFA Champions League",
       "International - UEFA Conference League",
-      "International - UEFA Europa League",
-      "Unknown - Brasileiro Serie A",
-      "Unknown - Combo Bet"
+      "International - UEFA Europa League"
     ],
     "leagueGroups": {
       "leagues": [
@@ -104,9 +104,9 @@
         "Belgium - Pro League",
         "Russia - Premier Liga",
         "Argentina - Liga Profesional",
+        "Brazil - Brasileiro Serie A",
         "Saudi Arabia - Saudi Pro League",
-        "Peru - Liga 1",
-        "Unknown - Brasileiro Serie A"
+        "Peru - Liga 1"
       ],
       "cups": [
         "International - UEFA Champions League",
@@ -114,7 +114,7 @@
         "International - UEFA Europa League"
       ],
       "other": [
-        "Unknown - Combo Bet"
+        "Special - Combo Bet"
       ]
     },
     "leagueMappings": [
@@ -144,6 +144,27 @@
         "country": "Belgium",
         "normalizedLeague": "Pro League",
         "leagueDisplay": "Belgium - Pro League",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "BR Brasileirão",
+        "country": "Brazil",
+        "normalizedLeague": "Brasileiro Serie A",
+        "leagueDisplay": "Brazil - Brasileiro Serie A",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "Brasileirão",
+        "country": "Brazil",
+        "normalizedLeague": "Brasileiro Serie A",
+        "leagueDisplay": "Brazil - Brasileiro Serie A",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "Brasileiro Serie A",
+        "country": "Brazil",
+        "normalizedLeague": "Brasileiro Serie A",
+        "leagueDisplay": "Brazil - Brasileiro Serie A",
         "mappingStatus": "Mapped"
       },
       {
@@ -315,6 +336,13 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "Combo Bet",
+        "country": "Special",
+        "normalizedLeague": "Combo Bet",
+        "leagueDisplay": "Special - Combo Bet",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "Allsvenskan",
         "country": "Sweden",
         "normalizedLeague": "Allsvenskan",
@@ -341,20 +369,6 @@
         "normalizedLeague": "MLS",
         "leagueDisplay": "United States - MLS",
         "mappingStatus": "Mapped"
-      },
-      {
-        "rawLeague": "Brasileiro Serie A",
-        "country": "Unknown",
-        "normalizedLeague": "Brasileiro Serie A",
-        "leagueDisplay": "Unknown - Brasileiro Serie A",
-        "mappingStatus": "Unmapped"
-      },
-      {
-        "rawLeague": "Combo Bet",
-        "country": "Unknown",
-        "normalizedLeague": "Combo Bet",
-        "leagueDisplay": "Unknown - Combo Bet",
-        "mappingStatus": "Unmapped"
       }
     ],
     "convictions": [
@@ -873,7 +887,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Unknown - Brasileiro Serie A",
+        "label": "Brazil - Brasileiro Serie A",
         "bets": 2,
         "closed": 2,
         "won": 1,
@@ -888,7 +902,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Unknown - Combo Bet",
+        "label": "Special - Combo Bet",
         "bets": 2,
         "closed": 2,
         "won": 0,
@@ -6883,7 +6897,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Unknown - Combo Bet | Combo Bet | 2.20-2.99",
+        "label": "Special - Combo Bet | Combo Bet | 2.20-2.99",
         "bets": 2,
         "closed": 2,
         "won": 0,
@@ -7783,7 +7797,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Unknown - Brasileiro Serie A | 1X2 | 1.50-1.79",
+        "label": "Brazil - Brasileiro Serie A | 1X2 | 1.50-1.79",
         "bets": 1,
         "closed": 1,
         "won": 1,
@@ -7963,7 +7977,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Unknown - Brasileiro Serie A | 1X2 | 2.20-2.99",
+        "label": "Brazil - Brasileiro Serie A | 1X2 | 2.20-2.99",
         "bets": 1,
         "closed": 1,
         "won": 0,
@@ -9780,7 +9794,7 @@
         "sample": "Watch"
       },
       {
-        "label": "other | Unknown - Combo Bet | Combo Bet | Special | Special | 2.20-2.99",
+        "label": "other | Special - Combo Bet | Combo Bet | Special | Special | 2.20-2.99",
         "bets": 2,
         "closed": 2,
         "won": 0,
@@ -11175,7 +11189,7 @@
         "sample": "Watch"
       },
       {
-        "label": "leagues | Unknown - Brasileiro Serie A | 1X2 | Low | Normal | 1.50-1.79",
+        "label": "leagues | Brazil - Brasileiro Serie A | 1X2 | Low | Normal | 1.50-1.79",
         "bets": 1,
         "closed": 1,
         "won": 1,
@@ -11535,7 +11549,7 @@
         "sample": "Watch"
       },
       {
-        "label": "leagues | Unknown - Brasileiro Serie A | 1X2 | Low | Normal | 2.20-2.99",
+        "label": "leagues | Brazil - Brasileiro Serie A | 1X2 | Low | Normal | 2.20-2.99",
         "bets": 1,
         "closed": 1,
         "won": 0,
@@ -16157,11 +16171,11 @@
       "date": "2026-08-30",
       "status": "Lost",
       "rawLeague": "Brasileiro Serie A",
-      "country": "Unknown",
+      "country": "Brazil",
       "normalizedLeague": "Brasileiro Serie A",
-      "leagueDisplay": "Unknown - Brasileiro Serie A",
-      "mappingStatus": "Unmapped",
-      "league": "Unknown - Brasileiro Serie A",
+      "leagueDisplay": "Brazil - Brasileiro Serie A",
+      "mappingStatus": "Mapped",
+      "league": "Brazil - Brasileiro Serie A",
       "game": "Mirassol FC SP vs. SE Palmeiras SP",
       "competitionType": "leagues",
       "marketGroup": "1X2",
@@ -16174,7 +16188,7 @@
       "stakeFactor": 1,
       "reductionReason": "",
       "quoteBand": "2.20-2.99",
-      "combination": "leagues | Unknown - Brasileiro Serie A | 1X2 | Low | Normal | 2.20-2.99",
+      "combination": "leagues | Brazil - Brasileiro Serie A | 1X2 | Low | Normal | 2.20-2.99",
       "isFocus": true,
       "bets": 1,
       "closed": 1,
@@ -16193,11 +16207,11 @@
       "date": "2026-08-30",
       "status": "Won",
       "rawLeague": "Brasileiro Serie A",
-      "country": "Unknown",
+      "country": "Brazil",
       "normalizedLeague": "Brasileiro Serie A",
-      "leagueDisplay": "Unknown - Brasileiro Serie A",
-      "mappingStatus": "Unmapped",
-      "league": "Unknown - Brasileiro Serie A",
+      "leagueDisplay": "Brazil - Brasileiro Serie A",
+      "mappingStatus": "Mapped",
+      "league": "Brazil - Brasileiro Serie A",
       "game": "Gremio FB Porto Alegrense RS vs. Chapecoense SC",
       "competitionType": "leagues",
       "marketGroup": "1X2",
@@ -16210,7 +16224,7 @@
       "stakeFactor": 1,
       "reductionReason": "",
       "quoteBand": "1.50-1.79",
-      "combination": "leagues | Unknown - Brasileiro Serie A | 1X2 | Low | Normal | 1.50-1.79",
+      "combination": "leagues | Brazil - Brasileiro Serie A | 1X2 | Low | Normal | 1.50-1.79",
       "isFocus": true,
       "bets": 1,
       "closed": 1,
@@ -20408,7 +20422,7 @@
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
-      "mappingStatus": "Alias needs team check",
+      "mappingStatus": "Team override",
       "league": "England - Premier League",
       "game": "Sunderland AFC vs. Fulham FC",
       "competitionType": "leagues",
@@ -20444,7 +20458,7 @@
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
-      "mappingStatus": "Alias needs team check",
+      "mappingStatus": "Team override",
       "league": "England - Premier League",
       "game": "Sunderland AFC vs. Fulham FC",
       "competitionType": "leagues",
@@ -20480,7 +20494,7 @@
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
-      "mappingStatus": "Alias needs team check",
+      "mappingStatus": "Team override",
       "league": "England - Premier League",
       "game": "Sunderland AFC vs. Fulham FC",
       "competitionType": "leagues",
@@ -24761,11 +24775,11 @@
       "date": "2026-08-29",
       "status": "Lost",
       "rawLeague": "Combo Bet",
-      "country": "Unknown",
+      "country": "Special",
       "normalizedLeague": "Combo Bet",
-      "leagueDisplay": "Unknown - Combo Bet",
-      "mappingStatus": "Unmapped",
-      "league": "Unknown - Combo Bet",
+      "leagueDisplay": "Special - Combo Bet",
+      "mappingStatus": "Mapped",
+      "league": "Special - Combo Bet",
       "game": "1/2 leg Combo Bet",
       "competitionType": "other",
       "marketGroup": "Combo Bet",
@@ -24778,7 +24792,7 @@
       "stakeFactor": null,
       "reductionReason": "Outside stake rule",
       "quoteBand": "2.20-2.99",
-      "combination": "other | Unknown - Combo Bet | Combo Bet | Special | Special | 2.20-2.99",
+      "combination": "other | Special - Combo Bet | Combo Bet | Special | Special | 2.20-2.99",
       "isFocus": false,
       "bets": 2,
       "closed": 2,

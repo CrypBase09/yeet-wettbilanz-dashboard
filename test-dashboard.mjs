@@ -72,6 +72,10 @@ assert.ok(data.cells.every((row) => "rawLeague" in row && "country" in row && "n
 assert.ok(data.dimensions.leagues.includes("England - Premier League"), "English Premier League is disambiguated");
 assert.ok(data.dimensions.leagues.includes("Russia - Premier Liga"), "Russian Premier League is disambiguated");
 assert.ok(!data.dimensions.leagues.includes("Premier League"), "ambiguous raw Premier League label is not used as a dashboard league");
+assert.ok(data.dimensions.leagues.includes("Brazil - Brasileiro Serie A"), "Brazilian Serie A is mapped explicitly");
+assert.ok(data.dimensions.leagues.includes("Special - Combo Bet"), "combo bets are separated from football leagues");
+assert.ok(data.cells.every((row) => row.country !== "Unknown" && !String(row.league).startsWith("Unknown - ")), "no published cell has an unknown league mapping");
+assert.ok(data.cells.filter((row) => row.rawLeague === "Premier League").every((row) => row.mappingStatus === "Team override"), "raw Premier League rows are resolved by team identity");
 assert.ok(data.dimensions.leagueMappings.some((row) => row.country === "China" && row.normalizedLeague === "Chinese Super League"), "Chinese Super League mapping is available");
 assert.ok(data.dimensions.leagueMappings.some((row) => row.country === "South Korea" && row.normalizedLeague === "K League 1"), "K League 1 mapping is available");
 assert.ok(data.cells.every((row) => "stakeMode" in row && "normalStake" in row && "stakeFactor" in row), "public cells keep strategic stake interpretation");

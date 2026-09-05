@@ -24,6 +24,10 @@ const leagueAliases = new Map([
   ["Primera LPF", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
   ["Liga Profesional", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
   ["AR Liga Profesional", { country: "Argentina", normalizedLeague: "Liga Profesional" }],
+  ["Brasileiro Serie A", { country: "Brazil", normalizedLeague: "Brasileiro Serie A" }],
+  ["Brasileirão", { country: "Brazil", normalizedLeague: "Brasileiro Serie A" }],
+  ["BR Brasileirão", { country: "Brazil", normalizedLeague: "Brasileiro Serie A" }],
+  ["Combo Bet", { country: "Special", normalizedLeague: "Combo Bet" }],
   ["Pro League", { country: "Belgium", normalizedLeague: "Pro League" }],
   ["Saudi Pro League", { country: "Saudi Arabia", normalizedLeague: "Saudi Pro League" }],
   ["Serie A", { country: "Italy", normalizedLeague: "Serie A" }],
@@ -80,6 +84,9 @@ const teamOverrides = [
       "Wolverhampton",
       "Leeds United",
       "Coventry City",
+      "Sunderland AFC",
+      "Fulham FC",
+      "Ipswich Town",
     ],
   },
   {
@@ -267,12 +274,13 @@ function leagueRank(league) {
     "Belgium - Pro League",
     "Russia - Premier Liga",
     "Argentina - Liga Profesional",
-    "Brazil - Brasileiro",
+    "Brazil - Brasileiro Serie A",
     "China - Chinese Super League",
     "South Korea - K League 1",
     "Sweden - Allsvenskan",
     "Saudi Arabia - Saudi Pro League",
     "Peru - Liga 1",
+    "Special - Combo Bet",
   ];
   const index = preferred.indexOf(league);
   return index === -1 ? preferred.length : index;
