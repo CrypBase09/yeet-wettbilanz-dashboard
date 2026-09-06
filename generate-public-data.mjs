@@ -39,6 +39,7 @@ const leagueAliases = new Map([
   ["CN Super League", { country: "China", normalizedLeague: "Chinese Super League" }],
   ["KR K League 1", { country: "South Korea", normalizedLeague: "K League 1" }],
   ["K League 1", { country: "South Korea", normalizedLeague: "K League 1" }],
+  ["K-League 1", { country: "South Korea", normalizedLeague: "K League 1" }],
   ["Allsvenskan", { country: "Sweden", normalizedLeague: "Allsvenskan" }],
   ["SE Allsvenskan", { country: "Sweden", normalizedLeague: "Allsvenskan", ambiguous: true }],
   ["UEFA Champions League", { country: "International", normalizedLeague: "UEFA Champions League" }],
