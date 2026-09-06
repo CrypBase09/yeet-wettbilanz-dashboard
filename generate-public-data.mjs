@@ -301,12 +301,19 @@ function leagueGroups(values) {
 
 function stakeProfile(stake) {
   const s = Number(stake);
-  if (Math.abs(s - 0.50) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Reduced", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" };
-  if (Math.abs(s - 0.75) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Reduced", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
-  if (Math.abs(s - 1.25) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Reduced", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.25) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Research 25%", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.38) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Research 25%", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.50) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Research 50%", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.63) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Research 25%", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" };
+  if (Math.abs(s - 0.75) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Research 50%", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
   if (Math.abs(s - 1.00) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Normal", normalStake: 1.00, stakeFactor: 1, reductionReason: "" };
+  if (Math.abs(s - 1.25) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Research 50%", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
   if (Math.abs(s - 1.50) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Normal", normalStake: 1.50, stakeFactor: 1, reductionReason: "" };
+  if (Math.abs(s - 1.88) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Increased 25%", normalStake: 1.50, stakeFactor: 1.25, reductionReason: "" };
+  if (Math.abs(s - 2.25) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Increased 50%", normalStake: 1.50, stakeFactor: 1.5, reductionReason: "" };
   if (Math.abs(s - 2.50) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Normal", normalStake: 2.50, stakeFactor: 1, reductionReason: "" };
+  if (Math.abs(s - 3.13) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Increased 25%", normalStake: 2.50, stakeFactor: 1.25, reductionReason: "" };
+  if (Math.abs(s - 3.75) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Increased 50%", normalStake: 2.50, stakeFactor: 1.5, reductionReason: "" };
   return { conviction: "Special", stakeMode: "Special", normalStake: s, stakeFactor: null, reductionReason: "Outside stake rule" };
 }
 

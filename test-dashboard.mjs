@@ -6,6 +6,7 @@ const source = JSON.parse(fs.readFileSync("../work/yeet-mybets/parsed_bets.json"
 const html = fs.readFileSync("index.html", "utf8");
 const app = fs.readFileSync("app.js", "utf8");
 const generator = fs.readFileSync("generate-public-data.mjs", "utf8");
+const syncScript = fs.readFileSync("../work/sync_obsidian_master_from_yeet.mjs", "utf8");
 const serialized = JSON.stringify(data);
 const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
 
@@ -49,6 +50,10 @@ assert.ok(app.includes("quoteBandUniverse"), "stake planner includes realistic o
 assert.ok(app.includes("setView(\"planner\")"), "dashboard opens on the practical stake planner");
 assert.ok(app.includes("increaseStake"), "stake planner supports increased stake as a top action");
 assert.ok(app.includes("Erhöhter Einsatz"), "German planner has increased stake wording");
+assert.ok(app.includes("increaseStake25"), "stake planner supports +25% increased stake");
+assert.ok(app.includes("increaseStake50"), "stake planner supports +50% increased stake");
+assert.ok(app.includes("derivedSuggestion"), "stake planner marks suggestions inferred from nearby odds bands");
+assert.ok(app.includes("derivedFromNeighborBands"), "derived planner rows keep their source explanation");
 assert.ok(app.includes("if (row.net >= 0) return \"playNormal\""), "profitable planner segments stay at least normal stake");
 assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a meaningful negative ROI threshold");
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
@@ -107,6 +112,10 @@ assert.ok(app.includes("stakeMode: \"all\""), "stake mode filter is part of dash
 assert.ok(generator.includes("stakeProfile"), "dashboard data generation has a named strategic stake rule");
 assert.ok(app.includes("convictionStakeModeRows"), "stake mode table is rendered");
 assert.ok(generator.includes("Math.abs(s - 1.25) <= STAKE_TOLERANCE"), "half-sized high conviction remains high conviction");
+for (const codedStake of ["0.25", "0.38", "0.50", "0.63", "0.75", "1.00", "1.25", "1.50", "1.88", "2.25", "2.50", "3.13", "3.75"]) {
+  assert.ok(generator.includes(`Math.abs(s - ${codedStake}) <= STAKE_TOLERANCE`), `dashboard generator classifies unique stake ${codedStake}`);
+  assert.ok(syncScript.includes(`Math.abs(s - ${codedStake}) <= STAKE_TOLERANCE`), `Excel sync classifies unique stake ${codedStake}`);
+}
 assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
 assert.ok(app.includes("quoteMarketKey"), "market x odds-band segmentation is calculated");
 assert.ok(app.includes("quoteConvictionKey"), "conviction x market x odds-band segmentation is calculated");

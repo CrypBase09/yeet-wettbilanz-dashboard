@@ -469,7 +469,9 @@ select {
   text-align: center;
 }
 
-.action-increaseStake {
+.action-increaseStake,
+.action-increaseStake25,
+.action-increaseStake50 {
   color: var(--green);
   background: #0a3328;
 }
@@ -479,7 +481,8 @@ select {
   background: #102238;
 }
 
-.action-reduceStake {
+.action-reduceStake,
+.action-research25 {
   color: var(--red);
   background: #31141b;
 }
