@@ -31,6 +31,7 @@ const leagueAliases = new Map([
   ["Pro League", { country: "Belgium", normalizedLeague: "Pro League" }],
   ["Saudi Pro League", { country: "Saudi Arabia", normalizedLeague: "Saudi Pro League" }],
   ["Serie A", { country: "Italy", normalizedLeague: "Serie A" }],
+  ["Serie A Cup, Women", { country: "Italy", normalizedLeague: "Serie A Cup Women" }],
   ["Serie B", { country: "Italy", normalizedLeague: "Serie B" }],
   ["Super Lig", { country: "Turkey", normalizedLeague: "Super Lig" }],
   ["Russian Premier", { country: "Russia", normalizedLeague: "Premier Liga" }],
