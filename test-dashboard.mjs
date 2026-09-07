@@ -70,6 +70,9 @@ assert.ok(app.includes("if (row.net >= 0) return \"playNormal\""), "profitable p
 assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a meaningful negative ROI threshold");
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
 assert.ok(!app.includes("Klein testen"), "German planner no longer shows small-test wording");
+assert.ok(!app.includes("Halbieren / meiden"), "German planner shows a concrete 50% stake action instead of halve-or-avoid wording");
+assert.ok(app.includes("reduceStake: \"50% Einsatz\""), "German planner labels 50% warning stakes explicitly");
+assert.ok(app.includes("research25: \"25% Einsatz\""), "German planner labels 25% warning stakes explicitly");
 assert.ok(!app.includes("standardOnly"), "stake planner no longer uses the old neutral action");
 assert.ok(app.includes("row.strategyType !== \"Main\""), "checked main strategy filters out contra and special stakes");
 assert.ok(app.includes("state.filters.focusOnly = $(\"focusOnly\").checked"), "state syncs from the actual checkbox at startup");

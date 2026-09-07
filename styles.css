@@ -522,7 +522,11 @@ select {
   background: #2b2110;
 }
 
-.action-reduceStake,
+.action-reduceStake {
+  color: var(--amber);
+  background: #2b2110;
+}
+
 .action-research25 {
   color: var(--red);
   background: #31141b;
