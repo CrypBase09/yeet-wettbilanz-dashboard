@@ -302,20 +302,36 @@ function leagueGroups(values) {
 
 function stakeProfile(stake) {
   const s = Number(stake);
-  if (Math.abs(s - 0.25) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Research 25%", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Warning signal" };
-  if (Math.abs(s - 0.38) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Research 25%", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" };
-  if (Math.abs(s - 0.50) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Research 50%", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" };
-  if (Math.abs(s - 0.63) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Research 25%", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" };
-  if (Math.abs(s - 0.75) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Research 50%", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
-  if (Math.abs(s - 1.00) <= STAKE_TOLERANCE) return { conviction: "Low", stakeMode: "Normal", normalStake: 1.00, stakeFactor: 1, reductionReason: "" };
-  if (Math.abs(s - 1.25) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Research 50%", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" };
-  if (Math.abs(s - 1.50) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Normal", normalStake: 1.50, stakeFactor: 1, reductionReason: "" };
-  if (Math.abs(s - 1.88) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Increased 25%", normalStake: 1.50, stakeFactor: 1.25, reductionReason: "" };
-  if (Math.abs(s - 2.25) <= STAKE_TOLERANCE) return { conviction: "Medium", stakeMode: "Increased 50%", normalStake: 1.50, stakeFactor: 1.5, reductionReason: "" };
-  if (Math.abs(s - 2.50) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Normal", normalStake: 2.50, stakeFactor: 1, reductionReason: "" };
-  if (Math.abs(s - 3.13) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Increased 25%", normalStake: 2.50, stakeFactor: 1.25, reductionReason: "" };
-  if (Math.abs(s - 3.75) <= STAKE_TOLERANCE) return { conviction: "High", stakeMode: "Increased 50%", normalStake: 2.50, stakeFactor: 1.5, reductionReason: "" };
-  return { conviction: "Special", stakeMode: "Special", normalStake: s, stakeFactor: null, reductionReason: "Outside stake rule" };
+  const profiles = [
+    [0.25, { conviction: "Low", stakeMode: "Research 25%", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Warning signal" }],
+    [0.27, { conviction: "Low", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Contra signal" }],
+    [0.38, { conviction: "Medium", stakeMode: "Research 25%", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
+    [0.42, { conviction: "Medium", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Contra signal" }],
+    [0.50, { conviction: "Low", stakeMode: "Research 50%", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" }],
+    [0.53, { conviction: "Low", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Contra signal" }],
+    [0.63, { conviction: "High", stakeMode: "Research 25%", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
+    [0.67, { conviction: "High", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Contra signal" }],
+    [0.75, { conviction: "Medium", stakeMode: "Research 50%", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
+    [0.82, { conviction: "Medium", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
+    [1.00, { conviction: "Low", stakeMode: "Normal", normalStake: 1.00, stakeFactor: 1, reductionReason: "" }],
+    [1.07, { conviction: "Low", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 1.00, stakeFactor: 1, reductionReason: "Contra signal" }],
+    [1.25, { conviction: "High", stakeMode: "Research 50%", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
+    [1.32, { conviction: "High", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
+    [1.50, { conviction: "Medium", stakeMode: "Normal", normalStake: 1.50, stakeFactor: 1, reductionReason: "" }],
+    [1.62, { conviction: "Medium", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 1.50, stakeFactor: 1, reductionReason: "Contra signal" }],
+    [1.88, { conviction: "Medium", stakeMode: "Increased 25%", normalStake: 1.50, stakeFactor: 1.25, reductionReason: "" }],
+    [2.25, { conviction: "Medium", stakeMode: "Increased 50%", normalStake: 1.50, stakeFactor: 1.5, reductionReason: "" }],
+    [2.50, { conviction: "High", stakeMode: "Normal", normalStake: 2.50, stakeFactor: 1, reductionReason: "" }],
+    [2.67, { conviction: "High", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 2.50, stakeFactor: 1, reductionReason: "Contra signal" }],
+    [3.13, { conviction: "High", stakeMode: "Increased 25%", normalStake: 2.50, stakeFactor: 1.25, reductionReason: "" }],
+    [3.75, { conviction: "High", stakeMode: "Increased 50%", normalStake: 2.50, stakeFactor: 1.5, reductionReason: "" }],
+  ];
+  const match = profiles
+    .map(([amount, profile]) => ({ amount, profile, distance: Math.abs(s - amount) }))
+    .filter((item) => item.distance <= STAKE_TOLERANCE)
+    .sort((a, b) => a.distance - b.distance)[0];
+  if (match) return match.profile;
+  return { conviction: "Special", stakeMode: "Special", strategyType: "Special", normalStake: s, stakeFactor: null, reductionReason: "Outside stake rule" };
 }
 
 function quoteBand(odds) {
@@ -402,6 +418,7 @@ function combinationLabel(bet) {
   return [
     bet.competitionType,
     bet.league,
+    bet.strategyType,
     bet.fineSegment,
     bet.conviction,
     bet.stakeMode,
@@ -440,6 +457,7 @@ function publicCells(bets) {
       bet.fineSegment,
       bet.direction,
       bet.line,
+      bet.strategyType,
       bet.conviction,
       bet.stakeMode,
       String(bet.normalStake),
@@ -464,6 +482,7 @@ function publicCells(bets) {
       fineSegment: bet.fineSegment,
       direction: bet.direction,
       line: bet.line,
+      strategyType: bet.strategyType,
       conviction: bet.conviction,
       stakeMode: bet.stakeMode,
       normalStake: bet.normalStake,
@@ -507,6 +526,7 @@ const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => 
     direction: market.direction || "None",
     line: market.line || "None",
     conviction: profile.conviction,
+    strategyType: profile.strategyType || "Main",
     stakeMode: profile.stakeMode,
     normalStake: profile.normalStake,
     stakeFactor: profile.stakeFactor,
@@ -516,7 +536,7 @@ const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => 
     stake,
     payout: out,
     net: net(bet),
-    isFocus: profile.conviction !== "Special",
+    isFocus: (profile.strategyType || "Main") === "Main",
   };
 });
 
@@ -567,6 +587,7 @@ const payload = {
     leagueGroups: leagueGroups(leagues),
     leagueMappings,
     convictions: [...new Set(bets.map((bet) => bet.conviction))].sort(),
+    strategyTypes: [...new Set(bets.map((bet) => bet.strategyType))].sort(),
     stakeModes: [...new Set(bets.map((bet) => bet.stakeMode))].sort(),
     quoteBands: QUOTE_BANDS,
     statuses: [...new Set(bets.map((bet) => bet.status))].sort(),

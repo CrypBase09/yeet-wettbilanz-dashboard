@@ -56,6 +56,8 @@ assert.ok(app.includes("increaseStake25"), "stake planner supports +25% increase
 assert.ok(app.includes("increaseStake50"), "stake planner supports +50% increased stake");
 assert.ok(app.includes("contraCheck"), "stake planner supports contra-indicator action");
 assert.ok(app.includes("counterSegment"), "stake planner derives counter-market candidates");
+assert.ok(app.includes("contraStakeFor(row.conviction"), "contra planner recommendations use separate contra-coded stakes");
+assert.ok(app.includes("strategyType"), "dashboard keeps main and contra strategy types separate");
 assert.ok(app.includes("plannerRecommendationKey"), "stake planner recommendations are league-specific");
 assert.ok(app.includes("renderPlannerActionTiles"), "stake planner renders clickable action tiles");
 assert.ok(app.includes("normalStakeFor(row.conviction"), "league-specific planner rows calculate stakes from their conviction field");
@@ -69,7 +71,7 @@ assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a mean
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
 assert.ok(!app.includes("Klein testen"), "German planner no longer shows small-test wording");
 assert.ok(!app.includes("standardOnly"), "stake planner no longer uses the old neutral action");
-assert.ok(app.includes("state.filters.focusOnly && !ignoreFocus && !row.isFocus"), "checked main strategy filters out special stakes");
+assert.ok(app.includes("row.strategyType !== \"Main\""), "checked main strategy filters out contra and special stakes");
 assert.ok(app.includes("state.filters.focusOnly = $(\"focusOnly\").checked"), "state syncs from the actual checkbox at startup");
 assert.ok(app.includes("leagueGroups"), "league dropdown supports league/cup groups");
 assert.ok(data.dimensions.dates[0] > data.dimensions.dates.at(-1), "dates are sorted newest first");
@@ -121,10 +123,15 @@ assert.ok(app.includes("renderConvictionSegments"), "conviction-first segment re
 assert.ok(app.includes("stakeMode: \"all\""), "stake mode filter is part of dashboard state");
 assert.ok(generator.includes("stakeProfile"), "dashboard data generation has a named strategic stake rule");
 assert.ok(app.includes("convictionStakeModeRows"), "stake mode table is rendered");
-assert.ok(generator.includes("Math.abs(s - 1.25) <= STAKE_TOLERANCE"), "half-sized high conviction remains high conviction");
+assert.ok(generator.includes(".sort((a, b) => a.distance - b.distance)[0]"), "stake profile resolves overlapping tolerances by nearest coded amount");
+assert.ok(syncScript.includes(".sort((a, b) => a.distance - b.distance)[0]"), "Excel sync resolves overlapping tolerances by nearest coded amount");
 for (const codedStake of ["0.25", "0.38", "0.50", "0.63", "0.75", "1.00", "1.25", "1.50", "1.88", "2.25", "2.50", "3.13", "3.75"]) {
-  assert.ok(generator.includes(`Math.abs(s - ${codedStake}) <= STAKE_TOLERANCE`), `dashboard generator classifies unique stake ${codedStake}`);
-  assert.ok(syncScript.includes(`Math.abs(s - ${codedStake}) <= STAKE_TOLERANCE`), `Excel sync classifies unique stake ${codedStake}`);
+  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies unique stake ${codedStake}`);
+  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies unique stake ${codedStake}`);
+}
+for (const codedStake of ["0.27", "0.42", "0.53", "0.67", "0.82", "1.07", "1.32", "1.62", "2.67"]) {
+  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies unique contra stake ${codedStake}`);
+  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies unique contra stake ${codedStake}`);
 }
 assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
 assert.ok(app.includes("quoteMarketKey"), "market x odds-band segmentation is calculated");

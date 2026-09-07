@@ -109,6 +109,7 @@ const text = {
     increaseStake50: "+50% erhöhter Einsatz",
     playNormal: "Normal spielen",
     contraCheck: "Kontra prüfen",
+    contraStake: "Kontra 50%",
     research25: "Research 25%",
     reduceStake: "Halbieren / meiden",
     derivedSuggestion: "Abgeleitet",
@@ -215,6 +216,7 @@ const text = {
     increaseStake50: "+50% increased stake",
     playNormal: "Play normal",
     contraCheck: "Check counter",
+    contraStake: "Counter 50%",
     research25: "Research 25%",
     reduceStake: "Halve / avoid",
     derivedSuggestion: "Derived",
@@ -355,7 +357,7 @@ function filterRows(options = {}) {
     if (state.filters.quote !== "all" && row.quoteBand !== state.filters.quote) return false;
     if (state.filters.status !== "all" && row.status !== state.filters.status) return false;
     if (onlySpecial && row.isFocus) return false;
-    if (state.filters.focusOnly && !ignoreFocus && !row.isFocus) return false;
+    if (state.filters.focusOnly && !ignoreFocus && (!row.isFocus || row.strategyType !== "Main")) return false;
     return true;
   });
 }
@@ -531,10 +533,20 @@ function normalStakeFor(conviction) {
   return { High: 2.5, Medium: 1.5, Low: 1 }[conviction] || 0;
 }
 
+function contraStakeFor(conviction, mode = "50") {
+  const ladder = {
+    Low: { "25": 0.27, "50": 0.53, normal: 1.07 },
+    Medium: { "25": 0.42, "50": 0.82, normal: 1.62 },
+    High: { "25": 0.67, "50": 1.32, normal: 2.67 },
+  };
+  return ladder[conviction]?.[mode] || 0;
+}
+
 function recommendedStake(row) {
   const normal = normalStakeFor(row.conviction || String(row.label).split(" | ")[0]);
   if (!normal) return "";
   const action = actionFor(row);
+  if (action === "contraCheck") return `${tr("contraStake")}: ${money(contraStakeFor(row.conviction, "50"))}`;
   if (action === "increaseStake50") return money(normal * 1.5);
   if (action === "increaseStake25") return money(normal * 1.25);
   if (action === "playNormal") return money(normal);
