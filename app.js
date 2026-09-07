@@ -3,6 +3,7 @@ const state = {
   view: "planner",
   segmentConviction: "High",
   plannerMode: "sampled",
+  plannerAction: "all",
   data: null,
   filters: {
     date: "all",
@@ -102,14 +103,18 @@ const text = {
     plannerLeague: "Ausgewählte Liga",
     action: "Aktion",
     recommendedStake: "Einsatz",
+    history: "Historie",
     increaseStake: "Erhöhter Einsatz",
     increaseStake25: "+25% erhöhter Einsatz",
     increaseStake50: "+50% erhöhter Einsatz",
     playNormal: "Normal spielen",
+    contraCheck: "Kontra prüfen",
     research25: "Research 25%",
     reduceStake: "Halbieren / meiden",
     derivedSuggestion: "Abgeleitet",
     derivedFromNeighborBands: "aus Nachbarbändern",
+    counterMarket: "Gegenmarkt",
+    plannerActionAll: "Alle Aktionen",
     plannerFilterAll: "Alle Kombis",
     plannerFilterSampled: "Nur mit Daten",
     plannerFilterPlayable: "Spielbar",
@@ -204,14 +209,18 @@ const text = {
     plannerLeague: "Selected league",
     action: "Action",
     recommendedStake: "Stake",
+    history: "History",
     increaseStake: "Increased stake",
     increaseStake25: "+25% increased stake",
     increaseStake50: "+50% increased stake",
     playNormal: "Play normal",
+    contraCheck: "Check counter",
     research25: "Research 25%",
     reduceStake: "Halve / avoid",
     derivedSuggestion: "Derived",
     derivedFromNeighborBands: "from nearby bands",
+    counterMarket: "Counter market",
+    plannerActionAll: "All actions",
     plannerFilterAll: "All combos",
     plannerFilterSampled: "With data",
     plannerFilterPlayable: "Playable",
@@ -293,6 +302,10 @@ function quoteLeagueKey(row) {
 
 function recommendationKey(row) {
   return `${row.conviction || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
+}
+
+function plannerRecommendationKey(row) {
+  return `${row.league || "Other"} | ${row.conviction || "Other"} | ${row.fineSegment || row.marketGroup || "Other"} | ${row.quoteBand || "Other"}`;
 }
 
 function empty(label) {
@@ -508,6 +521,7 @@ function actionFor(row) {
   if (signal === "Interesting" && closed >= 50 && row.roi >= 0.18 && row.edgeVsBreakEven >= 0.07) return "increaseStake50";
   if (signal === "Interesting" && closed >= 20 && row.roi >= 0.10 && row.edgeVsBreakEven >= 0.04) return "increaseStake25";
   if (row.net >= 0) return "playNormal";
+  if (row.counterCandidate) return "contraCheck";
   if (closed >= 20 && row.roi <= -0.18 && row.edgeVsBreakEven <= -0.06) return "research25";
   if (signal === "Caution" || row.roi <= -0.03 || row.edgeVsBreakEven <= -0.02) return "reduceStake";
   return "playNormal";
@@ -518,7 +532,7 @@ function normalStakeFor(conviction) {
 }
 
 function recommendedStake(row) {
-  const normal = normalStakeFor(String(row.label).split(" | ")[0]);
+  const normal = normalStakeFor(row.conviction || String(row.label).split(" | ")[0]);
   if (!normal) return "";
   const action = actionFor(row);
   if (action === "increaseStake50") return money(normal * 1.5);
@@ -536,20 +550,37 @@ function plannerMetric(row, metric) {
   return "";
 }
 
-function derivedPlannerRow(conviction, segment, quoteBand, aggregateMap) {
+function counterSegment(segment) {
+  const text = String(segment || "");
+  if (text.includes(" - Under ")) return text.replace(" - Under ", " - Over ");
+  if (text.includes(" - Over ")) return text.replace(" - Over ", " - Under ");
+  return "";
+}
+
+function markCounterCandidate(row, aggregateMap) {
+  const oppositeSegment = counterSegment(row.segment);
+  if (!oppositeSegment) return row;
+  const closed = row.sourceClosed ?? row.closed;
+  const opposite = aggregateMap.get(`${row.league} | ${row.conviction} | ${oppositeSegment} | ${row.quoteBand}`);
+  const hasProblem = closed >= 10 && row.roi <= -0.08 && row.edgeVsBreakEven <= -0.03;
+  if (!hasProblem) return row;
+  return { ...row, counterCandidate: true, counterMarket: oppositeSegment, counterSample: opposite?.closed || 0 };
+}
+
+function derivedPlannerRow(league, conviction, segment, quoteBand, aggregateMap) {
   const index = quoteBandUniverse.indexOf(quoteBand);
   const neighborBands = [quoteBandUniverse[index - 1], quoteBandUniverse[index + 1]].filter(Boolean);
   const neighbors = neighborBands
-    .map((band) => aggregateMap.get(`${conviction} | ${segment} | ${band}`))
+    .map((band) => aggregateMap.get(`${league} | ${conviction} | ${segment} | ${band}`))
     .filter((row) => row && row.closed > 0);
   if (!neighbors.length) return null;
-  const base = empty(`${conviction} | ${segment} | ${quoteBand}`);
+  const base = empty(`${league} | ${conviction} | ${segment} | ${quoteBand}`);
   neighbors.forEach((row) => merge(base, row));
   const derived = finish(base);
   return {
     ...derived,
     derivedSuggestion: true,
-    derivedFromNeighborBands: neighborBands.filter((band) => aggregateMap.get(`${conviction} | ${segment} | ${band}`)?.closed > 0),
+    derivedFromNeighborBands: neighborBands.filter((band) => aggregateMap.get(`${league} | ${conviction} | ${segment} | ${band}`)?.closed > 0),
     sourceClosed: derived.closed,
     sample: "Derived",
   };
@@ -557,25 +588,33 @@ function derivedPlannerRow(conviction, segment, quoteBand, aggregateMap) {
 
 function plannerMatrixRows(rows) {
   const relevant = rows.filter((row) => row.isFocus && convictionOrder.includes(row.conviction));
-  const aggregateMap = new Map(aggregateBy(relevant, recommendationKey).map((row) => [row.label, row]));
+  const aggregateMap = new Map(aggregateBy(relevant, plannerRecommendationKey).map((row) => [row.label, row]));
+  const leagues = state.filters.league === "all"
+    ? [...new Set(relevant.map((row) => row.league || "Other"))].sort((a, b) => a.localeCompare(b))
+    : [state.filters.league];
   const segments = [...new Set(relevant.map((row) => row.fineSegment || row.marketGroup || "Other"))]
     .filter((segment) => segment !== "Other")
     .sort((a, b) => a.localeCompare(b));
   const bands = state.data.dimensions.quoteBands?.length ? state.data.dimensions.quoteBands : quoteBandUniverse;
   const matrix = [];
-  for (const conviction of convictionOrder) {
-    for (const segment of segments) {
-      for (const quoteBand of bands) {
-        if (state.filters.conviction !== "all" && state.filters.conviction !== conviction) continue;
-        if (state.filters.market !== "all" && !segment.startsWith(state.filters.market)) continue;
-        if (state.filters.quote !== "all" && state.filters.quote !== quoteBand) continue;
-        const label = `${conviction} | ${segment} | ${quoteBand}`;
-        const row = aggregateMap.get(label) ?? derivedPlannerRow(conviction, segment, quoteBand, aggregateMap) ?? finish({ ...empty(label), matrixEmpty: true });
-        matrix.push({ ...row, action: actionFor(row), conviction, segment, quoteBand });
+  for (const league of leagues) {
+    for (const conviction of convictionOrder) {
+      for (const segment of segments) {
+        for (const quoteBand of bands) {
+          if (state.filters.conviction !== "all" && state.filters.conviction !== conviction) continue;
+          if (state.filters.market !== "all" && !segment.startsWith(state.filters.market)) continue;
+          if (state.filters.quote !== "all" && state.filters.quote !== quoteBand) continue;
+          const label = `${league} | ${conviction} | ${segment} | ${quoteBand}`;
+          const baseRow = aggregateMap.get(label) ?? derivedPlannerRow(league, conviction, segment, quoteBand, aggregateMap) ?? finish({ ...empty(label), matrixEmpty: true });
+          const row = markCounterCandidate({ ...baseRow, league, conviction, segment, quoteBand }, aggregateMap);
+          matrix.push({ ...row, action: actionFor(row) });
+        }
       }
     }
   }
   return matrix.sort((a, b) => {
+    const leagueDiff = a.league.localeCompare(b.league);
+    if (leagueDiff) return leagueDiff;
     const convictionDiff = convictionOrder.indexOf(a.conviction) - convictionOrder.indexOf(b.conviction);
     if (convictionDiff) return convictionDiff;
     const segmentDiff = a.segment.localeCompare(b.segment);
@@ -585,10 +624,28 @@ function plannerMatrixRows(rows) {
 }
 
 function plannerVisibleRows(rows) {
-  if (state.plannerMode === "all") return rows;
-  if (state.plannerMode === "playable") return rows.filter((row) => (row.closed > 0 || row.derivedSuggestion) && !["reduceStake", "research25"].includes(row.action));
-  if (state.plannerMode === "warnings") return rows.filter((row) => (row.closed > 0 || row.derivedSuggestion) && ["reduceStake", "research25"].includes(row.action));
-  return rows.filter((row) => row.closed > 0 || row.derivedSuggestion);
+  let visible = rows;
+  if (state.plannerMode === "playable") visible = visible.filter((row) => (row.closed > 0 || row.derivedSuggestion) && !["reduceStake", "research25"].includes(row.action));
+  else if (state.plannerMode === "warnings") visible = visible.filter((row) => (row.closed > 0 || row.derivedSuggestion) && ["reduceStake", "research25", "contraCheck"].includes(row.action));
+  else if (state.plannerMode !== "all") visible = visible.filter((row) => row.closed > 0 || row.derivedSuggestion);
+  if (state.plannerAction !== "all") visible = visible.filter((row) => row.action === state.plannerAction);
+  return visible;
+}
+
+function plannerHistory(row) {
+  if (row.derivedSuggestion) return `${tr("derivedSuggestion")} ${tr("derivedFromNeighborBands")}: ${row.derivedFromNeighborBands.join(", ")}`;
+  const parts = [`${row.closed} ${tr("closedShort")}`, `${plannerMetric(row, "net")}`, `${plannerMetric(row, "roi")} ROI`, `${plannerMetric(row, "hitRate")} ${tr("hit")}`];
+  if (row.counterCandidate) parts.push(`${tr("counterMarket")}: ${row.counterMarket}`);
+  return parts.join(" | ");
+}
+
+function renderPlannerActionTiles(counts) {
+  document.querySelectorAll("[data-planner-action]").forEach((button) => {
+    const key = button.dataset.plannerAction;
+    button.classList.toggle("active", key === state.plannerAction);
+    const count = key === "all" ? Object.values(counts).reduce((sum, value) => sum + value, 0) : counts[key] || 0;
+    button.dataset.count = String(count);
+  });
 }
 
 function analysisRows(id, rows, options = {}) {
@@ -621,34 +678,33 @@ function renderPlanner(rows) {
     ["increaseStake50", "increaseCount", "pos"],
     ["increaseStake25", "increaseCount", "pos"],
     ["playNormal", "preferCount", "pos"],
+    ["contraCheck", "cautionCount", "watch"],
     ["reduceStake", "cautionCount", "neg"],
     ["research25", "cautionCount", "neg"],
   ].map(([key, label, cls]) => `<article><span>${esc(tr(label))}</span><strong class="${cls}">${counts[key] || 0}</strong><small>${esc(tr(key))}</small></article>`).join("");
+  renderPlannerActionTiles(counts);
   document.querySelectorAll("[data-planner-filter]").forEach((button) => {
     button.classList.toggle("active", button.dataset.plannerFilter === state.plannerMode);
   });
   if (!groups.length) {
-    $("recommendationRows").innerHTML = `<tr><td colspan="10" class="empty-cell">${esc(tr("emptyPlanner"))}</td></tr>`;
+    $("recommendationRows").innerHTML = `<tr><td colspan="8" class="empty-cell">${esc(tr("emptyPlanner"))}</td></tr>`;
     return;
   }
   $("recommendationRows").innerHTML = groups.map((row) => {
-    const { conviction, segment, quoteBand } = row;
+    const { league, conviction, segment, quoteBand } = row;
     const action = row.action;
-    const closedLabel = row.derivedSuggestion ? `0 (${row.sourceClosed})` : String(row.closed);
     const sampleLabel = row.derivedSuggestion
-      ? `${tr("derivedSuggestion")} ${tr("derivedFromNeighborBands")}: ${row.derivedFromNeighborBands.join(", ")}`
+      ? `${tr("derivedSuggestion")} (${row.sourceClosed})`
       : labelText(row.sample);
     return `<tr>
+      <td>${esc(league)}</td>
       <td>${esc(labelText(conviction))}</td>
       <td>${esc(labelText(segment))}</td>
       <td>${esc(quoteBand)}</td>
       <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
       <td><strong>${esc(recommendedStake(row))}</strong></td>
-      <td>${esc(closedLabel)}</td>
-      <td class="${row.net >= 0 ? "pos" : "neg"}">${esc(plannerMetric(row, "net"))}</td>
-      <td>${esc(plannerMetric(row, "roi"))}</td>
-      <td>${esc(plannerMetric(row, "hitRate"))}</td>
       <td>${esc(sampleLabel)}</td>
+      <td class="${row.net >= 0 ? "pos" : "neg"}">${esc(plannerHistory(row))}</td>
     </tr>`;
   }).join("");
 }
@@ -813,6 +869,12 @@ function bind() {
   document.querySelectorAll("[data-planner-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       state.plannerMode = button.dataset.plannerFilter;
+      render();
+    });
+  });
+  document.querySelectorAll("[data-planner-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.plannerAction = button.dataset.plannerAction;
       render();
     });
   });

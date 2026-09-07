@@ -422,7 +422,7 @@ select {
 
 .recommendation-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -450,17 +450,53 @@ select {
 }
 
 .recommendation-table {
-  min-width: 1080px;
+  min-width: 1280px;
 }
 
 .recommendation-table td:first-child,
 .recommendation-table th:first-child {
-  min-width: 156px;
+  min-width: 190px;
 }
 
 .recommendation-table td:nth-child(2),
 .recommendation-table th:nth-child(2) {
+  min-width: 120px;
+}
+
+.recommendation-table td:nth-child(3),
+.recommendation-table th:nth-child(3) {
   min-width: 230px;
+}
+
+.planner-action-tiles {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.planner-action-tiles button {
+  min-height: 54px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: #101720;
+  color: var(--text);
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.planner-action-tiles button::after {
+  content: attr(data-count);
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.planner-action-tiles button.active {
+  border-color: var(--blue);
+  background: #122844;
 }
 
 .empty-cell {
@@ -479,6 +515,11 @@ select {
 .action-playNormal {
   color: var(--blue);
   background: #102238;
+}
+
+.action-contraCheck {
+  color: var(--amber);
+  background: #2b2110;
 }
 
 .action-reduceStake,

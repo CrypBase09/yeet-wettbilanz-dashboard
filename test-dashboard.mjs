@@ -31,7 +31,9 @@ assert.ok(html.includes("id=\"plannerSmartFilters\""), "stake planner has smart 
 assert.ok(html.includes("data-planner-filter=\"sampled\""), "stake planner can show only sampled rows");
 assert.ok(html.includes("data-planner-filter=\"playable\""), "stake planner can focus playable rows");
 assert.ok(html.includes("data-planner-filter=\"warnings\""), "stake planner can focus warning rows");
-assert.ok(html.includes("<th data-i18n=\"conviction\"></th><th data-i18n=\"segment\"></th><th data-i18n=\"quoteBand\"></th><th data-i18n=\"action\"></th><th data-i18n=\"recommendedStake\"></th><th data-i18n=\"closedShort\"></th><th data-i18n=\"net\"></th><th data-i18n=\"roi\"></th><th data-i18n=\"hit\"></th><th data-i18n=\"sample\"></th>"), "stake planner columns are ordered for practical use");
+assert.ok(html.includes("id=\"plannerActionTiles\""), "stake planner has decision action tiles");
+assert.ok(html.includes("data-planner-action=\"contraCheck\""), "stake planner can filter contra-indicator candidates");
+assert.ok(html.includes("<th data-i18n=\"league\"></th><th data-i18n=\"conviction\"></th><th data-i18n=\"segment\"></th><th data-i18n=\"quoteBand\"></th><th data-i18n=\"action\"></th><th data-i18n=\"recommendedStake\"></th><th data-i18n=\"sample\"></th><th data-i18n=\"history\"></th>"), "stake planner columns are ordered as practical decision rows");
 assert.ok(html.includes("id=\"recommendationSummary\""), "stake recommendation summary exists");
 assert.ok(html.includes("id=\"briefView\""), "brief view exists");
 assert.ok(html.includes("id=\"focusOnly\" type=\"checkbox\" checked"), "main strategy checkbox is checked by default");
@@ -52,6 +54,11 @@ assert.ok(app.includes("increaseStake"), "stake planner supports increased stake
 assert.ok(app.includes("Erhöhter Einsatz"), "German planner has increased stake wording");
 assert.ok(app.includes("increaseStake25"), "stake planner supports +25% increased stake");
 assert.ok(app.includes("increaseStake50"), "stake planner supports +50% increased stake");
+assert.ok(app.includes("contraCheck"), "stake planner supports contra-indicator action");
+assert.ok(app.includes("counterSegment"), "stake planner derives counter-market candidates");
+assert.ok(app.includes("plannerRecommendationKey"), "stake planner recommendations are league-specific");
+assert.ok(app.includes("renderPlannerActionTiles"), "stake planner renders clickable action tiles");
+assert.ok(app.includes("normalStakeFor(row.conviction"), "league-specific planner rows calculate stakes from their conviction field");
 assert.ok(app.includes("derivedSuggestion"), "stake planner marks suggestions inferred from nearby odds bands");
 assert.ok(app.includes("derivedFromNeighborBands"), "derived planner rows keep their source explanation");
 assert.ok(app.includes("plannerMetric(row, \"net\")"), "derived planner rows hide synthetic net values");
