@@ -54,6 +54,9 @@ assert.ok(app.includes("increaseStake25"), "stake planner supports +25% increase
 assert.ok(app.includes("increaseStake50"), "stake planner supports +50% increased stake");
 assert.ok(app.includes("derivedSuggestion"), "stake planner marks suggestions inferred from nearby odds bands");
 assert.ok(app.includes("derivedFromNeighborBands"), "derived planner rows keep their source explanation");
+assert.ok(app.includes("plannerMetric(row, \"net\")"), "derived planner rows hide synthetic net values");
+assert.ok(app.includes("plannerMetric(row, \"roi\")"), "derived planner rows hide synthetic ROI values");
+assert.ok(app.includes("plannerMetric(row, \"hitRate\")"), "derived planner rows hide synthetic hit-rate values");
 assert.ok(app.includes("if (row.net >= 0) return \"playNormal\""), "profitable planner segments stay at least normal stake");
 assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a meaningful negative ROI threshold");
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");

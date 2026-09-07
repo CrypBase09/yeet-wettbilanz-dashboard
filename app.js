@@ -528,6 +528,14 @@ function recommendedStake(row) {
   return money(normal / 2);
 }
 
+function plannerMetric(row, metric) {
+  if (row.derivedSuggestion && ["net", "roi", "hitRate"].includes(metric)) return "-";
+  if (metric === "net") return money(row.net);
+  if (metric === "roi") return pct(row.roi);
+  if (metric === "hitRate") return pct(row.hitRate);
+  return "";
+}
+
 function derivedPlannerRow(conviction, segment, quoteBand, aggregateMap) {
   const index = quoteBandUniverse.indexOf(quoteBand);
   const neighborBands = [quoteBandUniverse[index - 1], quoteBandUniverse[index + 1]].filter(Boolean);
@@ -637,9 +645,9 @@ function renderPlanner(rows) {
       <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
       <td><strong>${esc(recommendedStake(row))}</strong></td>
       <td>${esc(closedLabel)}</td>
-      <td class="${row.net >= 0 ? "pos" : "neg"}">${money(row.net)}</td>
-      <td>${pct(row.roi)}</td>
-      <td>${pct(row.hitRate)}</td>
+      <td class="${row.net >= 0 ? "pos" : "neg"}">${esc(plannerMetric(row, "net"))}</td>
+      <td>${esc(plannerMetric(row, "roi"))}</td>
+      <td>${esc(plannerMetric(row, "hitRate"))}</td>
       <td>${esc(sampleLabel)}</td>
     </tr>`;
   }).join("");
