@@ -65,6 +65,9 @@ const teamOverrides = [
       "Zenit Saint Petersburg",
       "Rodina Moscow",
       "FC Baltika Kaliningrad",
+      "RFK Akhmat Grozny",
+      "CSKA Moscow",
+      "PFK Krylia Sovetov Samara",
     ],
   },
   {
@@ -89,6 +92,10 @@ const teamOverrides = [
       "Sunderland AFC",
       "Fulham FC",
       "Ipswich Town",
+      "AFC Bournemouth",
+      "Brentford FC",
+      "Nottingham Forest",
+      "Hull City",
     ],
   },
   {
@@ -209,7 +216,7 @@ function normalizeLeague(rawLeague, game) {
   const raw = cleanText(rawLeague);
   const teamMatch = findTeamOverride(game);
   const alias = leagueAliases.get(raw);
-  if (teamMatch && (!alias || alias.ambiguous || alias.country !== teamMatch.country)) {
+  if (teamMatch && (!alias || alias.ambiguous)) {
     return {
       rawLeague: raw,
       country: teamMatch.country,
@@ -219,12 +226,21 @@ function normalizeLeague(rawLeague, game) {
     };
   }
   if (alias) {
+    if (alias.ambiguous) {
+      return {
+        rawLeague: raw,
+        country: "Ungeklaert",
+        normalizedLeague: "Ungeklaert",
+        leagueDisplay: `Ungeklaert - ${raw}`,
+        mappingStatus: "Ungeklaert",
+      };
+    }
     return {
       rawLeague: raw,
       country: alias.country,
       normalizedLeague: alias.normalizedLeague,
       leagueDisplay: leagueDisplay(alias.country, alias.normalizedLeague),
-      mappingStatus: alias.ambiguous ? "Alias needs team check" : "Mapped",
+      mappingStatus: "Mapped",
     };
   }
   return {
