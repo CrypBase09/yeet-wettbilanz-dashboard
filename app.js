@@ -110,6 +110,7 @@ const text = {
     playNormal: "Normal spielen",
     contraCheck: "Kontra prüfen",
     contraStake: "Kontra 50%",
+    contraNormal: "Kontra Normal",
     research25: "25% Einsatz",
     reduceStake: "50% Einsatz",
     derivedSuggestion: "Abgeleitet",
@@ -217,6 +218,7 @@ const text = {
     playNormal: "Play normal",
     contraCheck: "Check counter",
     contraStake: "Counter 50%",
+    contraNormal: "Counter normal",
     research25: "25% stake",
     reduceStake: "50% stake",
     derivedSuggestion: "Derived",
@@ -520,38 +522,46 @@ function signalFor(row) {
 function actionFor(row) {
   const signal = signalFor(row);
   const closed = row.sourceClosed ?? row.closed;
-  if (signal === "Interesting" && closed >= 50 && row.roi >= 0.18 && row.edgeVsBreakEven >= 0.07) return "increaseStake50";
-  if (signal === "Interesting" && closed >= 20 && row.roi >= 0.10 && row.edgeVsBreakEven >= 0.04) return "increaseStake25";
+  const canIncrease = row.conviction !== "Low";
+  const derivedBands = row.derivedFromNeighborBands?.length || 0;
+  if (canIncrease && signal === "Interesting" && closed >= 8 && row.roi >= 0.25 && row.edgeVsBreakEven >= 0.08 && (!row.derivedSuggestion || derivedBands >= 2)) return "increaseStake50";
+  if (canIncrease && signal === "Interesting" && closed >= 5 && row.roi >= 0.12 && row.edgeVsBreakEven >= 0.04) return "increaseStake25";
   if (row.net >= 0) return "playNormal";
   if (row.counterCandidate) return "contraCheck";
-  if (closed >= 20 && row.roi <= -0.18 && row.edgeVsBreakEven <= -0.06) return "research25";
-  if (signal === "Caution" || row.roi <= -0.03 || row.edgeVsBreakEven <= -0.02) return "reduceStake";
+  if (closed >= 5 && row.roi <= -0.18 && row.edgeVsBreakEven <= -0.06) return "research25";
+  if (closed >= 8 && row.roi <= -0.12 && row.edgeVsBreakEven <= -0.04) return "research25";
+  if (closed >= 4 && (signal === "Caution" || row.roi <= -0.04 || row.edgeVsBreakEven <= -0.025)) return "reduceStake";
   return "playNormal";
 }
 
+const clearStakeCodeGap = 0.07;
+const stakeLadderV2 = {
+  Low: { research25: 0.24, reduceStake: 0.52, playNormal: 1.00, contra50: 0.59, contraNormal: 1.11 },
+  Medium: { research25: 0.37, reduceStake: 0.78, playNormal: 1.50, increaseStake25: 1.91, increaseStake50: 2.27, contra50: 0.86, contraNormal: 1.64 },
+  High: { research25: 0.69, reduceStake: 1.24, playNormal: 2.50, increaseStake25: 3.16, increaseStake50: 3.77, contra50: 1.36, contraNormal: 2.68 },
+};
+
+function stakeForAction(conviction, action, counterMode = "50") {
+  const ladder = stakeLadderV2[conviction];
+  if (!ladder) return 0;
+  if (action === "contraCheck") return counterMode === "normal" ? ladder.contraNormal : ladder.contra50;
+  return ladder[action] ?? ladder.playNormal ?? 0;
+}
+
 function normalStakeFor(conviction) {
-  return { High: 2.5, Medium: 1.5, Low: 1 }[conviction] || 0;
+  return stakeForAction(conviction, "playNormal");
 }
 
 function contraStakeFor(conviction, mode = "50") {
-  const ladder = {
-    Low: { "25": 0.27, "50": 0.53, normal: 1.07 },
-    Medium: { "25": 0.42, "50": 0.82, normal: 1.62 },
-    High: { "25": 0.67, "50": 1.32, normal: 2.67 },
-  };
-  return ladder[conviction]?.[mode] || 0;
+  return stakeForAction(conviction, "contraCheck", mode === "normal" ? "normal" : "50");
 }
 
 function recommendedStake(row) {
   const normal = normalStakeFor(row.conviction || String(row.label).split(" | ")[0]);
   if (!normal) return "";
   const action = actionFor(row);
-  if (action === "contraCheck") return `${tr("contraStake")}: ${money(contraStakeFor(row.conviction, "50"))}`;
-  if (action === "increaseStake50") return money(normal * 1.5);
-  if (action === "increaseStake25") return money(normal * 1.25);
-  if (action === "playNormal") return money(normal);
-  if (action === "research25") return money(normal * 0.25);
-  return money(normal / 2);
+  if (action === "contraCheck") return `${tr(row.counterStakeMode === "normal" ? "contraNormal" : "contraStake")}: ${money(contraStakeFor(row.conviction, row.counterStakeMode || "50"))}`;
+  return money(stakeForAction(row.conviction, action));
 }
 
 function plannerMetric(row, metric) {
@@ -574,9 +584,13 @@ function markCounterCandidate(row, aggregateMap) {
   if (!oppositeSegment) return row;
   const closed = row.sourceClosed ?? row.closed;
   const opposite = aggregateMap.get(`${row.league} | ${row.conviction} | ${oppositeSegment} | ${row.quoteBand}`);
-  const hasProblem = closed >= 10 && row.roi <= -0.08 && row.edgeVsBreakEven <= -0.03;
+  const hasProblem = closed >= 5 && row.roi <= -0.12 && row.edgeVsBreakEven <= -0.04;
+  const severeProblem = closed >= 8 && row.roi <= -0.25 && row.edgeVsBreakEven <= -0.08;
+  const oppositeOkay = !opposite || opposite.closed === 0 || opposite.net >= 0 || opposite.roi > -0.03;
   if (!hasProblem) return row;
-  return { ...row, counterCandidate: true, counterMarket: oppositeSegment, counterSample: opposite?.closed || 0 };
+  if (!oppositeOkay && !row.derivedSuggestion) return row;
+  const counterStakeMode = severeProblem && opposite?.closed >= 3 && opposite.net > 0 ? "normal" : "50";
+  return { ...row, counterCandidate: true, counterMarket: oppositeSegment, counterSample: opposite?.closed || 0, counterStakeMode: counterStakeMode };
 }
 
 function derivedPlannerRow(league, conviction, segment, quoteBand, aggregateMap) {

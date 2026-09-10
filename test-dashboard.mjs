@@ -58,6 +58,13 @@ assert.ok(app.includes("contraCheck"), "stake planner supports contra-indicator 
 assert.ok(app.includes("counterSegment"), "stake planner derives counter-market candidates");
 assert.ok(app.includes("contraStakeFor(row.conviction"), "contra planner recommendations use separate contra-coded stakes");
 assert.ok(app.includes("strategyType"), "dashboard keeps main and contra strategy types separate");
+assert.ok(app.includes("const stakeLadderV2"), "dashboard uses the V2 stake ladder for visible recommendations");
+assert.ok(app.includes("clearStakeCodeGap"), "dashboard documents the minimum gap that keeps V2 stakes readable within +/- 3 cents");
+assert.ok(app.includes("closed >= 4"), "aggressive planner can suggest 50% stakes after four closed bets");
+assert.ok(app.includes("closed >= 5"), "aggressive planner can suggest 25%, +25%, or contra after five closed bets");
+assert.ok(app.includes("closed >= 8"), "aggressive planner can suggest +50% after eight closed bets");
+assert.ok(app.includes("? \"normal\" : \"50\""), "contra indicator can escalate from contra 50% to contra normal");
+assert.ok(app.includes("counterStakeMode === \"normal\""), "contra stake label reflects the selected counter stake mode");
 assert.ok(app.includes("plannerRecommendationKey"), "stake planner recommendations are league-specific");
 assert.ok(app.includes("renderPlannerActionTiles"), "stake planner renders clickable action tiles");
 assert.ok(app.includes("normalStakeFor(row.conviction"), "league-specific planner rows calculate stakes from their conviction field");
@@ -67,7 +74,7 @@ assert.ok(app.includes("plannerMetric(row, \"net\")"), "derived planner rows hid
 assert.ok(app.includes("plannerMetric(row, \"roi\")"), "derived planner rows hide synthetic ROI values");
 assert.ok(app.includes("plannerMetric(row, \"hitRate\")"), "derived planner rows hide synthetic hit-rate values");
 assert.ok(app.includes("if (row.net >= 0) return \"playNormal\""), "profitable planner segments stay at least normal stake");
-assert.ok(app.includes("row.roi <= -0.03"), "stake planner only halves on a meaningful negative ROI threshold");
+assert.ok(app.includes("row.roi <= -0.04"), "stake planner halves on the V2 aggressive negative ROI threshold");
 assert.ok(!app.includes("collectData"), "stake planner no longer uses small-test actions");
 assert.ok(!app.includes("Klein testen"), "German planner no longer shows small-test wording");
 assert.ok(!app.includes("Halbieren / meiden"), "German planner shows a concrete 50% stake action instead of halve-or-avoid wording");
@@ -135,6 +142,11 @@ for (const codedStake of ["0.25", "0.38", "0.50", "0.63", "0.75", "1.00", "1.25"
 for (const codedStake of ["0.27", "0.42", "0.53", "0.67", "0.82", "1.07", "1.32", "1.62", "2.67"]) {
   assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies unique contra stake ${codedStake}`);
   assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies unique contra stake ${codedStake}`);
+}
+for (const codedStake of ["0.24", "0.37", "0.52", "0.59", "0.69", "0.78", "0.86", "1.11", "1.24", "1.36", "1.64", "1.91", "2.27", "2.68", "3.16", "3.77"]) {
+  assert.ok(app.includes(codedStake), `dashboard recommends V2 stake ${codedStake}`);
+  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies V2 stake ${codedStake}`);
+  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies V2 stake ${codedStake}`);
 }
 assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
 assert.ok(app.includes("quoteMarketKey"), "market x odds-band segmentation is calculated");
