@@ -13,6 +13,7 @@ const html = fs.readFileSync("index.html", "utf8");
 const app = fs.readFileSync("app.js", "utf8");
 const generator = fs.readFileSync("generate-public-data.mjs", "utf8");
 const syncScript = fs.readFileSync("../work/sync_obsidian_master_from_yeet.mjs", "utf8");
+const contraLogs = JSON.parse(fs.readFileSync("../work/contra-logs/manual_contra_logs.json", "utf8"));
 const serialized = JSON.stringify(data);
 const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
 
@@ -76,6 +77,9 @@ assert.ok(app.includes("contraLogText"), "contra rows can generate a copyable pr
 assert.ok(app.includes("data-contra-log"), "contra rows render a copy action for the pre-bet log");
 assert.ok(app.includes("Zielquote bitte eintragen"), "German contra log reminds the user to capture the real target odds");
 assert.ok(app.includes("Trigger odds band"), "English contra log keeps the trigger odds band separate from the played odds band");
+assert.ok(generator.includes("matchContraLog"), "dashboard generator enriches matched contra bets with their trigger log");
+assert.ok(syncScript.includes("matchContraLog"), "Excel sync enriches matched contra bets with their trigger log");
+assert.ok(contraLogs.some((log) => log.game === "FC Augsburg vs. Bayer Leverkusen" && log.triggerQuoteBand === "1.50-1.79" && log.targetOdds === 2.25), "manual contra log captures the Bundesliga bookings trigger");
 assert.ok(app.includes("plannerRecommendationKey"), "stake planner recommendations are league-specific");
 assert.ok(app.includes("renderPlannerActionTiles"), "stake planner renders clickable action tiles");
 assert.ok(app.includes("normalStakeFor(row.conviction"), "league-specific planner rows calculate stakes from their conviction field");

@@ -1,9 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { contraOriginSignal, loadContraLogs, matchContraLog } from "./contra-log-match.mjs";
 import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
 
 const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
+const contraLogPath = path.join(root, "work", "contra-logs", "manual_contra_logs.json");
 const outputPath = path.join(process.cwd(), "data", "summary.json");
 const startDate = "2026-08-22";
 const QUOTE_BANDS = ["1.00-1.49", "1.50-1.79", "1.80-2.19", "2.20-2.99", "3.00-3.99", "4.00+"];
@@ -448,6 +450,9 @@ function publicCells(bets) {
       bet.stakeMode,
       String(bet.normalStake),
       String(bet.stakeFactor),
+      bet.originSignal,
+      bet.counterMarket,
+      bet.contraTriggerQuoteBand,
       bet.quoteBand,
       combination,
       String(bet.isFocus),
@@ -474,6 +479,10 @@ function publicCells(bets) {
       normalStake: bet.normalStake,
       stakeFactor: bet.stakeFactor,
       reductionReason: bet.reductionReason,
+      originSignal: bet.originSignal,
+      counterMarket: bet.counterMarket,
+      contraTriggerQuoteBand: bet.contraTriggerQuoteBand,
+      contraLogId: bet.contraLogId,
       quoteBand: bet.quoteBand,
       combination,
       isFocus: bet.isFocus,
@@ -490,6 +499,7 @@ function publicCells(bets) {
 }
 
 const raw = JSON.parse(await fs.readFile(inputPath, "utf8"));
+const contraLogs = await loadContraLogs(contraLogPath);
 const sourceBets = raw.filter((bet) => dateOf(bet.created) >= startDate);
 assertKnownStakeCodes(sourceBets);
 const bets = sourceBets.map((bet) => {
@@ -498,7 +508,7 @@ const bets = sourceBets.map((bet) => {
   const profile = stakeProfile(stake);
   const mappedLeague = normalizeLeague(bet.league, bet.game);
   const out = payout(bet);
-  return {
+  const row = {
     date: dateOf(bet.created),
     status: bet.status,
     rawLeague: mappedLeague.rawLeague,
@@ -526,6 +536,12 @@ const bets = sourceBets.map((bet) => {
     net: net(bet),
     isFocus: (profile.strategyType || "Main") === "Main",
   };
+  const contraLog = matchContraLog(bet, row, contraLogs);
+  row.originSignal = contraLog ? contraOriginSignal(contraLog) : profile.strategyType === "Contra" ? "Contra from stake code" : "";
+  row.counterMarket = contraLog ? contraLog.targetSegment : profile.strategyType === "Contra" ? row.fineSegment : "";
+  row.contraTriggerQuoteBand = contraLog?.triggerQuoteBand || "";
+  row.contraLogId = contraLog?.id || "";
+  return row;
 });
 
 const summary = finish(bets.reduce((acc, bet) => {
