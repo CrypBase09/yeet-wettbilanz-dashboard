@@ -1,11 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
 
 const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
 const outputPath = path.join(process.cwd(), "data", "summary.json");
 const startDate = "2026-08-22";
-const STAKE_TOLERANCE = 0.03;
 const QUOTE_BANDS = ["1.00-1.49", "1.50-1.79", "1.80-2.19", "2.20-2.99", "3.00-3.99", "4.00+"];
 
 const leagueAliases = new Map([
@@ -317,53 +317,7 @@ function leagueGroups(values) {
 }
 
 function stakeProfile(stake) {
-  const s = Number(stake);
-  const profiles = [
-    [0.24, { conviction: "Low", stakeMode: "Research 25% V2", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.25, { conviction: "Low", stakeMode: "Research 25%", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.27, { conviction: "Low", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.25, reductionReason: "Contra signal" }],
-    [0.37, { conviction: "Medium", stakeMode: "Research 25% V2", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.38, { conviction: "Medium", stakeMode: "Research 25%", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.42, { conviction: "Medium", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Contra signal" }],
-    [0.50, { conviction: "Low", stakeMode: "Research 50%", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [0.52, { conviction: "Low", stakeMode: "Research 50% V2", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [0.53, { conviction: "Low", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [0.59, { conviction: "Low", stakeMode: "Contra 50% V2", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [0.63, { conviction: "High", stakeMode: "Research 25%", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.67, { conviction: "High", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Contra signal" }],
-    [0.69, { conviction: "High", stakeMode: "Research 25% V2", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" }],
-    [0.75, { conviction: "Medium", stakeMode: "Research 50%", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [0.78, { conviction: "Medium", stakeMode: "Research 50% V2", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [0.82, { conviction: "Medium", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [0.86, { conviction: "Medium", stakeMode: "Contra 50% V2", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [1.00, { conviction: "Low", stakeMode: "Normal", normalStake: 1.00, stakeFactor: 1, reductionReason: "" }],
-    [1.07, { conviction: "Low", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 1.00, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [1.11, { conviction: "Low", stakeMode: "Contra Normal V2", strategyType: "Contra", normalStake: 1.00, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [1.24, { conviction: "High", stakeMode: "Research 50% V2", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [1.25, { conviction: "High", stakeMode: "Research 50%", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Warning signal" }],
-    [1.32, { conviction: "High", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [1.36, { conviction: "High", stakeMode: "Contra 50% V2", strategyType: "Contra", normalStake: 2.50, stakeFactor: 0.5, reductionReason: "Contra signal" }],
-    [1.50, { conviction: "Medium", stakeMode: "Normal", normalStake: 1.50, stakeFactor: 1, reductionReason: "" }],
-    [1.62, { conviction: "Medium", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 1.50, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [1.64, { conviction: "Medium", stakeMode: "Contra Normal V2", strategyType: "Contra", normalStake: 1.50, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [1.88, { conviction: "Medium", stakeMode: "Increased 25%", normalStake: 1.50, stakeFactor: 1.25, reductionReason: "" }],
-    [1.91, { conviction: "Medium", stakeMode: "Increased 25% V2", normalStake: 1.50, stakeFactor: 1.25, reductionReason: "" }],
-    [2.25, { conviction: "Medium", stakeMode: "Increased 50%", normalStake: 1.50, stakeFactor: 1.5, reductionReason: "" }],
-    [2.27, { conviction: "Medium", stakeMode: "Increased 50% V2", normalStake: 1.50, stakeFactor: 1.5, reductionReason: "" }],
-    [2.50, { conviction: "High", stakeMode: "Normal", normalStake: 2.50, stakeFactor: 1, reductionReason: "" }],
-    [2.67, { conviction: "High", stakeMode: "Contra Normal", strategyType: "Contra", normalStake: 2.50, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [2.68, { conviction: "High", stakeMode: "Contra Normal V2", strategyType: "Contra", normalStake: 2.50, stakeFactor: 1, reductionReason: "Contra signal" }],
-    [3.13, { conviction: "High", stakeMode: "Increased 25%", normalStake: 2.50, stakeFactor: 1.25, reductionReason: "" }],
-    [3.16, { conviction: "High", stakeMode: "Increased 25% V2", normalStake: 2.50, stakeFactor: 1.25, reductionReason: "" }],
-    [3.75, { conviction: "High", stakeMode: "Increased 50%", normalStake: 2.50, stakeFactor: 1.5, reductionReason: "" }],
-    [3.77, { conviction: "High", stakeMode: "Increased 50% V2", normalStake: 2.50, stakeFactor: 1.5, reductionReason: "" }],
-  ];
-  const match = profiles
-    .map(([amount, profile]) => ({ amount, profile, distance: Math.abs(s - amount) }))
-    .filter((item) => item.distance <= STAKE_TOLERANCE)
-    .sort((a, b) => a.distance - b.distance)[0];
-  if (match) return match.profile;
-  return { conviction: "Special", stakeMode: "Special", strategyType: "Special", normalStake: s, stakeFactor: null, reductionReason: "Outside stake rule" };
+  return classifyStake(stake);
 }
 
 function quoteBand(odds) {
@@ -536,7 +490,9 @@ function publicCells(bets) {
 }
 
 const raw = JSON.parse(await fs.readFile(inputPath, "utf8"));
-const bets = raw.filter((bet) => dateOf(bet.created) >= startDate).map((bet) => {
+const sourceBets = raw.filter((bet) => dateOf(bet.created) >= startDate);
+assertKnownStakeCodes(sourceBets);
+const bets = sourceBets.map((bet) => {
   const market = marketInfo(bet.market);
   const stake = Number(bet.stake || 0);
   const profile = stakeProfile(stake);

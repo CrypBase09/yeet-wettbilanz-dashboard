@@ -2,7 +2,7 @@
   "meta": {
     "title": "YEET Wettbilanz Public Dashboard",
     "startDate": "2026-08-22",
-    "generatedAt": "2026-09-10T05:56:26.451Z",
+    "generatedAt": "2026-09-10T06:06:20.494Z",
     "currency": "USD",
     "privacy": "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design."
   },
@@ -49162,7 +49162,7 @@
       "stakeMode": "Special",
       "normalStake": 5,
       "stakeFactor": null,
-      "reductionReason": "Outside stake rule",
+      "reductionReason": "Outside focus strategy",
       "quoteBand": "2.20-2.99",
       "combination": "other | Special - Combo Bet | Special | Combo Bet | Special | Special | 2.20-2.99",
       "isFocus": false,

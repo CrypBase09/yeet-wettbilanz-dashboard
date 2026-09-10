@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import {
+  STAKE_TOLERANCE,
+  stakeProfiles,
+  validateStakeProfiles,
+  classifyStake,
+} from "./stake-code-profile.mjs";
 
 const data = JSON.parse(fs.readFileSync("data/summary.json", "utf8"));
 const source = JSON.parse(fs.readFileSync("../work/yeet-mybets/parsed_bets.json", "utf8"));
@@ -133,20 +139,25 @@ assert.ok(app.includes("renderConvictionSegments"), "conviction-first segment re
 assert.ok(app.includes("stakeMode: \"all\""), "stake mode filter is part of dashboard state");
 assert.ok(generator.includes("stakeProfile"), "dashboard data generation has a named strategic stake rule");
 assert.ok(app.includes("convictionStakeModeRows"), "stake mode table is rendered");
-assert.ok(generator.includes(".sort((a, b) => a.distance - b.distance)[0]"), "stake profile resolves overlapping tolerances by nearest coded amount");
-assert.ok(syncScript.includes(".sort((a, b) => a.distance - b.distance)[0]"), "Excel sync resolves overlapping tolerances by nearest coded amount");
+assert.equal(STAKE_TOLERANCE, 0.03, "stake classifier uses the agreed +/- 3 cent tolerance");
+assert.equal(validateStakeProfiles().clear, true, "stake classifier proves all codes are distinguishable inside +/- 3 cents");
+assert.ok(stakeProfiles.length >= 38, "stake classifier includes existing, contra, and V2 stake codes");
+assert.equal(classifyStake(0.69).conviction, "High", "V2 high 25% stake maps to High conviction");
+assert.equal(classifyStake(0.67).stakeMode, "Contra 25%", "legacy contra stake remains readable");
+assert.throws(() => classifyStake(0.72), /Unrecognized stake code|Ambiguous stake code/, "unclear future stake amounts are rejected instead of becoming silent special cases");
+assert.ok(generator.includes("from \"./stake-code-profile.mjs\""), "dashboard generator uses the shared stake classifier");
+assert.ok(syncScript.includes("from \"../yeet-dashboard-public-safe/stake-code-profile.mjs\""), "Excel sync uses the shared stake classifier");
+assert.ok(generator.includes("assertKnownStakeCodes"), "dashboard generator validates every imported stake before aggregating");
+assert.ok(syncScript.includes("assertKnownStakeCodes"), "Excel sync validates every imported stake before writing the workbook");
 for (const codedStake of ["0.25", "0.38", "0.50", "0.63", "0.75", "1.00", "1.25", "1.50", "1.88", "2.25", "2.50", "3.13", "3.75"]) {
-  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies unique stake ${codedStake}`);
-  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies unique stake ${codedStake}`);
+  assert.ok(stakeProfiles.some((profile) => profile.amount.toFixed(2) === codedStake), `shared stake classifier knows unique stake ${codedStake}`);
 }
 for (const codedStake of ["0.27", "0.42", "0.53", "0.67", "0.82", "1.07", "1.32", "1.62", "2.67"]) {
-  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies unique contra stake ${codedStake}`);
-  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies unique contra stake ${codedStake}`);
+  assert.ok(stakeProfiles.some((profile) => profile.amount.toFixed(2) === codedStake), `shared stake classifier knows unique contra stake ${codedStake}`);
 }
 for (const codedStake of ["0.24", "0.37", "0.52", "0.59", "0.69", "0.78", "0.86", "1.11", "1.24", "1.36", "1.64", "1.91", "2.27", "2.68", "3.16", "3.77"]) {
   assert.ok(app.includes(codedStake), `dashboard recommends V2 stake ${codedStake}`);
-  assert.ok(generator.includes(`[${codedStake},`), `dashboard generator classifies V2 stake ${codedStake}`);
-  assert.ok(syncScript.includes(`[${codedStake},`), `Excel sync classifies V2 stake ${codedStake}`);
+  assert.ok(stakeProfiles.some((profile) => profile.amount.toFixed(2) === codedStake), `shared stake classifier knows V2 stake ${codedStake}`);
 }
 assert.ok(app.includes("leagueMarketKey"), "league x market segmentation is calculated");
 assert.ok(app.includes("quoteMarketKey"), "market x odds-band segmentation is calculated");
