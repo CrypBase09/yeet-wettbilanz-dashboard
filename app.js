@@ -116,6 +116,11 @@ const text = {
     derivedSuggestion: "Abgeleitet",
     derivedFromNeighborBands: "aus Nachbarbändern",
     counterMarket: "Gegenmarkt",
+    contraTrigger: "Auslöser",
+    contraTarget: "Kontra-Ziel",
+    contraTargetOdds: "Zielquote bitte eintragen",
+    copyContraLog: "Log kopieren",
+    copied: "Kopiert",
     plannerActionAll: "Alle Aktionen",
     plannerFilterAll: "Alle Kombis",
     plannerFilterSampled: "Nur mit Daten",
@@ -224,6 +229,11 @@ const text = {
     derivedSuggestion: "Derived",
     derivedFromNeighborBands: "from nearby bands",
     counterMarket: "Counter market",
+    contraTrigger: "Trigger",
+    contraTarget: "Counter target",
+    contraTargetOdds: "Enter target odds",
+    copyContraLog: "Copy log",
+    copied: "Copied",
     plannerActionAll: "All actions",
     plannerFilterAll: "All combos",
     plannerFilterSampled: "With data",
@@ -593,6 +603,30 @@ function markCounterCandidate(row, aggregateMap) {
   return { ...row, counterCandidate: true, counterMarket: oppositeSegment, counterSample: opposite?.closed || 0, counterStakeMode: counterStakeMode };
 }
 
+function contraTriggerText(row) {
+  const sourceType = row.derivedSuggestion ? `${tr("derivedSuggestion")} ${tr("derivedFromNeighborBands")}` : `${row.closed} ${tr("closedShort")}`;
+  return `${row.league} | ${row.conviction} | ${row.segment} | ${row.quoteBand} | ${sourceType}`;
+}
+
+function contraLogText(row) {
+  return [
+    "Kontra gespielt:",
+    `Liga: ${row.league}`,
+    "Spiel: bitte eintragen",
+    `Auslöser: ${contraTriggerText(row)}`,
+    `Kontra-Ziel: ${row.counterMarket || counterSegment(row.segment)}`,
+    `${tr("contraTargetOdds")}:`,
+    `Trigger odds band: ${row.quoteBand}`,
+    `Einsatzcode: ${recommendedStake(row)}`,
+  ].join("\n");
+}
+
+function contraHistory(row, id) {
+  const trigger = `${tr("contraTrigger")}: ${contraTriggerText(row)}`;
+  const target = `${tr("contraTarget")}: ${row.counterMarket || counterSegment(row.segment)} | ${tr("contraTargetOdds")}`;
+  return `<div class="contra-log"><div>${esc(trigger)}</div><div>${esc(target)}</div><button type="button" data-contra-log="${id}">${esc(tr("copyContraLog"))}</button></div>`;
+}
+
 function derivedPlannerRow(league, conviction, segment, quoteBand, aggregateMap) {
   const index = quoteBandUniverse.indexOf(quoteBand);
   const neighborBands = [quoteBandUniverse[index - 1], quoteBandUniverse[index + 1]].filter(Boolean);
@@ -716,12 +750,16 @@ function renderPlanner(rows) {
     $("recommendationRows").innerHTML = `<tr><td colspan="8" class="empty-cell">${esc(tr("emptyPlanner"))}</td></tr>`;
     return;
   }
-  $("recommendationRows").innerHTML = groups.map((row) => {
+  window.contraLogs = {};
+  $("recommendationRows").innerHTML = groups.map((row, index) => {
     const { league, conviction, segment, quoteBand } = row;
     const action = row.action;
+    const logId = `contra-${index}`;
+    if (row.counterCandidate) window.contraLogs[logId] = contraLogText(row);
     const sampleLabel = row.derivedSuggestion
       ? `${tr("derivedSuggestion")} (${row.sourceClosed})`
       : labelText(row.sample);
+    const history = row.counterCandidate ? contraHistory(row, logId) : plannerHistory(row);
     return `<tr>
       <td>${esc(league)}</td>
       <td>${esc(labelText(conviction))}</td>
@@ -730,7 +768,7 @@ function renderPlanner(rows) {
       <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
       <td><strong>${esc(recommendedStake(row))}</strong></td>
       <td>${esc(sampleLabel)}</td>
-      <td class="${row.net >= 0 ? "pos" : "neg"}">${esc(plannerHistory(row))}</td>
+      <td class="${row.net >= 0 ? "pos" : "neg"}">${history}</td>
     </tr>`;
   }).join("");
 }
@@ -903,6 +941,17 @@ function bind() {
       state.plannerAction = button.dataset.plannerAction;
       render();
     });
+  });
+  $("recommendationRows").addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-contra-log]");
+    if (!button) return;
+    const text = window.contraLogs?.[button.dataset.contraLog] || "";
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    button.textContent = tr("copied");
+    setTimeout(() => {
+      button.textContent = tr("copyContraLog");
+    }, 1400);
   });
   [["dateFilter", "date"], ["leagueFilter", "league"], ["marketFilter", "market"], ["convictionFilter", "conviction"], ["stakeModeFilter", "stakeMode"], ["quoteFilter", "quote"], ["statusFilter", "status"]].forEach(([id, key]) => {
     $(id).addEventListener("change", (event) => {

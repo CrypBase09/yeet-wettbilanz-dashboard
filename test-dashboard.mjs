@@ -71,6 +71,11 @@ assert.ok(app.includes("closed >= 5"), "aggressive planner can suggest 25%, +25%
 assert.ok(app.includes("closed >= 8"), "aggressive planner can suggest +50% after eight closed bets");
 assert.ok(app.includes("? \"normal\" : \"50\""), "contra indicator can escalate from contra 50% to contra normal");
 assert.ok(app.includes("counterStakeMode === \"normal\""), "contra stake label reflects the selected counter stake mode");
+assert.ok(app.includes("contraTriggerText"), "contra rows expose the exact trigger signal for later matching");
+assert.ok(app.includes("contraLogText"), "contra rows can generate a copyable pre-bet log");
+assert.ok(app.includes("data-contra-log"), "contra rows render a copy action for the pre-bet log");
+assert.ok(app.includes("Zielquote bitte eintragen"), "German contra log reminds the user to capture the real target odds");
+assert.ok(app.includes("Trigger odds band"), "English contra log keeps the trigger odds band separate from the played odds band");
 assert.ok(app.includes("plannerRecommendationKey"), "stake planner recommendations are league-specific");
 assert.ok(app.includes("renderPlannerActionTiles"), "stake planner renders clickable action tiles");
 assert.ok(app.includes("normalStakeFor(row.conviction"), "league-specific planner rows calculate stakes from their conviction field");
