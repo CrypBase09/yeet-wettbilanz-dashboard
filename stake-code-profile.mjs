@@ -8,7 +8,7 @@ export const stakeProfiles = [
   { amount: 0.38, version: "Legacy", conviction: "Medium", stakeMode: "Research 25%", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Warning signal" },
   { amount: 0.42, version: "Legacy", conviction: "Medium", stakeMode: "Contra 25%", strategyType: "Contra", normalStake: 1.50, stakeFactor: 0.25, reductionReason: "Contra signal" },
   { amount: 0.50, version: "Legacy", conviction: "Low", stakeMode: "Research 50%", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" },
-  { amount: 0.52, version: "V2", conviction: "Low", stakeMode: "Research 50% V2", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" },
+  { amount: 0.52, aliases: [0.51], version: "V2", conviction: "Low", stakeMode: "Research 50% V2", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Warning signal" },
   { amount: 0.53, version: "Legacy", conviction: "Low", stakeMode: "Contra 50%", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Contra signal" },
   { amount: 0.59, version: "V2", conviction: "Low", stakeMode: "Contra 50% V2", strategyType: "Contra", normalStake: 1.00, stakeFactor: 0.5, reductionReason: "Contra signal" },
   { amount: 0.63, version: "Legacy", conviction: "High", stakeMode: "Research 25%", normalStake: 2.50, stakeFactor: 0.25, reductionReason: "Warning signal" },
@@ -86,6 +86,8 @@ export function validateStakeProfiles(profiles = stakeProfiles.filter((profile) 
 export function classifyStake(stake, options = {}) {
   const s = round2(stake);
   if (!Number.isFinite(s)) throw new Error(`Invalid stake amount: ${stake}`);
+  const aliasProfile = stakeProfiles.find((profile) => profile.aliases?.some((alias) => Math.abs(s - alias) < 1e-9));
+  if (aliasProfile) return publicProfile(aliasProfile, options.locale);
   const matches = stakeProfiles
     .map((profile) => ({ profile, distance: Math.abs(s - profile.amount) }))
     .filter((item) => item.distance <= STAKE_TOLERANCE + 1e-9)

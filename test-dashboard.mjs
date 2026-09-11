@@ -17,6 +17,7 @@ const contraLogs = JSON.parse(fs.readFileSync("../work/contra-logs/manual_contra
 const serialized = JSON.stringify(data);
 const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
 
+assert.equal(classifyStake(0.51).stakeMode, "Research 50% V2", "observed 0.51 V2 warning stakes resolve before overlapping tolerance bands");
 assert.equal(data.summary.bets, expectedSinceStart, "summary keeps all tracked bets since start date");
 assert.ok(Array.isArray(data.aggregates.byLeague), "league aggregate exists");
 assert.ok(data.aggregates.byLeague.some((row) => row.label === "United States - MLS"), "real leagues are visible");
