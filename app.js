@@ -103,6 +103,16 @@ const text = {
     plannerLeague: "Ausgewählte Liga",
     action: "Aktion",
     recommendedStake: "Einsatz",
+    stakeCodeReference: "Einsatzcodes",
+    stakeCodeReferenceHint: "sichtbare Einsatzgrößen für neue Wetten im aktuellen V2-System",
+    stakeCodeRule: "Neue Wetten: V2-Codes verwenden · Legacy nur Historie",
+    stakeCode25: "25%",
+    stakeCode50: "50%",
+    stakeCodeNormal: "Normal",
+    stakeCodeIncrease25: "+25%",
+    stakeCodeIncrease50: "+50%",
+    stakeCodeContra50: "Kontra 50%",
+    stakeCodeContraNormal: "Kontra Normal",
     history: "Historie",
     increaseStake: "Erhöhter Einsatz",
     increaseStake25: "+25% erhöhter Einsatz",
@@ -216,6 +226,16 @@ const text = {
     plannerLeague: "Selected league",
     action: "Action",
     recommendedStake: "Stake",
+    stakeCodeReference: "Stake codes",
+    stakeCodeReferenceHint: "visible stake sizes for new bets in the current V2 system",
+    stakeCodeRule: "New bets: use V2 codes · legacy only for history",
+    stakeCode25: "25%",
+    stakeCode50: "50%",
+    stakeCodeNormal: "Normal",
+    stakeCodeIncrease25: "+25%",
+    stakeCodeIncrease50: "+50%",
+    stakeCodeContra50: "Counter 50%",
+    stakeCodeContraNormal: "Counter normal",
     history: "History",
     increaseStake: "Increased stake",
     increaseStake25: "+25% increased stake",
@@ -550,6 +570,25 @@ const stakeLadderV2 = {
   Medium: { research25: 0.37, reduceStake: 0.78, playNormal: 1.50, increaseStake25: 1.91, increaseStake50: 2.27, contra50: 0.86, contraNormal: 1.64 },
   High: { research25: 0.69, reduceStake: 1.24, playNormal: 2.50, increaseStake25: 3.16, increaseStake50: 3.77, contra50: 1.36, contraNormal: 2.68 },
 };
+const stakeReferenceRows = [
+  { conviction: "High", codes: [["stakeCode25", "research25"], ["stakeCode50", "reduceStake"], ["stakeCodeNormal", "playNormal"], ["stakeCodeIncrease25", "increaseStake25"], ["stakeCodeIncrease50", "increaseStake50"], ["stakeCodeContra50", "contra50"], ["stakeCodeContraNormal", "contraNormal"]] },
+  { conviction: "Medium", codes: [["stakeCode25", "research25"], ["stakeCode50", "reduceStake"], ["stakeCodeNormal", "playNormal"], ["stakeCodeIncrease25", "increaseStake25"], ["stakeCodeIncrease50", "increaseStake50"], ["stakeCodeContra50", "contra50"], ["stakeCodeContraNormal", "contraNormal"]] },
+  { conviction: "Low", codes: [["stakeCode25", "research25"], ["stakeCode50", "reduceStake"], ["stakeCodeNormal", "playNormal"], ["stakeCodeContra50", "contra50"], ["stakeCodeContraNormal", "contraNormal"]] },
+];
+
+function formatStakeCode(value) {
+  return typeof value === "number" ? `$${value.toFixed(2)}` : "-";
+}
+
+function renderStakeCodeReference() {
+  $("stakeReferenceRows").innerHTML = stakeReferenceRows.map((row) => {
+    const ladder = stakeLadderV2[row.conviction] || {};
+    return `<article class="stake-reference-row">
+      <strong>${esc(labelText(row.conviction))}</strong>
+      <div class="stake-code-grid">${row.codes.map(([labelKey, codeKey]) => `<span><small>${esc(tr(labelKey))}</small><b>${esc(formatStakeCode(ladder[codeKey]))}</b></span>`).join("")}</div>
+    </article>`;
+  }).join("");
+}
 
 function stakeForAction(conviction, action, counterMode = "50") {
   const ladder = stakeLadderV2[conviction];
@@ -734,6 +773,7 @@ function renderPlanner(rows) {
   }, {});
   const leagueLabel = state.filters.league === "all" ? tr("plannerAllLeagues") : `${tr("plannerLeague")}: ${state.filters.league}`;
   $("plannerContext").textContent = leagueLabel;
+  renderStakeCodeReference();
   $("recommendationSummary").innerHTML = [
     ["increaseStake50", "increaseCount", "pos"],
     ["increaseStake25", "increaseCount", "pos"],

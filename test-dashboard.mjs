@@ -43,6 +43,11 @@ assert.ok(html.includes("id=\"plannerActionTiles\""), "stake planner has decisio
 assert.ok(html.includes("data-planner-action=\"contraCheck\""), "stake planner can filter contra-indicator candidates");
 assert.ok(html.includes("<th data-i18n=\"league\"></th><th data-i18n=\"conviction\"></th><th data-i18n=\"segment\"></th><th data-i18n=\"quoteBand\"></th><th data-i18n=\"action\"></th><th data-i18n=\"recommendedStake\"></th><th data-i18n=\"sample\"></th><th data-i18n=\"history\"></th>"), "stake planner columns are ordered as practical decision rows");
 assert.ok(html.includes("id=\"recommendationSummary\""), "stake recommendation summary exists");
+assert.ok(html.includes("id=\"stakeCodeReference\""), "stake planner shows the active stake-code reference");
+assert.ok(app.includes("renderStakeCodeReference"), "stake planner renders the active V2 stake-code reference");
+assert.ok(app.includes("Neue Wetten: V2-Codes verwenden"), "German stake-code reference distinguishes new V2 stakes from legacy history");
+assert.ok(app.includes("New bets: use V2 codes"), "English stake-code reference distinguishes new V2 stakes from legacy history");
+assert.ok(app.includes("stakeReferenceRows"), "stake-code reference uses a dedicated visible V2 stake list");
 assert.ok(html.includes("id=\"briefView\""), "brief view exists");
 assert.ok(html.includes("id=\"focusOnly\" type=\"checkbox\" checked"), "main strategy checkbox is checked by default");
 assert.ok(html.includes("styles.css?v="), "stylesheet has cache busting");

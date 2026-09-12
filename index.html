@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260910-contra-log">
+    <link rel="stylesheet" href="styles.css?v=20260912-stake-reference">
   </head>
   <body>
     <header class="topbar">
@@ -68,6 +68,16 @@
               <span data-i18n="plannerHint"></span>
             </div>
             <div id="recommendationSummary" class="recommendation-summary"></div>
+            <section id="stakeCodeReference" class="stake-code-reference" aria-label="Stake code reference">
+              <div class="stake-code-head">
+                <div>
+                  <h3 data-i18n="stakeCodeReference"></h3>
+                  <span data-i18n="stakeCodeReferenceHint"></span>
+                </div>
+                <strong data-i18n="stakeCodeRule"></strong>
+              </div>
+              <div id="stakeReferenceRows" class="stake-reference-rows"></div>
+            </section>
             <div id="plannerActionTiles" class="planner-action-tiles" aria-label="Planner action filters">
               <button type="button" data-planner-action="all" class="active" data-i18n="plannerActionAll"></button>
               <button type="button" data-planner-action="increaseStake50" data-i18n="increaseStake50"></button>
@@ -236,6 +246,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260910-contra-log"></script>
+    <script src="app.js?v=20260912-stake-reference"></script>
   </body>
 </html>
