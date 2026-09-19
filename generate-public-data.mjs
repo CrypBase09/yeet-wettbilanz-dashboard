@@ -229,8 +229,12 @@ function leagueDisplay(country, normalizedLeague) {
 
 function normalizeLeague(rawLeague, game) {
   const raw = cleanText(rawLeague);
+  if (/^UFC\b/i.test(raw)) {
+    return { rawLeague: raw, country: "Special", normalizedLeague: "UFC", leagueDisplay: "Special - UFC", mappingStatus: "Mapped" };
+  }
   const teamMatch = findTeamOverride(game);
-  const alias = leagueAliases.get(raw);
+  const alias = leagueAliases.get(raw)
+    ?? [...leagueAliases.entries()].find(([name]) => compact(name) === compact(raw))?.[1];
   if (teamMatch && (!alias || alias.ambiguous)) {
     return {
       rawLeague: raw,

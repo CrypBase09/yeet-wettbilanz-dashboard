@@ -2,23 +2,23 @@
   "meta": {
     "title": "YEET Wettbilanz Public Dashboard",
     "startDate": "2026-08-22",
-    "generatedAt": "2026-09-18T21:42:15.928Z",
+    "generatedAt": "2026-09-19T04:24:07.795Z",
     "currency": "USD",
     "privacy": "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design."
   },
   "summary": {
     "label": "All",
     "bets": 1152,
-    "closed": 1143,
-    "won": 574,
+    "closed": 1144,
+    "won": 575,
     "lost": 560,
-    "stake": 1743.7800000000027,
-    "payout": 1665.0399999999995,
-    "net": -78.73999999999991,
-    "oddsSum": 2432.0800000000036,
-    "roi": -0.045154778699147705,
-    "hitRate": 0.5021872265966754,
-    "avgOdds": 2.127804024496941,
+    "stake": 1744.0200000000027,
+    "payout": 1668.8399999999995,
+    "net": -75.17999999999996,
+    "oddsSum": 2434.1100000000038,
+    "roi": -0.04310730381532313,
+    "hitRate": 0.5026223776223776,
+    "avgOdds": 2.1277185314685347,
     "sample": "Robust"
   },
   "dimensions": {
@@ -94,7 +94,8 @@
       "International - UEFA Champions League",
       "International - UEFA Conference League",
       "International - UEFA Europa League",
-      "Italy - Serie A Cup Women"
+      "Italy - Serie A Cup Women",
+      "Special - UFC"
     ],
     "leagueGroups": {
       "leagues": [
@@ -119,7 +120,8 @@
         "China - Chinese Super League",
         "South Korea - K League 1",
         "Saudi Arabia - Saudi Pro League",
-        "Peru - Liga 1"
+        "Peru - Liga 1",
+        "Special - UFC"
       ],
       "cups": [
         "International - UEFA Champions League",
@@ -154,7 +156,21 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "PRIMERA LPF",
+        "country": "Argentina",
+        "normalizedLeague": "Liga Profesional",
+        "leagueDisplay": "Argentina - Liga Profesional",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "Pro League",
+        "country": "Belgium",
+        "normalizedLeague": "Pro League",
+        "leagueDisplay": "Belgium - Pro League",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "PRO LEAGUE",
         "country": "Belgium",
         "normalizedLeague": "Pro League",
         "leagueDisplay": "Belgium - Pro League",
@@ -193,7 +209,7 @@
         "country": "China",
         "normalizedLeague": "Chinese Super League",
         "leagueDisplay": "China - Chinese Super League",
-        "mappingStatus": "Team override"
+        "mappingStatus": "Mapped"
       },
       {
         "rawLeague": "CN Super League",
@@ -217,13 +233,6 @@
         "mappingStatus": "Alias needs team check"
       },
       {
-        "rawLeague": "PREMIER LEAGUE",
-        "country": "England",
-        "normalizedLeague": "Premier League",
-        "leagueDisplay": "England - Premier League",
-        "mappingStatus": "Team override"
-      },
-      {
         "rawLeague": "Ligue 1",
         "country": "France",
         "normalizedLeague": "Ligue 1",
@@ -231,7 +240,21 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "LIGUE 1",
+        "country": "France",
+        "normalizedLeague": "Ligue 1",
+        "leagueDisplay": "France - Ligue 1",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "Ligue 2",
+        "country": "France",
+        "normalizedLeague": "Ligue 2",
+        "leagueDisplay": "France - Ligue 2",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "LIGUE 2",
         "country": "France",
         "normalizedLeague": "Ligue 2",
         "leagueDisplay": "France - Ligue 2",
@@ -246,6 +269,13 @@
       },
       {
         "rawLeague": "Bundesliga",
+        "country": "Germany",
+        "normalizedLeague": "Bundesliga",
+        "leagueDisplay": "Germany - Bundesliga",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "BUNDESLIGA",
         "country": "Germany",
         "normalizedLeague": "Bundesliga",
         "leagueDisplay": "Germany - Bundesliga",
@@ -301,6 +331,13 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "EREDIVISIE",
+        "country": "Netherlands",
+        "normalizedLeague": "Eredivisie",
+        "leagueDisplay": "Netherlands - Eredivisie",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "Liga 1",
         "country": "Peru",
         "normalizedLeague": "Liga 1",
@@ -313,13 +350,6 @@
         "normalizedLeague": "Liga Portugal",
         "leagueDisplay": "Portugal - Liga Portugal",
         "mappingStatus": "Mapped"
-      },
-      {
-        "rawLeague": "PREMIER LEAGUE",
-        "country": "Russia",
-        "normalizedLeague": "Premier Liga",
-        "leagueDisplay": "Russia - Premier Liga",
-        "mappingStatus": "Team override"
       },
       {
         "rawLeague": "Russian Premier",
@@ -343,6 +373,13 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "SAUDI PRO LEAGUE",
+        "country": "Saudi Arabia",
+        "normalizedLeague": "Saudi Pro League",
+        "leagueDisplay": "Saudi Arabia - Saudi Pro League",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "K League 1",
         "country": "South Korea",
         "normalizedLeague": "K League 1",
@@ -355,13 +392,6 @@
         "normalizedLeague": "K League 1",
         "leagueDisplay": "South Korea - K League 1",
         "mappingStatus": "Mapped"
-      },
-      {
-        "rawLeague": "K-LEAGUE 1",
-        "country": "South Korea",
-        "normalizedLeague": "K League 1",
-        "leagueDisplay": "South Korea - K League 1",
-        "mappingStatus": "Team override"
       },
       {
         "rawLeague": "KR K League 1",
@@ -385,10 +415,24 @@
         "mappingStatus": "Mapped"
       },
       {
+        "rawLeague": "LALIGA 2",
+        "country": "Spain",
+        "normalizedLeague": "LaLiga 2",
+        "leagueDisplay": "Spain - LaLiga 2",
+        "mappingStatus": "Mapped"
+      },
+      {
         "rawLeague": "Combo Bet",
         "country": "Special",
         "normalizedLeague": "Combo Bet",
         "leagueDisplay": "Special - Combo Bet",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "UFC 331: VAN VS. PANTOJA 2",
+        "country": "Special",
+        "normalizedLeague": "UFC",
+        "leagueDisplay": "Special - UFC",
         "mappingStatus": "Mapped"
       },
       {
@@ -407,6 +451,13 @@
       },
       {
         "rawLeague": "Super Lig",
+        "country": "Turkey",
+        "normalizedLeague": "Super Lig",
+        "leagueDisplay": "Turkey - Super Lig",
+        "mappingStatus": "Mapped"
+      },
+      {
+        "rawLeague": "SUPER LIG",
         "country": "Turkey",
         "normalizedLeague": "Super Lig",
         "leagueDisplay": "Turkey - Super Lig",
@@ -451,7 +502,6 @@
     ],
     "statuses": [
       "Cashed Out",
-      "In Progress",
       "Lost",
       "Upcoming",
       "Voided",
@@ -534,21 +584,21 @@
       },
       {
         "date": "2026-09-10",
-        "net": 22.209999999999994,
-        "cumulativeNet": -81.94999999999999,
+        "net": 24.139999999999993,
+        "cumulativeNet": -80.01999999999998,
         "closed": 184
       },
       {
         "date": "2026-09-12",
-        "net": -3.2399999999999984,
-        "cumulativeNet": -85.18999999999998,
+        "net": -1.8499999999999976,
+        "cumulativeNet": -81.86999999999998,
         "closed": 29
       },
       {
         "date": "2026-09-17",
-        "net": 6.449999999999999,
-        "cumulativeNet": -78.73999999999998,
-        "closed": 58
+        "net": 6.6899999999999995,
+        "cumulativeNet": -75.17999999999998,
+        "closed": 59
       }
     ],
     "byMarketGroup": [
@@ -559,10 +609,10 @@
         "won": 220,
         "lost": 218,
         "stake": 744.450000000001,
-        "payout": 690.5700000000003,
-        "net": -53.880000000000045,
+        "payout": 691.9600000000003,
+        "net": -52.490000000000045,
         "oddsSum": 880.2899999999989,
-        "roi": -0.07237557928672171,
+        "roi": -0.07050842904157428,
         "hitRate": 0.4988662131519274,
         "avgOdds": 1.9961224489795895,
         "sample": "Robust"
@@ -574,10 +624,10 @@
         "won": 131,
         "lost": 186,
         "stake": 357.62000000000035,
-        "payout": 335.31,
-        "net": -22.309999999999988,
+        "payout": 337.24000000000007,
+        "net": -20.379999999999974,
         "oddsSum": 895.5799999999994,
-        "roi": -0.06238465410211948,
+        "roi": -0.056987864213410754,
         "hitRate": 0.40809968847352024,
         "avgOdds": 2.7899688473520228,
         "sample": "Robust"
@@ -599,17 +649,17 @@
       },
       {
         "label": "BTTS",
-        "bets": 142,
-        "closed": 141,
-        "won": 91,
+        "bets": 143,
+        "closed": 142,
+        "won": 92,
         "lost": 49,
-        "stake": 258.8300000000001,
-        "payout": 289.4499999999999,
-        "net": 30.619999999999997,
-        "oddsSum": 233.88999999999993,
-        "roi": 0.11830158791484753,
-        "hitRate": 0.6453900709219859,
-        "avgOdds": 1.6587943262411342,
+        "stake": 259.0700000000001,
+        "payout": 289.9299999999999,
+        "net": 30.859999999999992,
+        "oddsSum": 235.91999999999993,
+        "roi": 0.119118384992473,
+        "hitRate": 0.647887323943662,
+        "avgOdds": 1.6614084507042248,
         "sample": "Robust"
       },
       {
@@ -629,7 +679,7 @@
       },
       {
         "label": "Other",
-        "bets": 14,
+        "bets": 13,
         "closed": 11,
         "won": 9,
         "lost": 2,
@@ -696,10 +746,10 @@
         "won": 33,
         "lost": 38,
         "stake": 119.15,
-        "payout": 112.48999999999998,
-        "net": -6.660000000000002,
+        "payout": 113.91999999999999,
+        "net": -5.230000000000002,
         "oddsSum": 161.66,
-        "roi": -0.05589592950062947,
+        "roi": -0.043894250944188015,
         "hitRate": 0.4520547945205479,
         "avgOdds": 2.2145205479452055,
         "sample": "Readable"
@@ -726,10 +776,10 @@
         "won": 47,
         "lost": 19,
         "stake": 113.16,
-        "payout": 132.46,
-        "net": 19.3,
+        "payout": 132.96,
+        "net": 19.8,
         "oddsSum": 119.47999999999998,
-        "roi": 0.17055496641922943,
+        "roi": 0.17497348886532343,
         "hitRate": 0.7014925373134329,
         "avgOdds": 1.7832835820895518,
         "sample": "Readable"
@@ -846,10 +896,10 @@
         "won": 21,
         "lost": 27,
         "stake": 65.94000000000001,
-        "payout": 56.41,
-        "net": -9.530000000000005,
+        "payout": 57.8,
+        "net": -8.140000000000004,
         "oddsSum": 106.57999999999998,
-        "roi": -0.14452532605398852,
+        "roi": -0.12344555656657571,
         "hitRate": 0.42857142857142855,
         "avgOdds": 2.175102040816326,
         "sample": "Trend"
@@ -932,16 +982,16 @@
       {
         "label": "Argentina - Liga Profesional",
         "bets": 24,
-        "closed": 23,
-        "won": 11,
+        "closed": 24,
+        "won": 12,
         "lost": 12,
-        "stake": 28.95,
-        "payout": 20.569999999999997,
-        "net": -8.379999999999999,
-        "oddsSum": 34.05,
-        "roi": -0.28946459412780656,
-        "hitRate": 0.4782608695652174,
-        "avgOdds": 1.4804347826086954,
+        "stake": 29.189999999999994,
+        "payout": 21.049999999999997,
+        "net": -8.14,
+        "oddsSum": 36.08,
+        "roi": -0.27886262418636526,
+        "hitRate": 0.5,
+        "avgOdds": 1.5033333333333332,
         "sample": "Trend"
       },
       {
@@ -1036,7 +1086,7 @@
       },
       {
         "label": "Special - Combo Bet",
-        "bets": 3,
+        "bets": 2,
         "closed": 2,
         "won": 0,
         "lost": 2,
@@ -1062,6 +1112,21 @@
         "roi": 0.5757575757575758,
         "hitRate": 1,
         "avgOdds": 1.57,
+        "sample": "Watch"
+      },
+      {
+        "label": "Special - UFC",
+        "bets": 1,
+        "closed": 0,
+        "won": 0,
+        "lost": 0,
+        "stake": 0,
+        "payout": 0,
+        "net": 0,
+        "oddsSum": 0,
+        "roi": 0,
+        "hitRate": 0,
+        "avgOdds": 0,
         "sample": "Watch"
       }
     ],
@@ -1667,6 +1732,21 @@
         "sample": "Watch"
       },
       {
+        "label": "Stade Rennais FC vs. Olympique Marseille",
+        "bets": 4,
+        "closed": 4,
+        "won": 1,
+        "lost": 2,
+        "stake": 6.48,
+        "payout": 4.68,
+        "net": -1.8000000000000003,
+        "oddsSum": 7.6,
+        "roi": -0.2777777777777778,
+        "hitRate": 0.25,
+        "avgOdds": 1.9,
+        "sample": "Watch"
+      },
+      {
         "label": "Hamburger SV vs. FSV Mainz",
         "bets": 4,
         "closed": 4,
@@ -1754,21 +1834,6 @@
         "roi": -0.5771428571428572,
         "hitRate": 0.5,
         "avgOdds": 1.6725,
-        "sample": "Watch"
-      },
-      {
-        "label": "Stade Rennais FC vs. Olympique Marseille",
-        "bets": 4,
-        "closed": 4,
-        "won": 1,
-        "lost": 2,
-        "stake": 6.48,
-        "payout": 3.25,
-        "net": -3.2300000000000004,
-        "oddsSum": 7.6,
-        "roi": -0.49845679012345684,
-        "hitRate": 0.25,
-        "avgOdds": 1.9,
         "sample": "Watch"
       },
       {
@@ -1973,10 +2038,10 @@
         "won": 0,
         "lost": 3,
         "stake": 6.01,
-        "payout": 0,
-        "net": -6.01,
+        "payout": 0.5,
+        "net": -5.51,
         "oddsSum": 6.41,
-        "roi": -1,
+        "roi": -0.9168053244592346,
         "hitRate": 0,
         "avgOdds": 1.6025,
         "sample": "Watch"
@@ -5762,6 +5827,21 @@
         "sample": "Watch"
       },
       {
+        "label": "Genclerbirligi SK vs. Kasimpasa Istanbul",
+        "bets": 2,
+        "closed": 2,
+        "won": 0,
+        "lost": 1,
+        "stake": 2.27,
+        "payout": 1.39,
+        "net": -0.8800000000000001,
+        "oddsSum": 3.3499999999999996,
+        "roi": -0.38766519823788553,
+        "hitRate": 0,
+        "avgOdds": 1.6749999999999998,
+        "sample": "Watch"
+      },
+      {
         "label": "Manchester City vs. Coventry City",
         "bets": 2,
         "closed": 2,
@@ -6104,21 +6184,6 @@
         "roi": -1,
         "hitRate": 0,
         "avgOdds": 1.905,
-        "sample": "Watch"
-      },
-      {
-        "label": "Genclerbirligi SK vs. Kasimpasa Istanbul",
-        "bets": 2,
-        "closed": 2,
-        "won": 0,
-        "lost": 1,
-        "stake": 2.27,
-        "payout": 0,
-        "net": -2.27,
-        "oddsSum": 3.3499999999999996,
-        "roi": -1,
-        "hitRate": 0,
-        "avgOdds": 1.6749999999999998,
         "sample": "Watch"
       },
       {
@@ -7292,6 +7357,21 @@
         "sample": "Watch"
       },
       {
+        "label": "CA Central Cordoba SE vs. Defensa y Justicia",
+        "bets": 1,
+        "closed": 1,
+        "won": 1,
+        "lost": 0,
+        "stake": 0.24,
+        "payout": 0.48,
+        "net": 0.24,
+        "oddsSum": 2.03,
+        "roi": 1,
+        "hitRate": 1,
+        "avgOdds": 2.03,
+        "sample": "Watch"
+      },
+      {
         "label": "CA Central Cordoba SE vs. CA Independiente Avellaneda",
         "bets": 1,
         "closed": 1,
@@ -8417,21 +8497,6 @@
         "sample": "Watch"
       },
       {
-        "label": "19:00",
-        "bets": 1,
-        "closed": 0,
-        "won": 0,
-        "lost": 0,
-        "stake": 0,
-        "payout": 0,
-        "net": 0,
-        "oddsSum": 0,
-        "roi": 0,
-        "hitRate": 0,
-        "avgOdds": 0,
-        "sample": "Watch"
-      },
-      {
         "label": "Menifield, Alonzo vs. Baraniewski, Iwo",
         "bets": 1,
         "closed": 0,
@@ -8470,10 +8535,10 @@
         "won": 131,
         "lost": 186,
         "stake": 357.62000000000035,
-        "payout": 335.31,
-        "net": -22.309999999999988,
+        "payout": 337.24000000000007,
+        "net": -20.379999999999974,
         "oddsSum": 895.5799999999994,
-        "roi": -0.06238465410211948,
+        "roi": -0.056987864213410754,
         "hitRate": 0.40809968847352024,
         "avgOdds": 2.7899688473520228,
         "sample": "Robust"
@@ -8485,27 +8550,27 @@
         "won": 96,
         "lost": 129,
         "stake": 398.12000000000035,
-        "payout": 309.17999999999995,
-        "net": -88.93999999999998,
+        "payout": 310.56999999999994,
+        "net": -87.54999999999997,
         "oddsSum": 458.5799999999999,
-        "roi": -0.22339997990555588,
+        "roi": -0.2199085702803172,
         "hitRate": 0.42290748898678415,
         "avgOdds": 2.020176211453744,
         "sample": "Robust"
       },
       {
         "label": "BTTS",
-        "bets": 142,
-        "closed": 141,
-        "won": 91,
+        "bets": 143,
+        "closed": 142,
+        "won": 92,
         "lost": 49,
-        "stake": 258.8300000000001,
-        "payout": 289.4499999999999,
-        "net": 30.619999999999997,
-        "oddsSum": 233.88999999999993,
-        "roi": 0.11830158791484753,
-        "hitRate": 0.6453900709219859,
-        "avgOdds": 1.6587943262411342,
+        "stake": 259.0700000000001,
+        "payout": 289.9299999999999,
+        "net": 30.859999999999992,
+        "oddsSum": 235.91999999999993,
+        "roi": 0.119118384992473,
+        "hitRate": 0.647887323943662,
+        "avgOdds": 1.6614084507042248,
         "sample": "Robust"
       },
       {
@@ -8630,7 +8695,7 @@
       },
       {
         "label": "Other",
-        "bets": 14,
+        "bets": 13,
         "closed": 11,
         "won": 9,
         "lost": 2,
@@ -8727,10 +8792,10 @@
         "won": 36,
         "lost": 40,
         "stake": 132.44999999999996,
-        "payout": 107.64999999999999,
-        "net": -24.800000000000015,
+        "payout": 109.03999999999999,
+        "net": -23.410000000000007,
         "oddsSum": 127.70000000000003,
-        "roi": -0.18724046810117043,
+        "roi": -0.17674594186485476,
         "hitRate": 0.4675324675324675,
         "avgOdds": 1.6584415584415588,
         "sample": "Readable"
@@ -8802,10 +8867,10 @@
         "won": 24,
         "lost": 21,
         "stake": 53.690000000000005,
-        "payout": 57.76,
-        "net": 4.07,
+        "payout": 59.19,
+        "net": 5.499999999999998,
         "oddsSum": 92.21000000000001,
-        "roi": 0.07580555038182156,
+        "roi": 0.10243993294840749,
         "hitRate": 0.5217391304347826,
         "avgOdds": 2.0045652173913044,
         "sample": "Trend"
@@ -8907,10 +8972,10 @@
         "won": 18,
         "lost": 19,
         "stake": 45.96,
-        "payout": 33.21,
-        "net": -12.75,
+        "payout": 33.71,
+        "net": -12.25,
         "oddsSum": 62.57,
-        "roi": -0.27741514360313313,
+        "roi": -0.2665361183637946,
         "hitRate": 0.47368421052631576,
         "avgOdds": 1.6465789473684211,
         "sample": "Trend"
@@ -8931,6 +8996,21 @@
         "sample": "Trend"
       },
       {
+        "label": "BTTS | 1.80-2.19",
+        "bets": 32,
+        "closed": 32,
+        "won": 19,
+        "lost": 12,
+        "stake": 51.98000000000001,
+        "payout": 63.96999999999999,
+        "net": 11.990000000000002,
+        "oddsSum": 61.99000000000001,
+        "roi": 0.23066564063101191,
+        "hitRate": 0.59375,
+        "avgOdds": 1.9371875000000003,
+        "sample": "Trend"
+      },
+      {
         "label": "Total Goals - Over 2.5 | 1.00-1.49",
         "bets": 33,
         "closed": 32,
@@ -8943,21 +9023,6 @@
         "roi": -0.13205282112845138,
         "hitRate": 0.625,
         "avgOdds": 1.3875000000000002,
-        "sample": "Trend"
-      },
-      {
-        "label": "BTTS | 1.80-2.19",
-        "bets": 31,
-        "closed": 31,
-        "won": 18,
-        "lost": 12,
-        "stake": 51.74,
-        "payout": 63.49,
-        "net": 11.75,
-        "oddsSum": 59.960000000000015,
-        "roi": 0.22709702357943562,
-        "hitRate": 0.5806451612903226,
-        "avgOdds": 1.9341935483870973,
         "sample": "Trend"
       },
       {
@@ -9097,7 +9162,7 @@
       },
       {
         "label": "Other | 1.00-1.49",
-        "bets": 13,
+        "bets": 12,
         "closed": 10,
         "won": 9,
         "lost": 1,
@@ -9659,10 +9724,10 @@
         "won": 11,
         "lost": 12,
         "stake": 21.99,
-        "payout": 16.36,
-        "net": -5.629999999999999,
+        "payout": 16.86,
+        "net": -5.129999999999999,
         "oddsSum": 39.56999999999999,
-        "roi": -0.25602546612096405,
+        "roi": -0.23328785811732602,
         "hitRate": 0.4583333333333333,
         "avgOdds": 1.6487499999999997,
         "sample": "Trend"
@@ -9848,6 +9913,21 @@
         "sample": "Watch"
       },
       {
+        "label": "Medium | 1X2 | 1.80-2.19",
+        "bets": 15,
+        "closed": 15,
+        "won": 8,
+        "lost": 6,
+        "stake": 20.200000000000003,
+        "payout": 23.64,
+        "net": 3.4399999999999995,
+        "oddsSum": 30.490000000000002,
+        "roi": 0.17029702970297025,
+        "hitRate": 0.5333333333333333,
+        "avgOdds": 2.0326666666666666,
+        "sample": "Watch"
+      },
+      {
         "label": "Medium | 1X2 | 1.00-1.49",
         "bets": 15,
         "closed": 15,
@@ -9860,21 +9940,6 @@
         "roi": 0.1330663106364041,
         "hitRate": 0.8,
         "avgOdds": 1.3053333333333332,
-        "sample": "Watch"
-      },
-      {
-        "label": "Medium | 1X2 | 1.80-2.19",
-        "bets": 15,
-        "closed": 15,
-        "won": 8,
-        "lost": 6,
-        "stake": 20.200000000000003,
-        "payout": 22.21,
-        "net": 2.0100000000000002,
-        "oddsSum": 30.490000000000002,
-        "roi": 0.0995049504950495,
-        "hitRate": 0.5333333333333333,
-        "avgOdds": 2.0326666666666666,
         "sample": "Watch"
       },
       {
@@ -10064,10 +10129,10 @@
         "won": 3,
         "lost": 6,
         "stake": 11.99,
-        "payout": 4.95,
-        "net": -7.039999999999999,
+        "payout": 6.340000000000001,
+        "net": -5.6499999999999995,
         "oddsSum": 16.83,
-        "roi": -0.5871559633027522,
+        "roi": -0.4712260216847372,
         "hitRate": 0.3,
         "avgOdds": 1.6829999999999998,
         "sample": "Watch"
@@ -10163,6 +10228,21 @@
         "sample": "Watch"
       },
       {
+        "label": "Low | BTTS | 1.80-2.19",
+        "bets": 7,
+        "closed": 7,
+        "won": 5,
+        "lost": 2,
+        "stake": 3.75,
+        "payout": 5.25,
+        "net": 1.5,
+        "oddsSum": 13.649999999999999,
+        "roi": 0.4,
+        "hitRate": 0.7142857142857143,
+        "avgOdds": 1.9499999999999997,
+        "sample": "Watch"
+      },
+      {
         "label": "Medium | Total Goals - Under 2.5 | 1.80-2.19",
         "bets": 7,
         "closed": 7,
@@ -10194,7 +10274,7 @@
       },
       {
         "label": "Low | Other | 1.00-1.49",
-        "bets": 8,
+        "bets": 7,
         "closed": 6,
         "won": 6,
         "lost": 0,
@@ -10205,21 +10285,6 @@
         "roi": 0.4827586206896552,
         "hitRate": 1,
         "avgOdds": 0.20833333333333334,
-        "sample": "Watch"
-      },
-      {
-        "label": "Low | BTTS | 1.80-2.19",
-        "bets": 6,
-        "closed": 6,
-        "won": 4,
-        "lost": 2,
-        "stake": 3.51,
-        "payout": 4.77,
-        "net": 1.26,
-        "oddsSum": 11.620000000000001,
-        "roi": 0.358974358974359,
-        "hitRate": 0.6666666666666666,
-        "avgOdds": 1.9366666666666668,
         "sample": "Watch"
       },
       {
@@ -11566,10 +11631,10 @@
         "won": 2,
         "lost": 4,
         "stake": 8.5,
-        "payout": 2.96,
-        "net": -5.54,
+        "payout": 4.35,
+        "net": -4.15,
         "oddsSum": 11.64,
-        "roi": -0.6517647058823529,
+        "roi": -0.4882352941176471,
         "hitRate": 0.2857142857142857,
         "avgOdds": 1.662857142857143,
         "sample": "Watch"
@@ -12130,6 +12195,21 @@
         "sample": "Watch"
       },
       {
+        "label": "France - Ligue 1 | 1X2 | 1.80-2.19",
+        "bets": 4,
+        "closed": 4,
+        "won": 3,
+        "lost": 0,
+        "stake": 5.48,
+        "payout": 9.47,
+        "net": 3.99,
+        "oddsSum": 8.15,
+        "roi": 0.7281021897810219,
+        "hitRate": 0.75,
+        "avgOdds": 2.0375,
+        "sample": "Watch"
+      },
+      {
         "label": "Germany - Bundesliga | BTTS | 1.00-1.49",
         "bets": 4,
         "closed": 4,
@@ -12187,21 +12267,6 @@
         "roi": 0.783625730994152,
         "hitRate": 0.75,
         "avgOdds": 2.3649999999999998,
-        "sample": "Watch"
-      },
-      {
-        "label": "France - Ligue 1 | 1X2 | 1.80-2.19",
-        "bets": 4,
-        "closed": 4,
-        "won": 3,
-        "lost": 0,
-        "stake": 5.48,
-        "payout": 8.040000000000001,
-        "net": 2.56,
-        "oddsSum": 8.15,
-        "roi": 0.46715328467153283,
-        "hitRate": 0.75,
-        "avgOdds": 2.0375,
         "sample": "Watch"
       },
       {
@@ -12421,10 +12486,10 @@
         "won": 1,
         "lost": 2,
         "stake": 6.02,
-        "payout": 2.26,
-        "net": -3.76,
+        "payout": 2.76,
+        "net": -3.26,
         "oddsSum": 6.4,
-        "roi": -0.6245847176079734,
+        "roi": -0.5415282392026578,
         "hitRate": 0.25,
         "avgOdds": 1.6,
         "sample": "Watch"
@@ -15595,6 +15660,21 @@
         "sample": "Watch"
       },
       {
+        "label": "Argentina - Liga Profesional | BTTS | 1.80-2.19",
+        "bets": 1,
+        "closed": 1,
+        "won": 1,
+        "lost": 0,
+        "stake": 0.24,
+        "payout": 0.48,
+        "net": 0.24,
+        "oddsSum": 2.03,
+        "roi": 1,
+        "hitRate": 1,
+        "avgOdds": 2.03,
+        "sample": "Watch"
+      },
+      {
         "label": "Belgium - Pro League | Total Goals - Over 2.50 | 1.80-2.19",
         "bets": 1,
         "closed": 1,
@@ -16615,22 +16695,7 @@
         "sample": "Watch"
       },
       {
-        "label": "Argentina - Liga Profesional | Other | 1.00-1.49",
-        "bets": 1,
-        "closed": 0,
-        "won": 0,
-        "lost": 0,
-        "stake": 0,
-        "payout": 0,
-        "net": 0,
-        "oddsSum": 0,
-        "roi": 0,
-        "hitRate": 0,
-        "avgOdds": 0,
-        "sample": "Watch"
-      },
-      {
-        "label": "Special - Combo Bet | Other | 1.00-1.49",
+        "label": "Special - UFC | Other | 1.00-1.49",
         "bets": 1,
         "closed": 0,
         "won": 0,
@@ -17667,6 +17732,21 @@
         "sample": "Watch"
       },
       {
+        "label": "leagues | France - Ligue 1 | Main | 1X2 | Medium | Normal | 1.80-2.19",
+        "bets": 3,
+        "closed": 3,
+        "won": 2,
+        "lost": 0,
+        "stake": 4.48,
+        "payout": 7.57,
+        "net": 3.09,
+        "oddsSum": 6.25,
+        "roi": 0.6897321428571428,
+        "hitRate": 0.6666666666666666,
+        "avgOdds": 2.0833333333333335,
+        "sample": "Watch"
+      },
+      {
         "label": "cups | International - UEFA Champions League | Main | Total Corners - Under 10.5 | Medium | Normal | 1.50-1.79",
         "bets": 3,
         "closed": 3,
@@ -17739,21 +17819,6 @@
         "roi": 0.24465240641711222,
         "hitRate": 1,
         "avgOdds": 1.2433333333333334,
-        "sample": "Watch"
-      },
-      {
-        "label": "leagues | France - Ligue 1 | Main | 1X2 | Medium | Normal | 1.80-2.19",
-        "bets": 3,
-        "closed": 3,
-        "won": 2,
-        "lost": 0,
-        "stake": 4.48,
-        "payout": 6.140000000000001,
-        "net": 1.6600000000000001,
-        "oddsSum": 6.25,
-        "roi": 0.3705357142857143,
-        "hitRate": 0.6666666666666666,
-        "avgOdds": 2.0833333333333335,
         "sample": "Watch"
       },
       {
@@ -22962,6 +23027,21 @@
         "sample": "Watch"
       },
       {
+        "label": "leagues | Argentina - Liga Profesional | Main | BTTS | Low | Research 25% V2 | 1.80-2.19",
+        "bets": 1,
+        "closed": 1,
+        "won": 1,
+        "lost": 0,
+        "stake": 0.24,
+        "payout": 0.48,
+        "net": 0.24,
+        "oddsSum": 2.03,
+        "roi": 1,
+        "hitRate": 1,
+        "avgOdds": 2.03,
+        "sample": "Watch"
+      },
+      {
         "label": "leagues | Belgium - Pro League | Main | Total Goals - Over 2.50 | Low | Research 25% V2 | 1.80-2.19",
         "bets": 1,
         "closed": 1,
@@ -23067,6 +23147,21 @@
         "sample": "Watch"
       },
       {
+        "label": "leagues | Netherlands - Eredivisie | Main | 1X2 | Low | Research 50% V2 | 1.50-1.79",
+        "bets": 1,
+        "closed": 1,
+        "won": 0,
+        "lost": 0,
+        "stake": 0.52,
+        "payout": 0.5,
+        "net": -0.020000000000000018,
+        "oddsSum": 1.55,
+        "roi": -0.03846153846153849,
+        "hitRate": 0,
+        "avgOdds": 1.55,
+        "sample": "Watch"
+      },
+      {
         "label": "leagues | Germany - Bundesliga | Main | Total Corners - Under 11.5 | Low | Research 50% | 1.00-1.49",
         "bets": 1,
         "closed": 1,
@@ -23094,6 +23189,21 @@
         "roi": -0.07633587786259549,
         "hitRate": 0,
         "avgOdds": 1.9,
+        "sample": "Watch"
+      },
+      {
+        "label": "leagues | Turkey - Super Lig | Main | Total Goals - Under 2.5 | Medium | Normal | 1.50-1.79",
+        "bets": 1,
+        "closed": 1,
+        "won": 0,
+        "lost": 0,
+        "stake": 1.5,
+        "payout": 1.39,
+        "net": -0.1100000000000001,
+        "oddsSum": 1.68,
+        "roi": -0.0733333333333334,
+        "hitRate": 0,
+        "avgOdds": 1.68,
         "sample": "Watch"
       },
       {
@@ -23754,21 +23864,6 @@
         "roi": -1,
         "hitRate": 0,
         "avgOdds": 2.18,
-        "sample": "Watch"
-      },
-      {
-        "label": "leagues | Netherlands - Eredivisie | Main | 1X2 | Low | Research 50% V2 | 1.50-1.79",
-        "bets": 1,
-        "closed": 1,
-        "won": 0,
-        "lost": 0,
-        "stake": 0.52,
-        "payout": 0,
-        "net": -0.52,
-        "oddsSum": 1.55,
-        "roi": -1,
-        "hitRate": 0,
-        "avgOdds": 1.55,
         "sample": "Watch"
       },
       {
@@ -25467,21 +25562,6 @@
         "sample": "Watch"
       },
       {
-        "label": "leagues | Turkey - Super Lig | Main | Total Goals - Under 2.5 | Medium | Normal | 1.50-1.79",
-        "bets": 1,
-        "closed": 1,
-        "won": 0,
-        "lost": 0,
-        "stake": 1.5,
-        "payout": 0,
-        "net": -1.5,
-        "oddsSum": 1.68,
-        "roi": -1,
-        "hitRate": 0,
-        "avgOdds": 1.68,
-        "sample": "Watch"
-      },
-      {
         "label": "leagues | Netherlands - Eredivisie | Main | 1X2 | Medium | Normal | 2.20-2.99",
         "bets": 1,
         "closed": 1,
@@ -26487,22 +26567,7 @@
         "sample": "Watch"
       },
       {
-        "label": "leagues | Argentina - Liga Profesional | Main | Other | Low | Research 25% V2 | 1.00-1.49",
-        "bets": 1,
-        "closed": 0,
-        "won": 0,
-        "lost": 0,
-        "stake": 0,
-        "payout": 0,
-        "net": 0,
-        "oddsSum": 0,
-        "roi": 0,
-        "hitRate": 0,
-        "avgOdds": 0,
-        "sample": "Watch"
-      },
-      {
-        "label": "other | Special - Combo Bet | Special | Other | Special | Special | 1.00-1.49",
+        "label": "leagues | Special - UFC | Special | Other | Special | Special | 1.00-1.49",
         "bets": 1,
         "closed": 0,
         "won": 0,
@@ -26566,16 +26631,16 @@
       {
         "label": "Low",
         "bets": 363,
-        "closed": 358,
-        "won": 138,
+        "closed": 359,
+        "won": 139,
         "lost": 217,
-        "stake": 287.97000000000025,
-        "payout": 245.76000000000002,
-        "net": -42.21000000000001,
-        "oddsSum": 951.8599999999991,
-        "roi": -0.1465777685175538,
-        "hitRate": 0.3854748603351955,
-        "avgOdds": 2.6588268156424557,
+        "stake": 288.21000000000026,
+        "payout": 246.74,
+        "net": -41.47000000000001,
+        "oddsSum": 953.8899999999991,
+        "roi": -0.14388813712223716,
+        "hitRate": 0.3871866295264624,
+        "avgOdds": 2.6570752089136462,
         "sample": "Robust"
       },
       {
@@ -26585,10 +26650,10 @@
         "won": 189,
         "lost": 153,
         "stake": 462.41000000000054,
-        "payout": 483.77,
-        "net": 21.359999999999996,
+        "payout": 486.59000000000003,
+        "net": 24.180000000000003,
         "oddsSum": 685.85,
-        "roi": 0.046192772647650295,
+        "roi": 0.05229125667697493,
         "hitRate": 0.546242774566474,
         "avgOdds": 1.9822254335260117,
         "sample": "Robust"
@@ -26617,10 +26682,10 @@
         "won": 438,
         "lost": 406,
         "stake": 1508.470000000002,
-        "payout": 1439.459999999999,
-        "net": -69.01,
+        "payout": 1442.2799999999988,
+        "net": -66.19000000000007,
         "oddsSum": 1731.7899999999995,
-        "roi": -0.04574834103429297,
+        "roi": -0.04387889716069924,
         "hitRate": 0.5159010600706714,
         "avgOdds": 2.0397997644287393,
         "sample": "Robust"
@@ -26647,10 +26712,10 @@
         "won": 40,
         "lost": 34,
         "stake": 64.26000000000003,
-        "payout": 63.94,
-        "net": -0.31999999999999806,
+        "payout": 64.44,
+        "net": 0.18000000000000016,
         "oddsSum": 155.89,
-        "roi": -0.004979769685652006,
+        "roi": 0.0028011204481792726,
         "hitRate": 0.5333333333333333,
         "avgOdds": 2.078533333333333,
         "sample": "Readable"
@@ -26658,16 +26723,16 @@
       {
         "label": "Research 25% V2",
         "bets": 16,
-        "closed": 15,
-        "won": 9,
+        "closed": 16,
+        "won": 10,
         "lost": 6,
-        "stake": 4,
-        "payout": 4.55,
-        "net": 0.55,
-        "oddsSum": 27.679999999999996,
-        "roi": 0.1375,
-        "hitRate": 0.6,
-        "avgOdds": 1.845333333333333,
+        "stake": 4.24,
+        "payout": 5.03,
+        "net": 0.7900000000000003,
+        "oddsSum": 29.709999999999997,
+        "roi": 0.18632075471698117,
+        "hitRate": 0.625,
+        "avgOdds": 1.8568749999999998,
         "sample": "Watch"
       },
       {
@@ -26739,32 +26804,32 @@
         "won": 180,
         "lost": 128,
         "stake": 543.1500000000005,
-        "payout": 537.1700000000001,
-        "net": -5.980000000000012,
+        "payout": 539.0600000000001,
+        "net": -4.090000000000013,
         "oddsSum": 509.5799999999997,
-        "roi": -0.01100984994936943,
+        "roi": -0.007530148209518566,
         "hitRate": 0.5806451612903226,
         "avgOdds": 1.6438064516129023,
         "sample": "Robust"
       },
       {
         "label": "1.80-2.19",
-        "bets": 283,
-        "closed": 281,
-        "won": 140,
+        "bets": 284,
+        "closed": 282,
+        "won": 141,
         "lost": 137,
-        "stake": 414.0600000000004,
-        "payout": 408.74999999999983,
-        "net": -5.31,
-        "oddsSum": 553.7100000000006,
-        "roi": -0.012824228372699595,
-        "hitRate": 0.498220640569395,
-        "avgOdds": 1.9704982206405715,
+        "stake": 414.3000000000004,
+        "payout": 410.65999999999985,
+        "net": -3.640000000000005,
+        "oddsSum": 555.7400000000006,
+        "roi": -0.008785903934347096,
+        "hitRate": 0.5,
+        "avgOdds": 1.9707092198581582,
         "sample": "Robust"
       },
       {
         "label": "1.00-1.49",
-        "bets": 208,
+        "bets": 207,
         "closed": 203,
         "won": 143,
         "lost": 57,
@@ -26826,17 +26891,17 @@
     "byStatus": [
       {
         "label": "Won",
-        "bets": 574,
-        "closed": 574,
-        "won": 574,
+        "bets": 575,
+        "closed": 575,
+        "won": 575,
         "lost": 0,
-        "stake": 927.2500000000011,
-        "payout": 1657.2699999999995,
-        "net": 730.0200000000003,
-        "oddsSum": 1075.3600000000004,
-        "roi": 0.7872957670531134,
+        "stake": 927.4900000000011,
+        "payout": 1657.7499999999995,
+        "net": 730.2600000000003,
+        "oddsSum": 1077.3900000000006,
+        "roi": 0.7873508070167866,
         "hitRate": 1,
-        "avgOdds": 1.873449477351917,
+        "avgOdds": 1.8737217391304357,
         "sample": "Robust"
       },
       {
@@ -26861,27 +26926,12 @@
         "won": 0,
         "lost": 0,
         "stake": 11.07,
-        "payout": 7.7700000000000005,
-        "net": -3.3000000000000003,
+        "payout": 11.09,
+        "net": 0.019999999999999685,
         "oddsSum": 15.209999999999999,
-        "roi": -0.2981029810298103,
+        "roi": 0.0018066847335139733,
         "hitRate": 0,
         "avgOdds": 1.69,
-        "sample": "Watch"
-      },
-      {
-        "label": "In Progress",
-        "bets": 1,
-        "closed": 0,
-        "won": 0,
-        "lost": 0,
-        "stake": 0,
-        "payout": 0,
-        "net": 0,
-        "oddsSum": 0,
-        "roi": 0,
-        "hitRate": 0,
-        "avgOdds": 0,
         "sample": "Watch"
       },
       {
@@ -26924,7 +26974,7 @@
       "country": "China",
       "normalizedLeague": "Chinese Super League",
       "leagueDisplay": "China - Chinese Super League",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "China - Chinese Super League",
       "game": "Zhejiang FC vs. Wuhan Three Towns FC",
       "competitionType": "leagues",
@@ -26965,7 +27015,7 @@
       "country": "China",
       "normalizedLeague": "Chinese Super League",
       "leagueDisplay": "China - Chinese Super League",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "China - Chinese Super League",
       "game": "Zhejiang FC vs. Wuhan Three Towns FC",
       "competitionType": "leagues",
@@ -27001,17 +27051,17 @@
     },
     {
       "date": "2026-09-17",
-      "status": "In Progress",
-      "rawLeague": "Primera LPF",
+      "status": "Won",
+      "rawLeague": "PRIMERA LPF",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
       "mappingStatus": "Mapped",
       "league": "Argentina - Liga Profesional",
-      "game": "19:00",
+      "game": "CA Central Cordoba SE vs. Defensa y Justicia",
       "competitionType": "leagues",
-      "marketGroup": "Other",
-      "fineSegment": "Other",
+      "marketGroup": "BTTS",
+      "fineSegment": "BTTS",
       "direction": "None",
       "line": "None",
       "strategyType": "Main",
@@ -27024,26 +27074,26 @@
       "counterMarket": "",
       "contraTriggerQuoteBand": "",
       "contraLogId": "",
-      "quoteBand": "1.00-1.49",
-      "combination": "leagues | Argentina - Liga Profesional | Main | Other | Low | Research 25% V2 | 1.00-1.49",
+      "quoteBand": "1.80-2.19",
+      "combination": "leagues | Argentina - Liga Profesional | Main | BTTS | Low | Research 25% V2 | 1.80-2.19",
       "isFocus": true,
       "bets": 1,
-      "closed": 0,
-      "won": 0,
+      "closed": 1,
+      "won": 1,
       "lost": 0,
-      "stake": 0,
-      "payout": 0,
-      "net": 0,
-      "oddsSum": 0,
-      "roi": 0,
-      "hitRate": 0,
-      "avgOdds": 0,
+      "stake": 0.24,
+      "payout": 0.48,
+      "net": 0.24,
+      "oddsSum": 2.03,
+      "roi": 1,
+      "hitRate": 1,
+      "avgOdds": 2.03,
       "sample": "Watch"
     },
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "Super Lig",
+      "rawLeague": "SUPER LIG",
       "country": "Turkey",
       "normalizedLeague": "Super Lig",
       "leagueDisplay": "Turkey - Super Lig",
@@ -27084,7 +27134,7 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "Super Lig",
+      "rawLeague": "SUPER LIG",
       "country": "Turkey",
       "normalizedLeague": "Super Lig",
       "leagueDisplay": "Turkey - Super Lig",
@@ -27125,7 +27175,7 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "Super Lig",
+      "rawLeague": "SUPER LIG",
       "country": "Turkey",
       "normalizedLeague": "Super Lig",
       "leagueDisplay": "Turkey - Super Lig",
@@ -27166,7 +27216,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Pro League",
+      "rawLeague": "PRO LEAGUE",
       "country": "Belgium",
       "normalizedLeague": "Pro League",
       "leagueDisplay": "Belgium - Pro League",
@@ -27207,7 +27257,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Pro League",
+      "rawLeague": "PRO LEAGUE",
       "country": "Belgium",
       "normalizedLeague": "Pro League",
       "leagueDisplay": "Belgium - Pro League",
@@ -27248,7 +27298,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Pro League",
+      "rawLeague": "PRO LEAGUE",
       "country": "Belgium",
       "normalizedLeague": "Pro League",
       "leagueDisplay": "Belgium - Pro League",
@@ -27289,7 +27339,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Eredivisie",
+      "rawLeague": "EREDIVISIE",
       "country": "Netherlands",
       "normalizedLeague": "Eredivisie",
       "leagueDisplay": "Netherlands - Eredivisie",
@@ -27330,7 +27380,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Eredivisie",
+      "rawLeague": "EREDIVISIE",
       "country": "Netherlands",
       "normalizedLeague": "Eredivisie",
       "leagueDisplay": "Netherlands - Eredivisie",
@@ -27371,7 +27421,7 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "Eredivisie",
+      "rawLeague": "EREDIVISIE",
       "country": "Netherlands",
       "normalizedLeague": "Eredivisie",
       "leagueDisplay": "Netherlands - Eredivisie",
@@ -27412,7 +27462,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Ligue 2",
+      "rawLeague": "LIGUE 2",
       "country": "France",
       "normalizedLeague": "Ligue 2",
       "leagueDisplay": "France - Ligue 2",
@@ -27453,7 +27503,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Ligue 2",
+      "rawLeague": "LIGUE 2",
       "country": "France",
       "normalizedLeague": "Ligue 2",
       "leagueDisplay": "France - Ligue 2",
@@ -27494,7 +27544,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Ligue 2",
+      "rawLeague": "LIGUE 2",
       "country": "France",
       "normalizedLeague": "Ligue 2",
       "leagueDisplay": "France - Ligue 2",
@@ -27535,7 +27585,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "Ligue 2",
+      "rawLeague": "LIGUE 2",
       "country": "France",
       "normalizedLeague": "Ligue 2",
       "leagueDisplay": "France - Ligue 2",
@@ -27576,7 +27626,7 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "Ligue 2",
+      "rawLeague": "LIGUE 2",
       "country": "France",
       "normalizedLeague": "Ligue 2",
       "leagueDisplay": "France - Ligue 2",
@@ -28847,7 +28897,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -28888,7 +28938,7 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -28929,7 +28979,7 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -28970,11 +29020,11 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FC Dynamo-Makhachkala vs. CSKA Moscow",
       "competitionType": "leagues",
@@ -29011,11 +29061,11 @@
     {
       "date": "2026-09-17",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FC Dynamo-Makhachkala vs. CSKA Moscow",
       "competitionType": "leagues",
@@ -29052,11 +29102,11 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FK Akron Tolyatti vs. RFK Akhmat Grozny",
       "competitionType": "leagues",
@@ -29093,11 +29143,11 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FK Akron Tolyatti vs. RFK Akhmat Grozny",
       "competitionType": "leagues",
@@ -29134,11 +29184,11 @@
     {
       "date": "2026-09-17",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FK Rostov vs. FK Dinamo Moscow",
       "competitionType": "leagues",
@@ -29339,14 +29389,14 @@
     {
       "date": "2026-09-17",
       "status": "Upcoming",
-      "rawLeague": "Combo Bet",
+      "rawLeague": "UFC 331: VAN VS. PANTOJA 2",
       "country": "Special",
-      "normalizedLeague": "Combo Bet",
-      "leagueDisplay": "Special - Combo Bet",
+      "normalizedLeague": "UFC",
+      "leagueDisplay": "Special - UFC",
       "mappingStatus": "Mapped",
-      "league": "Special - Combo Bet",
+      "league": "Special - UFC",
       "game": "Menifield, Alonzo vs. Baraniewski, Iwo",
-      "competitionType": "other",
+      "competitionType": "leagues",
       "marketGroup": "Other",
       "fineSegment": "Other",
       "direction": "None",
@@ -29362,7 +29412,7 @@
       "contraTriggerQuoteBand": "",
       "contraLogId": "",
       "quoteBand": "1.00-1.49",
-      "combination": "other | Special - Combo Bet | Special | Other | Special | Special | 1.00-1.49",
+      "combination": "leagues | Special - UFC | Special | Other | Special | Special | 1.00-1.49",
       "isFocus": false,
       "bets": 1,
       "closed": 0,
@@ -29380,11 +29430,11 @@
     {
       "date": "2026-09-12",
       "status": "Lost",
-      "rawLeague": "K-LEAGUE 1",
+      "rawLeague": "K League 1",
       "country": "South Korea",
       "normalizedLeague": "K League 1",
       "leagueDisplay": "South Korea - K League 1",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "South Korea - K League 1",
       "game": "Bucheon FC 1995 vs. Jeju SK FC",
       "competitionType": "leagues",
@@ -29626,7 +29676,7 @@
     {
       "date": "2026-09-12",
       "status": "Lost",
-      "rawLeague": "Primera LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -29667,7 +29717,7 @@
     {
       "date": "2026-09-12",
       "status": "Won",
-      "rawLeague": "Primera LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -29708,7 +29758,7 @@
     {
       "date": "2026-09-12",
       "status": "Lost",
-      "rawLeague": "Primera LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -29913,11 +29963,11 @@
     {
       "date": "2026-09-12",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "CSKA Moscow vs. FK Rubin Kazan",
       "competitionType": "leagues",
@@ -29954,11 +30004,11 @@
     {
       "date": "2026-09-12",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FK Dinamo Moscow vs. FC Orenburg",
       "competitionType": "leagues",
@@ -29995,11 +30045,11 @@
     {
       "date": "2026-09-12",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FK Dinamo Moscow vs. FC Orenburg",
       "competitionType": "leagues",
@@ -30036,11 +30086,11 @@
     {
       "date": "2026-09-12",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FC Fakel Voronezh vs. FC Baltika Kaliningrad",
       "competitionType": "leagues",
@@ -30077,11 +30127,11 @@
     {
       "date": "2026-09-12",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "FC Fakel Voronezh vs. FC Baltika Kaliningrad",
       "competitionType": "leagues",
@@ -30118,7 +30168,7 @@
     {
       "date": "2026-09-12",
       "status": "Cashed Out",
-      "rawLeague": "Super Lig",
+      "rawLeague": "SUPER LIG",
       "country": "Turkey",
       "normalizedLeague": "Super Lig",
       "leagueDisplay": "Turkey - Super Lig",
@@ -30148,10 +30198,10 @@
       "won": 0,
       "lost": 0,
       "stake": 1.5,
-      "payout": 0,
-      "net": -1.5,
+      "payout": 1.39,
+      "net": -0.1100000000000001,
       "oddsSum": 1.68,
-      "roi": -1,
+      "roi": -0.0733333333333334,
       "hitRate": 0,
       "avgOdds": 1.68,
       "sample": "Watch"
@@ -32291,7 +32341,7 @@
     {
       "date": "2026-09-10",
       "status": "Cashed Out",
-      "rawLeague": "Eredivisie",
+      "rawLeague": "EREDIVISIE",
       "country": "Netherlands",
       "normalizedLeague": "Eredivisie",
       "leagueDisplay": "Netherlands - Eredivisie",
@@ -32321,10 +32371,10 @@
       "won": 0,
       "lost": 0,
       "stake": 0.52,
-      "payout": 0,
-      "net": -0.52,
+      "payout": 0.5,
+      "net": -0.020000000000000018,
       "oddsSum": 1.55,
-      "roi": -1,
+      "roi": -0.03846153846153849,
       "hitRate": 0,
       "avgOdds": 1.55,
       "sample": "Watch"
@@ -34997,7 +35047,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35038,7 +35088,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35079,7 +35129,7 @@
     {
       "date": "2026-09-10",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35120,7 +35170,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35161,7 +35211,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35202,7 +35252,7 @@
     {
       "date": "2026-09-10",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35243,7 +35293,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35284,7 +35334,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35325,7 +35375,7 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35366,7 +35416,7 @@
     {
       "date": "2026-09-10",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35407,7 +35457,7 @@
     {
       "date": "2026-09-10",
       "status": "Lost",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Premier League",
       "country": "England",
       "normalizedLeague": "Premier League",
       "leagueDisplay": "England - Premier League",
@@ -35653,11 +35703,11 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "PFK Krylia Sovetov Samara vs. Rodina Moscow",
       "competitionType": "leagues",
@@ -35694,11 +35744,11 @@
     {
       "date": "2026-09-10",
       "status": "Won",
-      "rawLeague": "PREMIER LEAGUE",
+      "rawLeague": "Russian Premier",
       "country": "Russia",
       "normalizedLeague": "Premier Liga",
       "leagueDisplay": "Russia - Premier Liga",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "Russia - Premier Liga",
       "game": "PFK Krylia Sovetov Samara vs. Rodina Moscow",
       "competitionType": "leagues",
@@ -36883,7 +36933,7 @@
     {
       "date": "2026-09-10",
       "status": "Cashed Out",
-      "rawLeague": "Ligue 1",
+      "rawLeague": "LIGUE 1",
       "country": "France",
       "normalizedLeague": "Ligue 1",
       "leagueDisplay": "France - Ligue 1",
@@ -36913,10 +36963,10 @@
       "won": 0,
       "lost": 0,
       "stake": 1.49,
-      "payout": 0,
-      "net": -1.49,
+      "payout": 1.43,
+      "net": -0.06000000000000005,
       "oddsSum": 2.15,
-      "roi": -1,
+      "roi": -0.040268456375838965,
       "hitRate": 0,
       "avgOdds": 2.15,
       "sample": "Watch"
@@ -38113,11 +38163,11 @@
     {
       "date": "2026-09-08",
       "status": "Lost",
-      "rawLeague": "K-LEAGUE 1",
+      "rawLeague": "K League 1",
       "country": "South Korea",
       "normalizedLeague": "K League 1",
       "leagueDisplay": "South Korea - K League 1",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "South Korea - K League 1",
       "game": "FC Pohang Steelers vs. Gimcheon Sangmu FC",
       "competitionType": "leagues",
@@ -38154,11 +38204,11 @@
     {
       "date": "2026-09-08",
       "status": "Lost",
-      "rawLeague": "K-LEAGUE 1",
+      "rawLeague": "K League 1",
       "country": "South Korea",
       "normalizedLeague": "K League 1",
       "leagueDisplay": "South Korea - K League 1",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "South Korea - K League 1",
       "game": "Gwangju FC vs. Jeju SK FC",
       "competitionType": "leagues",
@@ -38195,11 +38245,11 @@
     {
       "date": "2026-09-08",
       "status": "Won",
-      "rawLeague": "K-LEAGUE 1",
+      "rawLeague": "K League 1",
       "country": "South Korea",
       "normalizedLeague": "K League 1",
       "leagueDisplay": "South Korea - K League 1",
-      "mappingStatus": "Team override",
+      "mappingStatus": "Mapped",
       "league": "South Korea - K League 1",
       "game": "Gangwon FC vs. Jeonbuk FC",
       "competitionType": "leagues",
@@ -40040,7 +40090,7 @@
     {
       "date": "2026-09-07",
       "status": "Cashed Out",
-      "rawLeague": "LaLiga 2",
+      "rawLeague": "LALIGA 2",
       "country": "Spain",
       "normalizedLeague": "LaLiga 2",
       "leagueDisplay": "Spain - LaLiga 2",
@@ -50126,7 +50176,7 @@
     {
       "date": "2026-09-05",
       "status": "Cashed Out",
-      "rawLeague": "LaLiga 2",
+      "rawLeague": "LALIGA 2",
       "country": "Spain",
       "normalizedLeague": "LaLiga 2",
       "leagueDisplay": "Spain - LaLiga 2",
@@ -54513,7 +54563,7 @@
     {
       "date": "2026-09-05",
       "status": "Cashed Out",
-      "rawLeague": "Bundesliga",
+      "rawLeague": "BUNDESLIGA",
       "country": "Germany",
       "normalizedLeague": "Bundesliga",
       "leagueDisplay": "Germany - Bundesliga",
@@ -57629,7 +57679,7 @@
     {
       "date": "2026-09-03",
       "status": "Cashed Out",
-      "rawLeague": "Saudi Pro League",
+      "rawLeague": "SAUDI PRO LEAGUE",
       "country": "Saudi Arabia",
       "normalizedLeague": "Saudi Pro League",
       "leagueDisplay": "Saudi Arabia - Saudi Pro League",
@@ -66403,7 +66453,7 @@
     {
       "date": "2026-08-29",
       "status": "Cashed Out",
-      "rawLeague": "Ligue 1",
+      "rawLeague": "LIGUE 1",
       "country": "France",
       "normalizedLeague": "Ligue 1",
       "leagueDisplay": "France - Ligue 1",
