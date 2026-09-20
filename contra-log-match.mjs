@@ -46,6 +46,6 @@ export function matchContraLog(bet, details, logs) {
 
 export function contraOriginSignal(log) {
   if (!log) return "";
-  const source = log.triggerSource === "derived" ? "abgeleitet" : "real";
+  const source = String(log.triggerSource).startsWith("derived") ? "abgeleitet" : "real";
   return `${log.triggerConviction} | ${log.triggerSegment} | ${log.triggerQuoteBand} | ${log.triggerSample} | ${source} | ${log.id}`;
 }

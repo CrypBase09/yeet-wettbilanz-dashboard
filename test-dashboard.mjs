@@ -16,11 +16,19 @@ const syncScript = fs.readFileSync("../work/sync_obsidian_master_from_yeet.mjs",
 const contraLogs = JSON.parse(fs.readFileSync("../work/contra-logs/manual_contra_logs.json", "utf8"));
 const serialized = JSON.stringify(data);
 const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
+const expectedResolved = source.filter((bet) => ["Won", "Lost", "Cashed Out", "Cashbacked", "Voided"].includes(bet.status)).length;
 
 assert.equal(classifyStake(0.51).stakeMode, "Research 50% V2", "observed 0.51 V2 warning stakes resolve before overlapping tolerance bands");
 assert.equal(classifyStake(0.68).stakeMode, "Research 25% V2", "observed 0.68 stake resolves explicitly to the current V2 high-conviction warning code");
 assert.equal(classifyStake(3.00).stakeMode, "Special", "repeated manual 3.00 stakes remain outside the regular conviction ladder");
 assert.equal(data.summary.bets, expectedSinceStart, "summary keeps all tracked bets since start date");
+assert.equal(data.summary.resolved, expectedResolved, "resolved count includes voided bets without treating them as performance decisions");
+assert.ok(data.cells.every((row) => "resolved" in row), "public cells expose resolved counts separately from performance samples");
+assert.ok(app.includes('`${row.resolved} ${tr("resolved")}`'), "headline uses resolved bets while analytical samples keep closed performance decisions");
+assert.ok(data.cells.every((row) => !String(row.fineSegment).includes(".50")), "equivalent decimal market lines are normalized");
+assert.ok(data.cells.every((row) => row.fineSegment !== "Other" || !/^(Total|Both Teams|1X2)/i.test(row.game)), "shifted legacy rows are repaired before aggregation");
+assert.ok(data.cells.filter((row) => row.strategyType === "Contra").every((row) => row.originSignal), "every contra row explicitly records or flags its origin");
+assert.ok(data.cells.some((row) => row.game === "1. FC Cologne vs. Werder Bremen" && row.originSignal.includes("abgeleitet")), "neighbor-derived contra origin remains labeled as derived");
 assert.ok(Array.isArray(data.aggregates.byLeague), "league aggregate exists");
 assert.ok(data.aggregates.byLeague.some((row) => row.label === "United States - MLS"), "real leagues are visible");
 assert.ok(Array.isArray(data.aggregates.byMatch), "match aggregate exists");

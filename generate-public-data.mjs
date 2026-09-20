@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { contraOriginSignal, loadContraLogs, matchContraLog } from "./contra-log-match.mjs";
 import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
+import { normalizeBetRecord } from "./bet-record-normalizer.mjs";
 
 const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
@@ -370,12 +371,17 @@ function closed(status) {
   return status === "Won" || status === "Lost" || status === "Cashed Out" || status === "Cashbacked";
 }
 
+function resolved(status) {
+  return closed(status) || status === "Voided";
+}
+
 function empty(label) {
-  return { label, bets: 0, closed: 0, won: 0, lost: 0, stake: 0, payout: 0, net: 0, oddsSum: 0 };
+  return { label, bets: 0, resolved: 0, closed: 0, won: 0, lost: 0, stake: 0, payout: 0, net: 0, oddsSum: 0 };
 }
 
 function add(target, bet) {
   target.bets += 1;
+  target.resolved += resolved(bet.status) ? 1 : 0;
   target.closed += closed(bet.status) ? 1 : 0;
   target.won += bet.status === "Won" ? 1 : 0;
   target.lost += bet.status === "Lost" ? 1 : 0;
@@ -389,6 +395,7 @@ function add(target, bet) {
 
 function addAggregate(target, row) {
   target.bets += row.bets;
+  target.resolved += row.resolved;
   target.closed += row.closed;
   target.won += row.won;
   target.lost += row.lost;
@@ -515,7 +522,7 @@ function publicCells(bets) {
   });
 }
 
-const raw = JSON.parse(await fs.readFile(inputPath, "utf8"));
+const raw = JSON.parse(await fs.readFile(inputPath, "utf8")).map(normalizeBetRecord);
 const contraLogs = await loadContraLogs(contraLogPath);
 const sourceBets = raw.filter((bet) => dateOf(bet.created) >= startDate);
 assertKnownStakeCodes(sourceBets);
@@ -554,7 +561,7 @@ const bets = sourceBets.map((bet) => {
     isFocus: (profile.strategyType || "Main") === "Main",
   };
   const contraLog = matchContraLog(bet, row, contraLogs);
-  row.originSignal = contraLog ? contraOriginSignal(contraLog) : profile.strategyType === "Contra" ? "Contra from stake code" : "";
+  row.originSignal = contraLog ? contraOriginSignal(contraLog) : profile.strategyType === "Contra" ? "Unvollständig: Auslöser nicht dokumentiert" : "";
   row.counterMarket = contraLog ? contraLog.targetSegment : profile.strategyType === "Contra" ? row.fineSegment : "";
   row.contraTriggerQuoteBand = contraLog?.triggerQuoteBand || "";
   row.contraLogId = contraLog?.id || "";
@@ -639,6 +646,7 @@ console.log(JSON.stringify({
   publicAggregateCells: cells.length,
   fieldsInPublicCells: Object.keys(cells[0] ?? {}),
   summary: {
+    resolved: summary.resolved,
     closed: summary.closed,
     net: summary.net,
     roi: summary.roi,

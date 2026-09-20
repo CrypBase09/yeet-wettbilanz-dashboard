@@ -94,6 +94,7 @@ const text = {
     matchHint: "sichtbare Spiele, aber ohne IDs und exakte Wettzeitpunkte",
     all: "Alle",
     closed: "abgeschlossen",
+    resolved: "erledigt",
     stake: "Einsatz",
     payout: "Auszahlung",
     updated: "Stand",
@@ -217,6 +218,7 @@ const text = {
     matchHint: "visible matches, without IDs or exact bet timestamps",
     all: "All",
     closed: "closed",
+    resolved: "resolved",
     stake: "Stake",
     payout: "Payout",
     updated: "Updated",
@@ -343,7 +345,7 @@ function plannerRecommendationKey(row) {
 }
 
 function empty(label) {
-  return { label, bets: 0, closed: 0, won: 0, lost: 0, stake: 0, payout: 0, net: 0, oddsSum: 0 };
+  return { label, bets: 0, resolved: 0, closed: 0, won: 0, lost: 0, stake: 0, payout: 0, net: 0, oddsSum: 0 };
 }
 
 function finish(row) {
@@ -363,6 +365,7 @@ function finish(row) {
 
 function merge(target, source) {
   target.bets += source.bets;
+  target.resolved += source.resolved;
   target.closed += source.closed;
   target.won += source.won;
   target.lost += source.lost;
@@ -439,7 +442,7 @@ function groupedLeagueOptions() {
 
 function renderKpis(row) {
   $("bets").textContent = row.bets;
-  $("closed").textContent = `${row.closed} ${tr("closed")}`;
+  $("closed").textContent = `${row.resolved} ${tr("resolved")}`;
   $("net").textContent = money(row.net);
   $("net").className = row.net >= 0 ? "pos" : "neg";
   $("stake").textContent = `${money(row.stake)} ${tr("stake")}`;
