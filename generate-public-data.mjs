@@ -229,7 +229,7 @@ function leagueDisplay(country, normalizedLeague) {
 
 function normalizeLeague(rawLeague, game) {
   const raw = cleanText(rawLeague);
-  if (/^UFC\b/i.test(raw)) {
+  if (/^(?:Special\s*-\s*)?UFC\b/i.test(raw)) {
     return { rawLeague: raw, country: "Special", normalizedLeague: "UFC", leagueDisplay: "Special - UFC", mappingStatus: "Mapped" };
   }
   const teamMatch = findTeamOverride(game);
