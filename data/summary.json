@@ -2,7 +2,7 @@
   "meta": {
     "title": "YEET Wettbilanz Public Dashboard",
     "startDate": "2026-08-22",
-    "generatedAt": "2026-10-16T02:04:27.613Z",
+    "generatedAt": "2026-10-17T02:03:22.175Z",
     "currency": "USD",
     "privacy": "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design."
   },
@@ -166,13 +166,6 @@
         "mappingStatus": "Mapped"
       },
       {
-        "rawLeague": "PRIMERA LPF",
-        "country": "Argentina",
-        "normalizedLeague": "Liga Profesional",
-        "leagueDisplay": "Argentina - Liga Profesional",
-        "mappingStatus": "Mapped"
-      },
-      {
         "rawLeague": "Pro League",
         "country": "Belgium",
         "normalizedLeague": "Pro League",
@@ -195,13 +188,6 @@
       },
       {
         "rawLeague": "Brasileiro Serie A",
-        "country": "Brazil",
-        "normalizedLeague": "Brasileiro Serie A",
-        "leagueDisplay": "Brazil - Brasileiro Serie A",
-        "mappingStatus": "Mapped"
-      },
-      {
-        "rawLeague": "BRASILEIRO SERIE A",
         "country": "Brazil",
         "normalizedLeague": "Brasileiro Serie A",
         "leagueDisplay": "Brazil - Brasileiro Serie A",
@@ -258,13 +244,6 @@
       },
       {
         "rawLeague": "2. Bundesliga",
-        "country": "Germany",
-        "normalizedLeague": "2. Bundesliga",
-        "leagueDisplay": "Germany - 2. Bundesliga",
-        "mappingStatus": "Mapped"
-      },
-      {
-        "rawLeague": "2. BUNDESLIGA",
         "country": "Germany",
         "normalizedLeague": "2. Bundesliga",
         "leagueDisplay": "Germany - 2. Bundesliga",
@@ -40406,7 +40385,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA EUROPA LEAGUE",
+      "rawLeague": "UEFA Europa League",
       "country": "International",
       "normalizedLeague": "UEFA Europa League",
       "leagueDisplay": "International - UEFA Europa League",
@@ -40448,7 +40427,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40490,7 +40469,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40532,7 +40511,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40574,7 +40553,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40700,7 +40679,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40742,7 +40721,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40868,7 +40847,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -40952,7 +40931,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "UEFA CHAMPIONS LEAGUE",
+      "rawLeague": "UEFA Champions League",
       "country": "International",
       "normalizedLeague": "UEFA Champions League",
       "leagueDisplay": "International - UEFA Champions League",
@@ -41162,7 +41141,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41288,7 +41267,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41456,7 +41435,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41498,7 +41477,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41540,7 +41519,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41582,7 +41561,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "PRIMERA LPF",
+      "rawLeague": "Liga Profesional",
       "country": "Argentina",
       "normalizedLeague": "Liga Profesional",
       "leagueDisplay": "Argentina - Liga Profesional",
@@ -41750,7 +41729,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "BRASILEIRO SERIE A",
+      "rawLeague": "Brasileiro Serie A",
       "country": "Brazil",
       "normalizedLeague": "Brasileiro Serie A",
       "leagueDisplay": "Brazil - Brasileiro Serie A",
@@ -41876,7 +41855,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "BRASILEIRO SERIE A",
+      "rawLeague": "Brasileiro Serie A",
       "country": "Brazil",
       "normalizedLeague": "Brasileiro Serie A",
       "leagueDisplay": "Brazil - Brasileiro Serie A",
@@ -41918,7 +41897,7 @@
     {
       "date": "2026-10-10",
       "status": "Won",
-      "rawLeague": "BRASILEIRO SERIE A",
+      "rawLeague": "Brasileiro Serie A",
       "country": "Brazil",
       "normalizedLeague": "Brasileiro Serie A",
       "leagueDisplay": "Brazil - Brasileiro Serie A",
@@ -48638,7 +48617,7 @@
     {
       "date": "2026-10-10",
       "status": "Upcoming",
-      "rawLeague": "2. BUNDESLIGA",
+      "rawLeague": "2. Bundesliga",
       "country": "Germany",
       "normalizedLeague": "2. Bundesliga",
       "leagueDisplay": "Germany - 2. Bundesliga",
@@ -48680,7 +48659,7 @@
     {
       "date": "2026-10-10",
       "status": "Upcoming",
-      "rawLeague": "2. BUNDESLIGA",
+      "rawLeague": "2. Bundesliga",
       "country": "Germany",
       "normalizedLeague": "2. Bundesliga",
       "leagueDisplay": "Germany - 2. Bundesliga",
