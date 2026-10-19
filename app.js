@@ -5,6 +5,7 @@ const state = {
   plannerMode: "sampled",
   plannerAction: "all",
   data: null,
+  refreshFailed: false,
   filters: {
     date: "all",
     league: "all",
@@ -97,7 +98,9 @@ const text = {
     resolved: "erledigt",
     stake: "Einsatz",
     payout: "Auszahlung",
-    updated: "Stand",
+    updated: "Datenstand",
+    placedDate: "Platziert am",
+    refreshError: "Aktualisierung fehlgeschlagen",
     plannerView: "Einsatzplan nach Liga",
     plannerHint: "Liga im Filter wählen und passende Märkte, Conviction und Quotenband prüfen",
     plannerAllLeagues: "Alle Ligen ausgewertet",
@@ -221,7 +224,9 @@ const text = {
     resolved: "resolved",
     stake: "Stake",
     payout: "Payout",
-    updated: "Updated",
+    updated: "Data updated",
+    placedDate: "Placed on",
+    refreshError: "Update failed",
     plannerView: "Stake plan by league",
     plannerHint: "Select a league filter to review markets, conviction, and odds bands",
     plannerAllLeagues: "All leagues evaluated",
@@ -931,8 +936,9 @@ function renderMatches(rows) {
 }
 
 function render() {
+  if (!state.data) { renderDataStamp(); return; }
   document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = tr(node.dataset.i18n); });
-  $("stamp").textContent = `${tr("updated")}: ${state.data.meta.generatedAt.slice(0, 10)}`;
+  renderDataStamp();
   const rows = filteredRows();
   renderKpis(summary(rows));
   renderInsights(rows);
@@ -1009,6 +1015,7 @@ function bind() {
 }
 
 function populate() {
+  if (!state.data) return;
   optionList("dateFilter", state.data.dimensions.dates);
   groupedLeagueOptions();
   optionList("marketFilter", state.data.dimensions.marketGroups);
@@ -1018,14 +1025,36 @@ function populate() {
   optionList("statusFilter", state.data.dimensions.statuses);
 }
 
+function renderDataStamp() {
+  const stamp = $("stamp");
+  const date = state.data ? new Intl.DateTimeFormat(state.lang === "de" ? "de-DE" : "en-GB", {
+    timeZone: "Europe/Berlin", dateStyle: "short", timeStyle: "short",
+  }).format(new Date(state.data.meta.generatedAt)) : "-";
+  stamp.textContent = `${tr("updated")}: ${date}${state.refreshFailed ? ` | ${tr("refreshError")}` : ""}`;
+  stamp.classList.toggle("neg", state.refreshFailed);
+}
+
 async function init() {
-  const res = await fetch("data/summary.json");
-  state.data = await res.json();
-  populate();
   bind();
   state.filters.focusOnly = $("focusOnly").checked;
-  render();
   setView("planner");
+  const refresh = createYeetDataRefresher({
+    onData(data) {
+      state.data = data;
+      state.refreshFailed = false;
+      populate();
+      [["dateFilter", "date"], ["leagueFilter", "league"], ["marketFilter", "market"], ["convictionFilter", "conviction"], ["stakeModeFilter", "stakeMode"], ["quoteFilter", "quote"], ["statusFilter", "status"]]
+        .forEach(([id, key]) => { state.filters[key] = $(id).value; });
+      render();
+    },
+    onSuccess() { state.refreshFailed = false; renderDataStamp(); },
+    onError() { state.refreshFailed = true; renderDataStamp(); },
+  });
+  await refresh();
+  window.addEventListener("focus", refresh);
+  window.addEventListener("pageshow", refresh);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+  setInterval(() => { if (!document.hidden) refresh(); }, 5 * 60 * 1000);
 }
 
 init();
