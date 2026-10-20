@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20260912-stake-reference">
+    <link rel="stylesheet" href="styles.css?v=20261020-research">
   </head>
   <body>
     <header class="topbar">
@@ -30,6 +30,7 @@
           <button type="button" data-view="leagues" data-i18n="leaguesTab">Ligen</button>
           <button type="button" data-view="matches" data-i18n="matchesTab">Spiele</button>
           <button type="button" data-view="odds" data-i18n="oddsTab">Quoten</button>
+          <button type="button" data-view="research" data-i18n="researchTab">Tests</button>
         </nav>
 
         <section class="filters">
@@ -45,6 +46,16 @@
       </aside>
 
       <section class="content">
+        <section class="view" id="researchView">
+          <div class="panel-head">
+            <div><h2 data-i18n="researchTitle"></h2><span id="researchStamp"></span></div>
+            <label><span data-i18n="researchScope"></span><select id="researchScope"><option value="leagues">Ligen</option><option value="nationalCups">Nationale Pokale</option><option value="international">International</option></select></label>
+          </div>
+          <p id="researchSafety" class="research-note"></p>
+          <p id="researchQuality" class="research-note"></p>
+          <div class="table-scroll"><table class="analysis-table research-table"><thead id="researchHead"></thead><tbody id="researchRows"></tbody></table></div>
+          <div id="researchDetails" class="research-details"></div>
+        </section>
         <section class="kpis">
           <article><span data-i18n="bets"></span><strong id="bets">0</strong><small id="closed"></small></article>
           <article><span data-i18n="net"></span><strong id="net">$0.00</strong><small id="stake"></small></article>
@@ -247,6 +258,6 @@
     </main>
 
     <script src="data-refresh.js?v=20261019-freshness"></script>
-    <script src="app.js?v=20261019-freshness"></script>
+    <script src="app.js?v=20261020-research"></script>
   </body>
 </html>

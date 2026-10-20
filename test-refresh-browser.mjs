@@ -59,8 +59,25 @@ try {
   fail = false;
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await page.waitForFunction(() => !document.querySelector("#stamp").textContent.includes("Update failed"));
+  await page.locator('[data-view="research"]').click();
+  assert.equal(await page.locator("#researchRows tr").count(), 5);
+  assert.equal(await page.locator(".sidebar .filters").isVisible(), false);
+  await page.selectOption("#researchScope", "international");
+  assert.equal(await page.locator("#researchRows tr").count(), 5);
+  await page.locator('[data-lang="de"]').click();
+  assert.equal(await page.locator("#researchScope").inputValue(), "international");
+  assert.match(await page.locator("#researchSafety").textContent(), /Keine automatische/);
+  await page.locator("#researchDetails summary").first().click();
+  await page.screenshot({ path: path.join(verification, "research-desktop.png") });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: path.join(verification, "research-mobile.png") });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await page.selectOption("#researchScope", "nationalCups");
+  assert.equal(await page.locator("#researchRows tr").count(), 5);
+  await page.locator('[data-view="planner"]').click();
+  assert.equal(await page.locator(".sidebar .filters").isVisible(), true);
   assert.deepEqual(errors, []);
-  console.log("PASS: fresh requests, focus refresh, filters/language/view preserved, failure recovery, desktop/mobile.");
+  console.log("PASS: freshness, preserved filters/language, research scope/details, no JS errors or mobile overflow.");
 } finally {
   await browser.close();
   await new Promise((resolve) => server.close(resolve));

@@ -3,6 +3,7 @@ import path from "node:path";
 import { contraOriginSignal, loadContraLogs, matchContraLog } from "./contra-log-match.mjs";
 import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
 import { normalizeBetRecord } from "./bet-record-normalizer.mjs";
+import { buildResearch, cupIdentity, researchInput, researchCompetitionType } from "./research-monitor.mjs";
 
 const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
@@ -230,6 +231,15 @@ function leagueDisplay(country, normalizedLeague) {
 
 function normalizeLeague(rawLeague, game) {
   const raw = cleanText(rawLeague);
+  const cup = cupIdentity(raw);
+  if (cup) {
+    const existing = [...leagueAliases.entries()].find(([name]) => compact(name) === compact(raw))?.[1];
+    if (!cup.known && existing && !existing.ambiguous) {
+      return { rawLeague: raw, country: existing.country, normalizedLeague: existing.normalizedLeague, leagueDisplay: leagueDisplay(existing.country, existing.normalizedLeague), mappingStatus: "Mapped" };
+    }
+    const country = cup.known ? cup.country : "Unknown";
+    return { rawLeague: raw, country, normalizedLeague: cup.name, leagueDisplay: leagueDisplay(country, cup.name), mappingStatus: cup.known ? "Mapped" : "Unmapped" };
+  }
   if (/^(?:Special\s*-\s*)?UFC\b/i.test(raw)) {
     return { rawLeague: raw, country: "Special", normalizedLeague: "UFC", leagueDisplay: "Special - UFC", mappingStatus: "Mapped" };
   }
@@ -287,10 +297,7 @@ function configuredLeagueMappings() {
 }
 
 function competitionType(league) {
-  const text = cleanText(league);
-  if (/combo/i.test(text)) return "other";
-  if (/uefa|conference|europa|champions league|cup|pokal|copa|trophy/i.test(text)) return "cups";
-  return "leagues";
+  return researchCompetitionType(cleanText(league));
 }
 
 function leagueRank(league) {
@@ -637,6 +644,9 @@ const payload = {
   },
   cells,
 };
+
+const protocol = JSON.parse(await fs.readFile(path.join(root, "work/research/protocol.json"), "utf8"));
+payload.research = buildResearch(bets.map((bet, index) => researchInput(bet, sourceBets[index])), protocol);
 
 await fs.writeFile(outputPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 console.log(JSON.stringify({

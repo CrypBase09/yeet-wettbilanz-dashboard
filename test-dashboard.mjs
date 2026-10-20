@@ -15,6 +15,12 @@ const generator = fs.readFileSync("generate-public-data.mjs", "utf8");
 const syncScript = fs.readFileSync("../work/sync_obsidian_master_from_yeet.mjs", "utf8");
 const contraLogs = JSON.parse(fs.readFileSync("../work/contra-logs/manual_contra_logs.json", "utf8"));
 const serialized = JSON.stringify(data);
+assert.equal(data.research?.automaticStakeChanges, false, "research cannot change live stakes");
+assert.equal(data.research.groups.length, 15, "five frozen hypotheses are monitored separately for three competition classes");
+assert.ok(data.research.groups.filter(g => g.id === "btts-medium").reduce((n, g) => n + g.history.decisions + g.fresh.decisions, 0) >= 40, "real source BTTS-Yes selections reach the research monitor despite generic dashboard labels");
+assert.ok(!serialized.includes("baselineHashes") && !serialized.includes("sourceCreated") && !serialized.includes("sourceId"), "research publishes no source identities or exact private placement timestamps");
+assert.ok(data.research.groups.every(group => group.fresh.closed || group.fresh.net === null), "empty prospective samples never display synthetic profit");
+assert.ok(html.includes('id="researchView"'), "research monitor is accessible in the dashboard");
 const expectedSinceStart = source.filter((bet) => String(bet.created).slice(0, 10) >= data.meta.startDate).length;
 const expectedResolved = source.filter((bet) => ["Won", "Lost", "Cashed Out", "Cashbacked", "Voided"].includes(bet.status)).length;
 

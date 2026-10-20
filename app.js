@@ -4,6 +4,7 @@ const state = {
   segmentConviction: "High",
   plannerMode: "sampled",
   plannerAction: "all",
+  researchScope: "leagues",
   data: null,
   refreshFailed: false,
   filters: {
@@ -29,6 +30,9 @@ const text = {
     leaguesTab: "Ligen",
     matchesTab: "Spiele",
     oddsTab: "Quoten",
+    researchTab: "Tests",
+    researchTitle: "Laufende Strategietests",
+    researchScope: "Wettbewerbsklasse",
     date: "Datum",
     league: "Liga",
     market: "Markt",
@@ -149,6 +153,9 @@ const text = {
     eyebrow: "Strategy dashboard",
     title: "YEET Betting Ledger",
     subtitle: "Performance, leagues, and match patterns in a compact preview.",
+    researchTab: "Tests",
+    researchTitle: "Ongoing strategy tests",
+    researchScope: "Competition class",
     plannerTab: "Stake plan",
     briefTab: "Brief",
     segmentsTab: "Segments",
@@ -935,6 +942,34 @@ function renderMatches(rows) {
   $("matchCards").innerHTML = aggregate(rows, "game").slice(0, 36).map((row) => statCard(row)).join("");
 }
 
+function renderResearch() {
+  const r = state.data.research;
+  if (!r) { $("researchRows").innerHTML = ""; return; }
+  const de = state.lang === "de";
+  const say = (german, english) => de ? german : english;
+  const scopeLabels = { leagues: say("Ligen", "Domestic leagues"), nationalCups: say("Nationale Pokale", "Domestic cups"), international: say("Internationale Vereinswettbewerbe", "International club competitions") };
+  for (const option of $("researchScope").options) option.textContent = scopeLabels[option.value];
+  $("researchScope").value = state.researchScope;
+  $("researchStamp").textContent = `${say("Testbeginn", "Protocol started")}: ${new Date(r.startedAt).toLocaleString(de ? "de-DE" : "en-GB", { timeZone: "Europe/Berlin" })} (Berlin) | ${r.baselineCount} ${say("Bestandswetten", "baseline bets")}`;
+  $("researchSafety").textContent = say("Vorlaeufig. Keine automatische Einsatzfreigabe. Historie und neue Ergebnisse getrennt; Pruefpunkte 15 / 30 / 50. Simulationen sind keine erzielten Gewinne.", "Provisional. No automatic stake approval. History and new results are separate; reviews at 15 / 30 / 50. Simulations are not realised profits.");
+  $("researchQuality").textContent = `${say("Unklare/ausgeschlossene Hauptstrategie-Zuordnungen", "Unclear/excluded Main assignments")}: ${r.quality.blocked} | ${say("Pokalwetten mit fehlendem Kontext", "Cup bets with missing context")}: ${r.quality.missingCupContext}`;
+  const pct = n => n == null ? "--" : `${(n * 100).toFixed(1)}%`;
+  const money = n => n == null ? "--" : `${n < 0 ? "-" : ""}$${Math.abs(n).toFixed(2)}`;
+  const headers = [say("Test / Conviction", "Test / conviction"), say("Quotenfenster", "Odds window"), say("Historie n / ROI", "History n / ROI"), say("Neu / Ziel", "New / target"), say("Spiele / Tage", "Games / days"), say("Neu Netto / ROI", "New net / ROI"), say("Gleich-Einsatz-ROI", "Flat-stake ROI"), say("Bewertung", "Assessment")];
+  $("researchHead").innerHTML = `<tr>${headers.map(h => `<th>${esc(h)}</th>`).join("")}</tr>`;
+  const groups = r.groups.filter(g => g.scope === state.researchScope);
+  const name = g => `${say({ loss: "Verlustbegrenzung", weight: "Einsatzgewichtung", odds: "Quotenfenster" }[g.family], { loss: "Loss containment", weight: "Stake weighting", odds: "Odds window" }[g.family])}: ${g.segment} / ${g.conviction || say("alle", "all")}`;
+  const assessment = key => say({ collecting: "Neue Daten sammeln", insufficientSpread: "Zu wenige Spiele / Tage", positiveUnconfirmed: "Vorlaeufig positiv, unbestaetigt", negativeUnconfirmed: "Vorlaeufig negativ, unbestaetigt", mixedUnconfirmed: "Widerspruechliche Bilanz" }[key], { collecting: "Collecting new data", insufficientSpread: "Too few games / days", positiveUnconfirmed: "Provisionally positive, unconfirmed", negativeUnconfirmed: "Provisionally negative, unconfirmed", mixedUnconfirmed: "Mixed results" }[key]);
+  $("researchRows").innerHTML = groups.map(g => `<tr><td>${esc(name(g))}</td><td>${g.lo ? `${g.lo.toFixed(2)} &le; q &lt; ${g.hi.toFixed(2)}` : say("Alle", "All")}</td><td>${g.history.decisions} / ${pct(g.history.roi)}</td><td><progress max="${g.nextCheckpoint || 50}" value="${Math.min(g.fresh.decisions, g.nextCheckpoint || 50)}"></progress><span>${g.fresh.decisions} / ${g.nextCheckpoint || "50+"}</span></td><td>${g.fresh.games} / ${g.fresh.days}</td><td>${money(g.fresh.net)} / ${pct(g.fresh.roi)}</td><td>${pct(g.fresh.flatRoi)}</td><td>${g.checkpoint ? say(`Pruefpunkt ${g.checkpoint}: Bewertung offen`, `Checkpoint ${g.checkpoint}: review pending`) : say("Neue Daten sammeln", "Collecting new data")}${g.fresh.days < 4 ? `<small>${say("Weniger als 4 Platzierungstage", "Fewer than 4 placement days")}</small>` : ""}</td></tr>`).join("");
+  $("researchDetails").innerHTML = groups.map(g => {
+    const metrics = (s, label) => `<tr><td>${label}</td><td>${s.decisions}</td><td>${money(s.net)}</td><td>${pct(s.roi)}</td><td>${pct(s.flatRoi)}</td><td>${pct(s.normalRoi)}</td>${g.family === "loss" ? `<td>${money(s.quarterNet)}</td>` : ""}</tr>`;
+    const detailHeader = [say("Basis", "Basis"), "n", say("Echt Netto", "Actual net"), say("Echt ROI", "Actual ROI"), say("Gleich ROI", "Flat ROI"), say("Normal ROI (sim.)", "Normal ROI (sim.)"), ...(g.family === "loss" ? [say("25% Ist-Netto (sim.)", "25% actual net (sim.)")] : [])];
+    const perCompetition = g.byCompetition.map(c => `<li>${esc(c.league)}: ${say("Historie", "History")} ${c.history.decisions} / ${pct(c.history.roi)}; ${say("neu", "new")} ${c.fresh.decisions} / ${pct(c.fresh.roi)}</li>`).join("");
+    const conviction = g.byConviction.map(c => `<li>${c.conviction}: ${say("Historie echt / gleich", "History actual / flat")} ${pct(c.history.roi)} / ${pct(c.history.flatRoi)}; ${say("neu echt / gleich", "new actual / flat")} ${pct(c.fresh.roi)} / ${pct(c.fresh.flatRoi)}</li>`).join("");
+    return `<details><summary>${esc(name(g))}</summary><p>${esc(assessment(g.assessment))}</p><div class="table-scroll"><table><thead><tr>${detailHeader.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${metrics(g.history, say("Historie ab 16.09.", "History from 16 Sep"))}${metrics(g.fresh, say("Neue Wetten", "New bets"))}${g.control ? metrics(g.control.history, say("Ausserhalb Fenster: Historie", "Outside window: history")) + metrics(g.control.fresh, say("Ausserhalb Fenster: neu", "Outside window: new")) : ""}</tbody></table></div><p>${say("Neu offen / storniert / Cashout", "New pending / void / cashout")}: ${g.fresh.pending} / ${g.fresh.voided} / ${g.fresh.cashouts}. ${say("Flat-ROI, beschreibendes 95%-Intervall", "Flat ROI, descriptive 95% interval")}: ${g.fresh.unitCi ? g.fresh.unitCi.map(pct).join(" / ") : "--"}.</p><p>${say("Gleich-ROI nur Won/Lost; echter und Normal-ROI inklusive Cashouts. Intervalle nicht fuer Mehrfachtests korrigiert. Fehlender Pokalkontext bleibt unbekannt.", "Flat ROI uses Won/Lost only; actual and normal ROI include cashouts. Intervals are not adjusted for multiple testing. Missing cup context remains unknown.")}</p>${perCompetition || conviction ? `<ul>${perCompetition}${conviction}</ul>` : ""}</details>`;
+  }).join("");
+}
+
 function render() {
   if (!state.data) { renderDataStamp(); return; }
   document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = tr(node.dataset.i18n); });
@@ -948,10 +983,12 @@ function render() {
   renderLeagues(rows);
   renderMatches(rows);
   renderOdds(rows);
+  renderResearch();
 }
 
 function setView(view) {
   state.view = view;
+  document.body.dataset.view = view;
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === view);
   });
@@ -961,6 +998,7 @@ function setView(view) {
 }
 
 function bind() {
+  $("researchScope").addEventListener("change", event => { state.researchScope = event.target.value; renderResearch(); });
   document.querySelectorAll("[data-lang]").forEach((button) => {
     button.addEventListener("click", () => {
       state.lang = button.dataset.lang;
