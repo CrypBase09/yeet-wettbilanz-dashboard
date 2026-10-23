@@ -121,7 +121,7 @@ const text = {
     stakeCodeIncrease50: "+50%",
     stakeCodeContra50: "Kontra 50%",
     stakeCodeContraNormal: "Kontra Normal",
-    history: "Historie",
+    history: "Bilanz",
     increaseStake: "Erhöhter Einsatz",
     increaseStake25: "+25% erhöhter Einsatz",
     increaseStake50: "+50% erhöhter Einsatz",
@@ -250,7 +250,7 @@ const text = {
     stakeCodeIncrease50: "+50%",
     stakeCodeContra50: "Counter 50%",
     stakeCodeContraNormal: "Counter normal",
-    history: "History",
+    history: "Performance",
     increaseStake: "Increased stake",
     increaseStake25: "+25% increased stake",
     increaseStake50: "+50% increased stake",
@@ -679,8 +679,7 @@ function contraLogText(row) {
 
 function contraHistory(row, id) {
   const trigger = `${tr("contraTrigger")}: ${contraTriggerText(row)}`;
-  const target = `${tr("contraTarget")}: ${row.counterMarket || counterSegment(row.segment)}`;
-  return `<div class="contra-log" title="${esc(trigger)}"><div>${esc(target)}</div><button type="button" data-contra-log="${id}">${esc(tr("copyContraLog"))}</button></div>`;
+  return `<div class="contra-log" title="${esc(trigger)}"><button type="button" data-contra-log="${id}">${esc(tr("copyContraLog"))}</button></div>`;
 }
 
 function formLabel(status) {
@@ -707,14 +706,27 @@ function counterComparison(row) {
   const data = state.data.plannerHistory;
   if (!data) return "";
   const pair = window.YeetPlannerHistory.comparisonFor(data, window.YeetPlannerHistory.key(row), state.filters);
-  const label = state.lang === "de" ? "Kontra gespielt" : "Counter bets played";
   const sample = pair.contra;
-  const metric = sample.closed ? `${sample.closed} ${tr("closedShort")} | ${money(sample.net)} | ${pct(sample.roi)} ROI` : state.lang === "de" ? `${sample.pending} offen | noch keine Abrechnung` : `${sample.pending} pending | no settled results`;
   const documented = pair.snapshots.length
     ? pair.snapshots.map(s => `<div>${esc(state.lang === "de" ? "Dokumentierter Signalstand" : "Documented signal snapshot")}: ${esc(new Date(s.asOf).toLocaleString(state.lang === "de" ? "de-DE" : "en-GB", { timeZone: "Europe/Berlin" }))} | ${s.closed} ${tr("closedShort")} | ${money(s.net)} | ${pct(s.roi)} ROI${row.derivedSuggestion ? ` | ${esc(s.key.split(" | ").at(-1))}` : ""}</div>`).join("")
-    : `<div class="muted">${state.lang === "de" ? "Signalstand beim Einstieg: nicht dokumentiert" : "Signal state at entry: not documented"}</div>`;
+    : `<div class="muted">${state.lang === "de" ? "Einstieg: nicht dokumentiert" : "Entry: not documented"}</div>`;
   if (!row.counterCandidate && !sample.bets) return "";
-  return `<div class="counter-comparison"><strong>${label}</strong><div class="${sample.net > 0 ? "pos" : sample.net < 0 ? "neg" : ""}">${esc(metric)}</div>${renderBandForm(row, "contra")}${documented}</div>`;
+  if (!sample.closed) return `<div class="planner-counter-empty">${state.lang === "de" ? `Kontra: ${sample.pending ? `${sample.pending} offen; ` : ""}noch keine Abrechnung` : `Counter: ${sample.pending ? `${sample.pending} pending; ` : ""}no settled results`}</div>${sample.bets ? `<div class="counter-comparison">${renderBandForm(row, "contra")}${documented}</div>` : ""}`;
+  return `<div class="counter-comparison">${plannerPerformance(sample, state.lang === "de" ? "Kontra gespielt" : "Counter bets played")}${renderBandForm(row, "contra")}${documented}</div>`;
+}
+
+function plannerPerformance(stats, label) {
+  const value = (n, formatter) => n == null ? "--" : formatter(n);
+  const sign = n => n == null ? "" : n < 0 ? "neg" : "pos";
+  return `<div class="planner-result"><div class="planner-result-title"><strong>${esc(label)}</strong><span>${stats.closed} ${tr("closedShort")}</span></div><div class="planner-result-values"><div><small>${tr("net")}</small><b class="${sign(stats.net)}">${value(stats.net, money)}</b></div><div><small>ROI</small><b class="${sign(stats.roi)}">${value(stats.roi, pct)}</b></div><div><small title="${state.lang === "de" ? "Nur gewonnene / verlorene Wetten, ohne Cashouts und Stornos" : "Won/Lost only, excluding cashouts and voids"}">${state.lang === "de" ? "Treffer (W/L)" : "Hit (W/L)"}</small><b>${value(stats.hitRate, pct)}</b></div></div></div>`;
+}
+
+function plannerBalance(row) {
+  const pair = window.YeetPlannerHistory.comparisonFor(state.data.plannerHistory, window.YeetPlannerHistory.key(row), state.filters);
+  const original = row.derivedSuggestion
+    ? `<div class="planner-derived-note">${esc(tr("derivedSuggestion"))} ${esc(tr("derivedFromNeighborBands"))}: ${row.derivedFromNeighborBands.map(esc).join(" / ")}<small>${row.sourceClosed} ${tr("closedShort")}</small></div>`
+    : plannerPerformance(pair.original, state.lang === "de" ? "Original aktuell" : "Original current");
+  return `<div class="planner-balance${pair.contra.closed && !row.derivedSuggestion ? " paired" : ""}">${original}${counterComparison(row)}</div>`;
 }
 
 function renderContraOverview() {
@@ -864,17 +876,20 @@ function renderPlanner(rows) {
     const sampleLabel = row.derivedSuggestion
       ? `${tr("derivedSuggestion")} (${row.sourceClosed})`
       : labelText(row.sample);
-    const originalHistory = row.derivedSuggestion ? plannerHistory(row) : `${state.lang === "de" ? "Original aktuell" : "Original current"}: ${plannerHistory(row)}`;
-    const history = `<div>${originalHistory}</div>${counterComparison(row)}${row.counterCandidate ? contraHistory(row, logId) : ""}`;
-    return `<tr>
-      <td>${esc(league)}</td>
+    const history = plannerBalance(row);
+    const parts = league.split(" - ");
+    const competition = parts.length > 1 ? parts.slice(1).join(" - ") : league;
+    const country = parts.length > 1 ? parts[0] : "";
+    const amount = stakeForAction(conviction, action, row.counterStakeMode || "50");
+    return `<tr class="planner-row" data-action="${esc(action)}">
+      <td title="${esc(league)}"><strong class="planner-league-name">${esc(competition)}</strong><small class="planner-country-name">${esc(country)}</small></td>
       <td>${esc(labelText(conviction))}</td>
-      <td>${esc(labelText(segment))}${renderBandForm(row)}</td>
+      <td><strong class="planner-market-name">${esc(labelText(segment))}</strong>${row.derivedSuggestion ? `<small class="planner-derived-source">${esc(tr("derivedSuggestion"))}</small>` : renderBandForm(row)}</td>
       <td>${esc(quoteBand)}</td>
-      <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
-      <td><strong>${esc(recommendedStake(row))}</strong></td>
-      <td>${esc(sampleLabel)}</td>
-      <td class="${row.net >= 0 ? "pos" : "neg"}">${history}</td>
+      <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span>${row.counterCandidate ? `<small class="planner-target-market">${esc(row.counterMarket || counterSegment(segment))}</small>` : ""}</td>
+      <td title="${esc(recommendedStake(row))}"><strong class="planner-stake-number">${money(amount)}</strong>${action === "contraCheck" ? `<small class="planner-stake-mode">${tr(row.counterStakeMode === "normal" ? "contraNormal" : "contraStake")}</small>` : ""}</td>
+      <td class="planner-sample">${esc(sampleLabel)}</td>
+      <td>${history}${row.counterCandidate ? `<div class="planner-log-action">${contraHistory(row, logId)}</div>` : ""}</td>
     </tr>`;
   }).join("");
 }

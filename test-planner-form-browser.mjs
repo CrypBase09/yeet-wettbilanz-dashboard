@@ -24,6 +24,14 @@ try {
   page.on("pageerror", error => errors.push(error.message));
   await page.goto(process.env.YEET_FORM_TEST_URL || `http://127.0.0.1:${server.address().port}/`);
   await page.waitForFunction(() => state.data?.plannerHistory && document.querySelectorAll(".form-mark").length > 0);
+  const colorMismatches = await page.locator("#recommendationRows > tr").evaluateAll(rows => rows.filter(row => getComputedStyle(row.querySelector("td:nth-child(5) .signal")).color !== getComputedStyle(row.querySelector("td:nth-child(6) strong")).color).length);
+  assert.equal(colorMismatches, 0, "every stake must use exactly the same color as its action");
+  if (process.env.YEET_RECOMMENDATION_BASELINE) {
+    const baseline = JSON.parse(await fs.readFile(process.env.YEET_RECOMMENDATION_BASELINE, "utf8"));
+    const current = await page.evaluate(() => plannerMatrixRows(filteredRows()).map(row => ({ key: YeetPlannerHistory.key(row), action: row.action, stake: stakeForAction(row.conviction, row.action, row.counterStakeMode || "50"), derived: !!row.derivedSuggestion })));
+    assert.deepEqual(current, baseline.rows, "display changes must preserve all recommendations and stake amounts");
+    console.log(`PASS: ${current.length} recommendations unchanged from pre-change backup.`);
+  }
   assert.match(await page.locator("#contraOverview").textContent(), /35 Wetten/);
   assert.match(await page.locator("#contraOverview").textContent(), /12 ohne Ausloeser/);
   const coverage = await page.evaluate(() => {
@@ -33,6 +41,16 @@ try {
   });
   assert.ok(coverage.filter(r => r.derived).every(r => r.dots === 0 && r.counterDots === 0));
   assert.ok(coverage.filter(r => !r.derived && r.bets > 0).every(r => r.dots === Math.min(10, r.bets)));
+  for (const width of [1920, 1280, 390]) {
+    await page.setViewportSize({ width, height: 1100 });
+    const overflow = await page.locator("#recommendationRows").evaluate(root => [...root.querySelectorAll("strong,small,b,.form-mark,.signal")].filter(node => {
+      const cell = node.closest("td").getBoundingClientRect();
+      const bounds = node.getBoundingClientRect();
+      return bounds.left < cell.left - 1 || bounds.right > cell.right + 1;
+    }).slice(0, 5).map(node => node.textContent));
+    assert.deepEqual(overflow, [], `planner contents fit their cells at ${width}px`);
+  }
+  await page.setViewportSize({ width: 1600, height: 1100 });
   await page.selectOption("#leagueFilter", "England - Championship");
   await page.selectOption("#convictionFilter", "Low");
   await page.selectOption("#quoteFilter", "1.00-1.49");
@@ -60,6 +78,12 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.keyboard.press("Escape");
   await page.screenshot({ path: path.join(output, "mobile.png") });
+  await page.evaluate(() => {
+    for (const group of Object.values(state.data.plannerHistory.groups)) for (const bet of group.contra) bet.status = "Upcoming";
+    renderPlanner(filteredRows());
+  });
+  assert.ok(await row.locator(".counter-comparison .form-mark").count() > 0, "pending counter bets retain inspectable form details");
+  assert.equal(await row.locator(".counter-comparison .planner-result-values").count(), 0, "pending counters must not display settled performance");
   assert.deepEqual(errors, []);
   console.log(`PASS: ${coverage.length} rows checked; original/contra form, no derived form, scoped comparison, hover/tap details, DE/EN and mobile.`);
 } finally {
