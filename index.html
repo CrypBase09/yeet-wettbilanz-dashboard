@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YEET Dashboard</title>
-    <link rel="stylesheet" href="styles.css?v=20261020-research">
+    <link rel="stylesheet" href="styles.css?v=20261023-form">
   </head>
   <body>
     <header class="topbar">
@@ -79,6 +79,7 @@
               <span data-i18n="plannerHint"></span>
             </div>
             <div id="recommendationSummary" class="recommendation-summary"></div>
+            <div id="contraOverview" class="contra-overview"></div>
             <section id="stakeCodeReference" class="stake-code-reference" aria-label="Stake code reference">
               <div class="stake-code-head">
                 <div>
@@ -258,6 +259,8 @@
     </main>
 
     <script src="data-refresh.js?v=20261019-freshness"></script>
-    <script src="app.js?v=20261020-research"></script>
+    <div id="formDetail" class="form-detail" popover></div>
+    <script src="planner-history.js?v=20261023-form"></script>
+    <script src="app.js?v=20261023-form"></script>
   </body>
 </html>

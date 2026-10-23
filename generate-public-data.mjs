@@ -4,6 +4,7 @@ import { contraOriginSignal, loadContraLogs, matchContraLog } from "./contra-log
 import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
 import { normalizeBetRecord } from "./bet-record-normalizer.mjs";
 import { buildResearch, cupIdentity, researchInput, researchCompetitionType } from "./research-monitor.mjs";
+import plannerHistory from "./planner-history.js";
 
 const root = path.resolve("..");
 const inputPath = path.join(root, "work", "yeet-mybets", "parsed_bets.json");
@@ -609,7 +610,7 @@ const payload = {
     startDate,
     generatedAt: new Date().toISOString(),
     currency: "USD",
-    privacy: "Public-safe aggregate data. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design.",
+    privacy: "Public-safe aggregates and date-only per-band form. No bet IDs, exact bet timestamps, or YEET identifiers included. Games and leagues are visible by design.",
   },
   summary,
   dimensions: {
@@ -647,6 +648,19 @@ const payload = {
 
 const protocol = JSON.parse(await fs.readFile(path.join(root, "work/research/protocol.json"), "utf8"));
 payload.research = buildResearch(bets.map((bet, index) => researchInput(bet, sourceBets[index])), protocol);
+const signalArchivePath = path.join(root, "work/contra-logs/signal-snapshots.json");
+let signalArchive;
+try { signalArchive = JSON.parse(await fs.readFile(signalArchivePath, "utf8")); }
+catch (error) { if (error.code !== "ENOENT") throw error; signalArchive = {}; }
+payload.plannerHistory = plannerHistory.build(bets, sourceBets, contraLogs, payload.meta.generatedAt, signalArchive);
+for (const group of Object.values(payload.plannerHistory.groups)) {
+  const snapshot = group.currentSignal;
+  if (!snapshot.closed) continue;
+  if (signalArchive[snapshot.ref] && JSON.stringify(signalArchive[snapshot.ref]) !== JSON.stringify(snapshot)) throw new Error("Signal snapshot collision");
+  signalArchive[snapshot.ref] = snapshot;
+}
+await fs.writeFile(signalArchivePath + ".tmp", JSON.stringify(signalArchive, null, 2) + "\n", "utf8");
+await fs.rename(signalArchivePath + ".tmp", signalArchivePath);
 
 await fs.writeFile(outputPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 console.log(JSON.stringify({

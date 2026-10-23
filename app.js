@@ -663,6 +663,7 @@ function contraTriggerText(row) {
 }
 
 function contraLogText(row) {
+  const references = window.YeetPlannerHistory.referencesFor(state.data.plannerHistory, row, state.filters);
   return [
     "Kontra gespielt:",
     `Liga: ${row.league}`,
@@ -672,13 +673,60 @@ function contraLogText(row) {
     `${tr("contraTargetOdds")}:`,
     `Trigger odds band: ${row.quoteBand}`,
     `Einsatzcode: ${recommendedStake(row)}`,
+    ...references.map(s => `Signal-Referenz: ${s.ref} | Datenstand: ${s.asOf} | ${s.key} | ${s.closed} Abg. | Netto: ${money(s.net)} | ROI: ${pct(s.roi)}`),
   ].join("\n");
 }
 
 function contraHistory(row, id) {
   const trigger = `${tr("contraTrigger")}: ${contraTriggerText(row)}`;
-  const target = `${tr("contraTarget")}: ${row.counterMarket || counterSegment(row.segment)} | ${tr("contraTargetOdds")}`;
-  return `<div class="contra-log"><div>${esc(trigger)}</div><div>${esc(target)}</div><button type="button" data-contra-log="${id}">${esc(tr("copyContraLog"))}</button></div>`;
+  const target = `${tr("contraTarget")}: ${row.counterMarket || counterSegment(row.segment)}`;
+  return `<div class="contra-log" title="${esc(trigger)}"><div>${esc(target)}</div><button type="button" data-contra-log="${id}">${esc(tr("copyContraLog"))}</button></div>`;
+}
+
+function formLabel(status) {
+  return state.lang === "de" ? ({ Won: "Gewonnen", Lost: "Verloren", Voided: "Storniert", "Cashed Out": "Cashout", Cashbacked: "Cashback", Upcoming: "Offen", "In Progress": "Laeuft" }[status] || status) : status;
+}
+
+function renderBandForm(row, strategy = "original") {
+  if (row.derivedSuggestion) return "";
+  const entries = window.YeetPlannerHistory.formFor(state.data.plannerHistory, window.YeetPlannerHistory.key(row), state.filters, false, strategy);
+  if (!entries.length) return "";
+  const caption = strategy === "contra" ? "Kontra" : state.lang === "de" ? "Form" : "Form";
+  const marks = { Won: ["won", "\u2713"], Lost: ["lost", "\u00d7"], Voided: ["void", "\u2013"], "Cashed Out": ["cashout", "C"], Cashbacked: ["cashout", "B"], Upcoming: ["pending", "\u00b7"], "In Progress": ["pending", "\u2026"] };
+  return `<div class="band-form"><small>${caption} ${entries.length}/10</small><div class="form-marks" aria-label="${state.lang === "de" ? "Neueste Platzierung rechts" : "Newest placement on the right"}">${entries.map((entry, i) => {
+    const id = String(window.formEntries.length);
+    window.formEntries.push(entry);
+    const [cls, symbol] = marks[entry.status] || ["pending", "?"];
+    const result = ["Upcoming", "In Progress"].includes(entry.status) ? "--" : money(entry.net);
+    const title = `${entry.game}\n${entry.date} | ${formLabel(entry.status)}\n${entry.segment} | ${entry.odds.toFixed(2)}\n${tr("stake")}: ${money(entry.stake)} | ${tr("net")}: ${result}`;
+    return `<button type="button" class="form-mark form-${cls}${i === entries.length - 1 ? " form-newest" : ""}" data-form-detail="${id}" title="${esc(title)}" aria-label="${esc(title)}">${symbol}</button>`;
+  }).join("")}</div></div>`;
+}
+
+function counterComparison(row) {
+  const data = state.data.plannerHistory;
+  if (!data) return "";
+  const pair = window.YeetPlannerHistory.comparisonFor(data, window.YeetPlannerHistory.key(row), state.filters);
+  const label = state.lang === "de" ? "Kontra gespielt" : "Counter bets played";
+  const sample = pair.contra;
+  const metric = sample.closed ? `${sample.closed} ${tr("closedShort")} | ${money(sample.net)} | ${pct(sample.roi)} ROI` : state.lang === "de" ? `${sample.pending} offen | noch keine Abrechnung` : `${sample.pending} pending | no settled results`;
+  const documented = pair.snapshots.length
+    ? pair.snapshots.map(s => `<div>${esc(state.lang === "de" ? "Dokumentierter Signalstand" : "Documented signal snapshot")}: ${esc(new Date(s.asOf).toLocaleString(state.lang === "de" ? "de-DE" : "en-GB", { timeZone: "Europe/Berlin" }))} | ${s.closed} ${tr("closedShort")} | ${money(s.net)} | ${pct(s.roi)} ROI${row.derivedSuggestion ? ` | ${esc(s.key.split(" | ").at(-1))}` : ""}</div>`).join("")
+    : `<div class="muted">${state.lang === "de" ? "Signalstand beim Einstieg: nicht dokumentiert" : "Signal state at entry: not documented"}</div>`;
+  if (!row.counterCandidate && !sample.bets) return "";
+  return `<div class="counter-comparison"><strong>${label}</strong><div class="${sample.net > 0 ? "pos" : sample.net < 0 ? "neg" : ""}">${esc(metric)}</div>${renderBandForm(row, "contra")}${documented}</div>`;
+}
+
+function renderContraOverview() {
+  const data = state.data.plannerHistory;
+  if (!data) { $("contraOverview").innerHTML = ""; return; }
+  const choose = r => (state.filters.league === "all" || r.league === state.filters.league) && (state.filters.conviction === "all" || r.conviction === state.filters.conviction) && window.YeetPlannerHistory.matches(r, { date: state.filters.date, status: state.filters.status });
+  const records = data.counters.filter(choose);
+  const unlinked = data.unlinked.filter(choose).length;
+  const s = window.YeetPlannerHistory.stats(records);
+  const de = state.lang === "de";
+  const total = s.closed ? `${money(s.net)} | ${pct(s.roi)} ROI` : "--";
+  $("contraOverview").innerHTML = `<strong>${de ? "Kontra-Bilanz" : "Counter-strategy results"}</strong><span>${s.bets} ${tr("bets")} | ${s.closed} ${tr("closedShort")} | ${s.pending} ${de ? "offen" : "pending"}</span><strong class="${s.net > 0 ? "pos" : s.net < 0 ? "neg" : ""}">${esc(total)}</strong><span>${s.won} W / ${s.lost} L / ${s.cashouts} C</span><span>${records.length - unlinked} ${de ? "mit Ausloeser" : "with trigger"} | ${unlinked} ${de ? "ohne Ausloeser" : "without trigger"}</span><small>${de ? "Liga, Conviction, Datum und Status gemaess Filter; unabhaengig vom Hauptstrategie-Haken. Keine Bestaetigung eines kuenftigen Vorteils." : "League, conviction, date and status follow filters; independent of the Main strategy checkbox. No confirmation of a future edge."}</small>`;
 }
 
 function derivedPlannerRow(league, conviction, segment, quoteBand, aggregateMap) {
@@ -780,6 +828,8 @@ function analysisRows(id, rows, options = {}) {
 }
 
 function renderPlanner(rows) {
+  window.formEntries = [];
+  renderContraOverview();
   const groups = plannerVisibleRows(plannerMatrixRows(rows));
   const sampledGroups = groups.filter((row) => row.closed > 0);
   const counts = sampledGroups.reduce((acc, row) => {
@@ -814,11 +864,12 @@ function renderPlanner(rows) {
     const sampleLabel = row.derivedSuggestion
       ? `${tr("derivedSuggestion")} (${row.sourceClosed})`
       : labelText(row.sample);
-    const history = row.counterCandidate ? contraHistory(row, logId) : plannerHistory(row);
+    const originalHistory = row.derivedSuggestion ? plannerHistory(row) : `${state.lang === "de" ? "Original aktuell" : "Original current"}: ${plannerHistory(row)}`;
+    const history = `<div>${originalHistory}</div>${counterComparison(row)}${row.counterCandidate ? contraHistory(row, logId) : ""}`;
     return `<tr>
       <td>${esc(league)}</td>
       <td>${esc(labelText(conviction))}</td>
-      <td>${esc(labelText(segment))}</td>
+      <td>${esc(labelText(segment))}${renderBandForm(row)}</td>
       <td>${esc(quoteBand)}</td>
       <td><span class="signal action-${esc(action)}">${esc(tr(action))}</span></td>
       <td><strong>${esc(recommendedStake(row))}</strong></td>
@@ -1030,6 +1081,16 @@ function bind() {
     });
   });
   $("recommendationRows").addEventListener("click", async (event) => {
+    const mark = event.target.closest("[data-form-detail]");
+    if (mark) {
+      const entry = window.formEntries?.[Number(mark.dataset.formDetail)];
+      if (!entry) return;
+      const popover = $("formDetail");
+      const net = ["Upcoming", "In Progress"].includes(entry.status) ? "--" : money(entry.net);
+      popover.innerHTML = `<h2>${esc(entry.game)}</h2><p>${esc(entry.league)}</p><p>${esc(entry.date)} | ${esc(formLabel(entry.status))}</p><p>${esc(entry.segment)} | ${entry.odds.toFixed(2)}</p><p>${esc(tr("stake"))}: ${money(entry.stake)} | ${esc(tr("net"))}: ${esc(net)}</p>`;
+      popover.showPopover();
+      return;
+    }
     const button = event.target.closest("[data-contra-log]");
     if (!button) return;
     const text = window.contraLogs?.[button.dataset.contraLog] || "";
