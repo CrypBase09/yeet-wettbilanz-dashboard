@@ -689,10 +689,10 @@ function formLabel(status) {
 function renderBandForm(row, strategy = "original") {
   if (row.derivedSuggestion) return "";
   const entries = window.YeetPlannerHistory.formFor(state.data.plannerHistory, window.YeetPlannerHistory.key(row), state.filters, false, strategy);
-  if (!entries.length) return "";
-  const caption = strategy === "contra" ? "Kontra" : state.lang === "de" ? "Form" : "Form";
+  const caption = strategy === "contra" ? (state.lang === "de" ? "Kontra - letzte 10" : "Counter - last 10") : (state.lang === "de" ? "Original - letzte 10" : "Original - last 10");
+  if (!entries.length) return strategy === "contra" ? `<div class="band-form form-empty"><small>${caption} (0/10)</small><span>${state.lang === "de" ? "Keine zugeordneten Kontrawetten im Filter" : "No linked counter bets in this filter"}</span></div>` : "";
   const marks = { Won: ["won", "\u2713"], Lost: ["lost", "\u00d7"], Voided: ["void", "\u2013"], "Cashed Out": ["cashout", "C"], Cashbacked: ["cashout", "B"], Upcoming: ["pending", "\u00b7"], "In Progress": ["pending", "\u2026"] };
-  return `<div class="band-form"><small>${caption} ${entries.length}/10</small><div class="form-marks" aria-label="${state.lang === "de" ? "Neueste Platzierung rechts" : "Newest placement on the right"}">${entries.map((entry, i) => {
+  return `<div class="band-form"><small>${caption} (${entries.length}/10)</small><div class="form-marks" aria-label="${caption}: ${state.lang === "de" ? "Neueste Platzierung rechts" : "Newest placement on the right"}">${entries.map((entry, i) => {
     const id = String(window.formEntries.length);
     window.formEntries.push(entry);
     const [cls, symbol] = marks[entry.status] || ["pending", "?"];
@@ -711,14 +711,16 @@ function counterComparison(row) {
     ? pair.snapshots.map(s => `<div>${esc(state.lang === "de" ? "Dokumentierter Signalstand" : "Documented signal snapshot")}: ${esc(new Date(s.asOf).toLocaleString(state.lang === "de" ? "de-DE" : "en-GB", { timeZone: "Europe/Berlin" }))} | ${s.closed} ${tr("closedShort")} | ${money(s.net)} | ${pct(s.roi)} ROI${row.derivedSuggestion ? ` | ${esc(s.key.split(" | ").at(-1))}` : ""}</div>`).join("")
     : `<div class="muted">${state.lang === "de" ? "Einstieg: nicht dokumentiert" : "Entry: not documented"}</div>`;
   if (!row.counterCandidate && !sample.bets) return "";
-  if (!sample.closed) return `<div class="planner-counter-empty">${state.lang === "de" ? `Kontra: ${sample.pending ? `${sample.pending} offen; ` : ""}noch keine Abrechnung` : `Counter: ${sample.pending ? `${sample.pending} pending; ` : ""}no settled results`}</div>${sample.bets ? `<div class="counter-comparison">${renderBandForm(row, "contra")}${documented}</div>` : ""}`;
+  if (!sample.closed) return `<div class="counter-comparison">${renderBandForm(row, "contra")}${sample.bets ? `<div class="planner-counter-empty">${state.lang === "de" ? `${sample.pending ? `${sample.pending} offen; ` : ""}noch keine auswertbaren Abrechnungen` : `${sample.pending ? `${sample.pending} pending; ` : ""}no performance settlements yet`}</div>${documented}` : ""}</div>`;
   return `<div class="counter-comparison">${plannerPerformance(sample, state.lang === "de" ? "Kontra gespielt" : "Counter bets played")}${renderBandForm(row, "contra")}${documented}</div>`;
 }
 
 function plannerPerformance(stats, label) {
   const value = (n, formatter) => n == null ? "--" : formatter(n);
   const sign = n => n == null ? "" : n < 0 ? "neg" : "pos";
-  return `<div class="planner-result"><div class="planner-result-title"><strong>${esc(label)}</strong><span>${stats.closed} ${tr("closedShort")}</span></div><div class="planner-result-values"><div><small>${tr("net")}</small><b class="${sign(stats.net)}">${value(stats.net, money)}</b></div><div><small>ROI</small><b class="${sign(stats.roi)}">${value(stats.roi, pct)}</b></div><div><small title="${state.lang === "de" ? "Nur gewonnene / verlorene Wetten, ohne Cashouts und Stornos" : "Won/Lost only, excluding cashouts and voids"}">${state.lang === "de" ? "Treffer (W/L)" : "Hit (W/L)"}</small><b>${value(stats.hitRate, pct)}</b></div></div></div>`;
+  const payout = stats.stake == null || stats.net == null ? null : stats.stake + stats.net;
+  const formula = state.lang === "de" ? "ROI = (Auszahlung - Einsatz) / Einsatz. 100% ROI bedeutet: Einsatz als Gewinn hinzuverdient." : "ROI = (payout - stake) / stake. 100% ROI means profit equals the stake.";
+  return `<div class="planner-result"><div class="planner-result-title"><strong>${esc(label)}</strong><span>${stats.closed} ${tr("closedShort")}</span></div><div class="planner-result-basis"><span>${tr("stake")} ${value(stats.stake, money)}</span><span>${tr("payout")} ${value(payout, money)}</span></div><div class="planner-result-values"><div><small>${state.lang === "de" ? "Nettogewinn" : "Net profit"}</small><b class="${sign(stats.net)}">${value(stats.net, money)}</b></div><div><small title="${esc(formula)}">${state.lang === "de" ? "ROI (Gewinn)" : "ROI (profit)"}</small><b title="${esc(formula)}" class="${sign(stats.roi)}">${value(stats.roi, pct)}</b></div><div><small title="${state.lang === "de" ? "Nur gewonnene / verlorene Wetten, ohne Cashouts und Stornos" : "Won/Lost only, excluding cashouts and voids"}">${state.lang === "de" ? "Treffer (W/L)" : "Hit (W/L)"}</small><b>${value(stats.hitRate, pct)}</b></div></div></div>`;
 }
 
 function plannerBalance(row) {

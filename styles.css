@@ -743,6 +743,9 @@ body[data-view="research"] .content { min-width: 0; }
 .planner-sample { font-size: 12px; color: #a3b2c5; }
 .planner-result-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: #bbc8d9; font-size: 11px; }
 .planner-result-title strong { min-width: 0; font-weight: 650; }
+.planner-result-basis { display: flex; flex-direction: column; gap: 3px; margin-top: 8px; color: #9cacc0; font-size: 10px; }
+.planner-result-basis span { overflow-wrap: anywhere; }
+.form-empty span { color: #9cacc0; font-size: 10px; line-height: 1.5; }
 .planner-result-title span { color: #8597ac; font-weight: 400; white-space: nowrap; }
 .planner-result-values { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 10px; margin-top: 8px; max-width: 280px; }
 .planner-result-values small { display: block; color: #788da4; font-size: 10px; margin-bottom: 3px; }

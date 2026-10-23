@@ -59,6 +59,9 @@ try {
   assert.match(await row.textContent(), /Original aktuell/);
   assert.match(await row.textContent(), /Kontra gespielt/);
   assert.match(await row.textContent(), /\$1\.61/);
+  assert.match(await row.locator("td:nth-child(3) .band-form small").first().textContent(), /Original - letzte 10/);
+  assert.match(await row.locator(".counter-comparison .band-form small").first().textContent(), /Kontra - letzte 10/);
+  assert.ok(await row.locator(".planner-result-basis").count() > 0, "ROI displays its actual stake and payout basis");
   assert.ok(await row.locator(".counter-comparison .form-mark").count() > 0);
   await page.screenshot({ path: path.join(output, "desktop.png") });
   const mark = row.locator("td:nth-child(3) .form-mark").first();
@@ -78,6 +81,21 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await page.keyboard.press("Escape");
   await page.screenshot({ path: path.join(output, "mobile.png") });
+  await page.setViewportSize({ width: 1600, height: 1100 });
+  await page.locator('[data-lang="de"]').click();
+  await page.selectOption("#leagueFilter", "Argentina - Liga Profesional");
+  await page.selectOption("#convictionFilter", "High");
+  await page.selectOption("#quoteFilter", "2.20-2.99");
+  const btts = page.locator("#recommendationRows > tr").filter({ hasText: "BTTS" }).first();
+  assert.match(await btts.locator(".planner-result-basis").textContent(), /Einsatz \$2\.50.*Auszahlung \$5\.50/);
+  assert.match(await btts.locator(".planner-result-values").textContent(), /120\.0%/);
+  await page.selectOption("#quoteFilter", "1.00-1.49");
+  const emptyCounter = page.locator("#recommendationRows > tr").filter({ hasText: "Total Goals - Under 2.5" }).first();
+  assert.match(await emptyCounter.textContent(), /Kontra - letzte 10.*0\/10/);
+  assert.match(await emptyCounter.textContent(), /Keine zugeordneten Kontrawetten/);
+  assert.equal(await emptyCounter.locator(".counter-comparison .form-mark").count(), 0);
+  await page.selectOption("#leagueFilter", "England - Championship");
+  await page.selectOption("#convictionFilter", "Low");
   await page.evaluate(() => {
     for (const group of Object.values(state.data.plannerHistory.groups)) for (const bet of group.contra) bet.status = "Upcoming";
     renderPlanner(filteredRows());
