@@ -95,7 +95,14 @@ export function classifyStake(stake, options = {}) {
     .sort((a, b) => a.distance - b.distance);
   if (!matches.length) throw new Error(`Unrecognized stake code: ${s.toFixed(2)}`);
   if (matches[1] && Math.abs(matches[0].distance - matches[1].distance) < 1e-9) {
-    throw new Error(`Ambiguous stake code: ${s.toFixed(2)}`);
+    const tied = matches.filter(item => Math.abs(item.distance - matches[0].distance) < 1e-9);
+    const meaning = ({ profile }) => JSON.stringify({
+      ...publicProfile(profile), stakeMode: profile.stakeMode.replace(/ V2$/, ""),
+    });
+    // Version labels alone do not make identical conviction/action codes ambiguous.
+    if (new Set(tied.map(meaning)).size !== 1) throw new Error(`Ambiguous stake code: ${s.toFixed(2)}`);
+    const current = tied.find(item => item.profile.version === "V2");
+    return publicProfile((current ?? tied[0]).profile, options.locale);
   }
   return publicProfile(matches[0].profile, options.locale);
 }
