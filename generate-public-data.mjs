@@ -3,6 +3,7 @@ import path from "node:path";
 import { contraOriginSignal, loadContraLogs, matchContraLog } from "./contra-log-match.mjs";
 import { assertKnownStakeCodes, classifyStake } from "./stake-code-profile.mjs";
 import { normalizeBetRecord } from "./bet-record-normalizer.mjs";
+import { simulationProfile } from "./simulation-profile.mjs";
 import { buildResearch, cupIdentity, researchInput, researchCompetitionType } from "./research-monitor.mjs";
 import plannerHistory from "./planner-history.js";
 
@@ -232,6 +233,8 @@ function leagueDisplay(country, normalizedLeague) {
 
 function normalizeLeague(rawLeague, game) {
   const raw = cleanText(rawLeague);
+  const simulation = simulationProfile(raw, game);
+  if (simulation) return simulation;
   const cup = cupIdentity(raw);
   if (cup) {
     const existing = [...leagueAliases.entries()].find(([name]) => compact(name) === compact(raw))?.[1];
@@ -539,6 +542,7 @@ const bets = sourceBets.map((bet) => {
   const stake = Number(bet.stake || 0);
   const profile = stakeProfile(stake);
   const mappedLeague = normalizeLeague(bet.league, bet.game);
+  const strategyType = mappedLeague.strategyType ?? profile.strategyType ?? "Main";
   const out = payout(bet);
   const row = {
     date: dateOf(bet.created),
@@ -550,13 +554,13 @@ const bets = sourceBets.map((bet) => {
     mappingStatus: mappedLeague.mappingStatus,
     league: mappedLeague.leagueDisplay,
     game: cleanText(bet.game),
-    competitionType: competitionType(mappedLeague.leagueDisplay),
+    competitionType: mappedLeague.isSimulation ? "other" : competitionType(mappedLeague.leagueDisplay),
     marketGroup: market.group,
     fineSegment: market.fineSegment,
     direction: market.direction || "None",
     line: market.line || "None",
     conviction: profile.conviction,
-    strategyType: profile.strategyType || "Main",
+    strategyType,
     stakeMode: profile.stakeMode,
     normalStake: profile.normalStake,
     stakeFactor: profile.stakeFactor,
@@ -566,11 +570,11 @@ const bets = sourceBets.map((bet) => {
     stake,
     payout: out,
     net: net(bet),
-    isFocus: (profile.strategyType || "Main") === "Main",
+    isFocus: strategyType === "Main",
   };
   const contraLog = matchContraLog(bet, row, contraLogs);
-  row.originSignal = contraLog ? contraOriginSignal(contraLog) : profile.strategyType === "Contra" ? "Unvollständig: Auslöser nicht dokumentiert" : "";
-  row.counterMarket = contraLog ? contraLog.targetSegment : profile.strategyType === "Contra" ? row.fineSegment : "";
+  row.originSignal = contraLog ? contraOriginSignal(contraLog) : strategyType === "Contra" ? "Unvollständig: Auslöser nicht dokumentiert" : "";
+  row.counterMarket = contraLog ? contraLog.targetSegment : strategyType === "Contra" ? row.fineSegment : "";
   row.contraTriggerQuoteBand = contraLog?.triggerQuoteBand || "";
   row.contraLogId = contraLog?.id || "";
   return row;
